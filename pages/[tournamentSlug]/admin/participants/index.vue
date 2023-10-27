@@ -642,7 +642,7 @@ const dropFile = (target) => {
 }
 
 .team-row {
-  font-weight: bold;
+  font-weight: 650;
 }
 
 .redacted {

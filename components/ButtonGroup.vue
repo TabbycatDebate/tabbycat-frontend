@@ -11,7 +11,7 @@
   flex-direction: column;
   padding-left: 0;
   margin-bottom: 0;
-  border-radius: 0.25rem;
+  border-radius: var(--border-radius);
 
   :deep(li) {
     &:first-child {

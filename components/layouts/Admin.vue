@@ -185,7 +185,7 @@ const curRoomCreationForm = ref(0);
       <ul>
         <li v-for="round in prelimRounds" :key="round.url">
           <NuxtLink>
-            <VueFeather type="circle" size="18" :class="circleClass(round)" />
+            <VueFeather type="circle" size="16" :class="circleClass(round)" />
             <div>{{ round.name }}</div>
           </NuxtLink>
         </li>
@@ -195,7 +195,7 @@ const curRoomCreationForm = ref(0);
         <ul>
           <li>
             <NuxtLink>
-              <VueFeather type="target" size="18" :stroke="breakStatus" />
+              <VueFeather type="target" size="16" :stroke="breakStatus" />
               <div>Breaks</div>
             </NuxtLink>
           </li>
@@ -207,7 +207,7 @@ const curRoomCreationForm = ref(0);
               <NuxtLink>
                 <VueFeather
                   type="circle"
-                  size="18"
+                  size="16"
                   :class="circleClass(round)"
                 />
                 <div>{{ round.name }}</div>
@@ -241,6 +241,10 @@ const curRoomCreationForm = ref(0);
 
     @media (prefers-color-scheme: dark) {
       background-color: #1a1e23;
+
+      hr {
+        border-color: #333c47;
+      }
     }
 
     .logo {
@@ -261,7 +265,7 @@ const curRoomCreationForm = ref(0);
     }
 
     li {
-      padding: 0.5rem 0.75rem;
+      padding: 0.65rem 0.9rem;
       color: #ced4da;
       display: flex;
       align-items: center;
