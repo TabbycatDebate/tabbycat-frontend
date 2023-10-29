@@ -642,7 +642,7 @@ const dropFile = (target) => {
 }
 
 .team-row {
-  font-weight: 650;
+  font-weight: 600;
 }
 
 .redacted {
@@ -687,7 +687,7 @@ const dropFile = (target) => {
 }
 
 .upload-overlay {
-  background-color: var(--background-inset-color);
+  background-color: var(--background-outset-color);
   height: 100%;
   width: -moz-available;
   width: -webkit-fill-available;
@@ -699,10 +699,10 @@ const dropFile = (target) => {
   align-items: center;
 
   > div {
-    background-color: #f8fafc;
+    background-color: var(--background-inset-color);
     width: 100%;
     height: 100%;
-    border: 5px dashed var(--text-color);
+    border: 3px dashed var(--border-color);
     border-radius: 1rem;
     display: flex;
     align-items: center;

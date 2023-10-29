@@ -224,7 +224,7 @@ onMounted(() => {
         vertical-align: middle;
 
         &.first {
-          border-left: 1px solid black;
+          border-left: 1px solid var(--text-color);
         }
       }
     }

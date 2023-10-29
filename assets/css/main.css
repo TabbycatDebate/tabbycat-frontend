@@ -13,7 +13,8 @@
   --background-inset-color: white;
   --background-inset-active-color: #f8f9fa;
   --active-background: #e3e3e3;
-  --text-color: #495057;
+  --text-color: #121212;
+  --secondary-text-color: #868e96;
   --link-color: #663da0;
   --link-hover-color: #432869;
   --header-color: var(--text-color);
@@ -21,6 +22,8 @@
   --vs-border-color: var(--border-color);
   --vs-border-width: var(--border-width);
   --vs-border-radius: var(--border-radius);
+  --vs-search-input-color: var(--text-color);
+  --vs-selected-color: var(--text-color);
 
   --vs-line-height: 1.375;
   --vs-actions-padding: 0;
@@ -123,7 +126,7 @@
 
     &:has(div .vs__search:focus) {
       color: var(--text-color);
-      background-color: #fff;
+      background-color: var(--background-inset-color);
       border-color: var(--field-border-color);
       outline: 0;
       box-shadow: var(--field-shadow);
@@ -147,7 +150,9 @@
       }
     }
   }
-  .vs1__listbox {
+  .vs__dropdown-menu {
+    background-color: var(--background-inset-color);
+
     .vs__dropdown-option {
       overflow-x: hidden;
       text-overflow: ellipsis;
@@ -210,7 +215,7 @@
   }
 
   .help-text {
-    color: #868e96;
+    color: var(--secondary-text-color);
     font-size: 80%;
     margin-top: 0.25rem;
   }
@@ -243,6 +248,7 @@
     height: 44px;
     width: 44px;
     min-width: 44px;
+    border-radius: 0.35rem;
 
     &.small {
       height: 22px;
@@ -332,6 +338,10 @@
       background-color: var(--secondary-button-background);
     }
   }
+}
+
+th {
+  font-weight: 600;
 }
 
 .card {
