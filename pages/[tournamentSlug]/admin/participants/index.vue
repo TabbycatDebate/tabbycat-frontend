@@ -11,6 +11,7 @@ definePageMeta({
 
 const tournamentsStore = useTournamentsStore();
 tournamentsStore.getAdjudicators();
+tournamentsStore.getTeams();
 tournamentsStore.getInstitutions();
 tournamentsStore.getPreferences();
 tournamentsStore.getBreakCategories();
@@ -33,32 +34,35 @@ const instMap = computed(() =>
 );
 
 const bcMap = Object.fromEntries(
-  tournamentsStore.currentTournament.breakCategories.map((bc) => [bc.url, bc]),
+  tournamentsStore.currentTournament.breakCategories?.map((bc) => [
+    bc.url,
+    bc,
+  ]) ?? [],
 );
 
 const scMap = Object.fromEntries(
-  tournamentsStore.currentTournament.speakerCategories.map((sc) => [
+  tournamentsStore.currentTournament.speakerCategories?.map((sc) => [
     sc.url,
     sc,
-  ]),
+  ]) ?? [],
 );
 
 const teamCategories = (team) =>
-  team.breakCategories.map((bc) => bcMap[bc].name).join(', ');
+  team.breakCategories.map((bc) => bcMap[bc]?.name).join(', ');
 const speakerCategories = (speaker) =>
-  speaker.categories.map((sc) => scMap[sc].name).join(', ');
+  speaker.categories.map((sc) => scMap[sc]?.name).join(', ');
 
 const minScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences.find(
+    tournamentsStore.currentTournament.preferences?.find(
       (pref) => pref.identifier === 'feedback__adj_min_score',
-    ).value,
+    ).value ?? 0,
 );
 const maxScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences.find(
+    tournamentsStore.currentTournament.preferences?.find(
       (pref) => pref.identifier === 'feedback__adj_max_score',
-    ).value,
+    ).value ?? 0,
 );
 
 const isDragging = ref(false);

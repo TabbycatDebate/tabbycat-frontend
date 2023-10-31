@@ -14,23 +14,35 @@ const feedback = reactive({
 
 const tournamentsStore = useTournamentsStore();
 tournamentsStore.getFeedbackQuestions().then(() => {
-  feedback.answers = Object.fromEntries(tournamentsStore.currentTournament.feedbackQuestions.map(q => [q.url, null]));
+  feedback.answers = Object.fromEntries(
+    tournamentsStore.currentTournament.feedbackQuestions.map((q) => [
+      q.url,
+      null,
+    ]),
+  );
 });
 tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
 
 const participants = computed(() => [
   ...tournamentsStore.currentTournament.adjudicators,
-  ...tournamentsStore.currentTournament.teams.map(t => ({...t, name: t.shortName})),
+  ...tournamentsStore.currentTournament.teams.map((t) => ({
+    ...t,
+    name: t.shortName,
+  })),
 ]);
 
 const answerableQuestions = computed(() => {
   const source = feedback.source.split('/');
-  source.pop()
+  source.pop();
   if (source.pop() === 'adjudicators') {
-    return tournamentsStore.currentTournament.feedbackQuestions.filter(q => q.fromAdj);
+    return tournamentsStore.currentTournament.feedbackQuestions.filter(
+      (q) => q.fromAdj,
+    );
   }
-  return tournamentsStore.currentTournament.feedbackQuestions.filter(q => q.fromTeam);
+  return tournamentsStore.currentTournament.feedbackQuestions.filter(
+    (q) => q.fromTeam,
+  );
 });
 
 const { currentTournament, loading } = storeToRefs(tournamentsStore);
@@ -38,21 +50,32 @@ const { currentTournament, loading } = storeToRefs(tournamentsStore);
 function attrsForQuestion(question) {
   switch (question.answerType) {
     case 'bc':
-      return {is: 'input', type: 'checkbox'};
+      return { is: 'input', type: 'checkbox' };
     case 'bs':
-      return {is: 'input'};
+      return { is: 'input' };
     case 'i':
-      return {is: 'input', type: 'number', min: question.minValue, max: question.maxValue};
+      return {
+        is: 'input',
+        type: 'number',
+        min: question.minValue,
+        max: question.maxValue,
+      };
     case 'is':
-      return {is: 'input', type: 'number', step: 0, min: question.minValue, max: question.maxValue};
+      return {
+        is: 'input',
+        type: 'number',
+        step: 0,
+        min: question.minValue,
+        max: question.maxValue,
+      };
     case 't':
-      return {is: 'input', type: 'text'};
+      return { is: 'input', type: 'text' };
     case 'tl':
-      return {is: 'textarea'};
+      return { is: 'textarea' };
     case 'ss':
-      return {is: 'select'};
+      return { is: 'select' };
     case 'ms':
-      return {is: 'select'};
+      return { is: 'select' };
   }
 }
 
@@ -89,17 +112,24 @@ function createFeedback() {
         :clearable="false"
       />
     </div>
-    <div v-if="feedback.source" class="form-group" v-for="question in answerableQuestions" :key="question.url">
+    <div
+      v-for="question in answerableQuestions"
+      v-if="feedback.source"
+      :key="question.url"
+      class="form-group"
+    >
       <label :for="question.reference">{{ question.name }}</label>
       <component
         v-bind="attrsForQuestion(question)"
-        v-model="feedback.answers[question.url]"
-        :id="question.reference"
-        :name="question.reference"
         :is="attrsForQuestion(question).is"
+        :id="question.reference"
+        v-model="feedback.answers[question.url]"
+        :name="question.reference"
         class="form-control"
       />
     </div>
-    <button type="submit" class="form-control btn-success">Submit feedback</button>
+    <button type="submit" class="form-control btn-success">
+      Submit feedback
+    </button>
   </form>
 </template>

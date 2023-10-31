@@ -18,14 +18,17 @@ function createRoom() {
 }
 
 function suffixes(position: string) {
-  return tournamentsStore.currentTournament.roomCategories
-    .filter(
-      (rc) =>
-        room.categories.includes(rc.url) && rc.displayInVenueName === position,
-    )
-    .map((rc) => rc.name)
-    .sort(new Intl.Collator('en', { caseFirst: 'upper' }).compare)
-    .join(', ');
+  return (
+    tournamentsStore.currentTournament.roomCategories
+      ?.filter(
+        (rc) =>
+          room.categories.includes(rc.url) &&
+          rc.displayInVenueName === position,
+      )
+      .map((rc) => rc.name)
+      .sort(new Intl.Collator('en', { caseFirst: 'upper' }).compare)
+      .join(', ') ?? ''
+  );
 }
 
 const prefix = computed(() => suffixes('P'));

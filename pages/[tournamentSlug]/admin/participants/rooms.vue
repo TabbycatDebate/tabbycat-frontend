@@ -4,7 +4,11 @@ import VueFeather from 'vue-feather';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 const tournamentsStore = useTournamentsStore();
-tournamentsStore.getRoundsForCurrentTournament();
+tournamentsStore.getRoundsForCurrentTournament().then(() => {
+  tournamentsStore.currentTournament.rounds.forEach((round) => {
+    tournamentsStore.getRoundAvailabilities(round);
+  });
+});
 tournamentsStore.getRooms();
 tournamentsStore.getRoomCategories();
 
@@ -34,7 +38,10 @@ const checkboxTable = ref(null);
 let ds = null;
 
 const roomCategoryMap = Object.fromEntries(
-  tournamentsStore.currentTournament.roomCategories.map((rc) => [rc.url, rc]),
+  tournamentsStore.currentTournament.roomCategories?.map((rc) => [
+    rc.url,
+    rc,
+  ]) ?? [],
 );
 
 function getRoomCategories(room: Room) {
@@ -70,7 +77,7 @@ function handleSpaceKeyUp(e) {
 }
 
 const rounds = groupBy(
-  tournamentsStore.currentTournament.rounds,
+  tournamentsStore.currentTournament.rounds ?? [],
   ({ breakCategory }) => breakCategory ?? '',
 );
 
@@ -138,7 +145,7 @@ onMounted(() => {
                   :key="round.url"
                   v-tooltip="round.name"
                   class="round-col"
-                  :class="{first: i === 0}"
+                  :class="{ first: i === 0 }"
                 >
                   {{ round.abbreviation }}
                 </th>
@@ -177,8 +184,12 @@ onMounted(() => {
                     @click="room._edit = !room._edit"
                   />
                 </td>
-                <template v-for="(roundGroup, key) in rounds" :key="'r'+key">
-                  <td v-for="(round, i) in roundGroup" :key="round.url" :class="{first: i === 0}">
+                <template v-for="(roundGroup, key) in rounds" :key="'r' + key">
+                  <td
+                    v-for="(round, i) in roundGroup"
+                    :key="round.url"
+                    :class="{ first: i === 0 }"
+                  >
                     <input
                       type="checkbox"
                       class="form-control small center"
