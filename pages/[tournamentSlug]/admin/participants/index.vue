@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import VueFeather from 'vue-feather';
 import vSelect from 'vue-select';
 
 import { storeToRefs } from 'pinia';
@@ -116,31 +115,27 @@ const dropFile = (target) => {
         <div class="card">
           <div class="title">
             <h3>Adjudicators</h3>
-            <VueFeather type="clipboard" size="22" />
-            <VueFeather
-              type="plus-circle"
-              size="22"
-              @click="newAdj = !newAdj"
-            />
+            <Icon type="Clipboard" size="22" />
+            <Icon type="PlusCircle" size="22" @click="newAdj = !newAdj" />
           </div>
           <table>
             <thead>
               <tr>
-                <th><VueFeather v-tooltip="'Name'" type="user" size="18" /></th>
+                <th><Icon v-tooltip="'Name'" type="User" size="18" /></th>
                 <th>
-                  <VueFeather v-tooltip="'Institution'" type="home" size="18" />
+                  <Icon v-tooltip="'Institution'" type="Home" size="18" />
                 </th>
                 <th>
-                  <VueFeather
+                  <Icon
                     v-tooltip="'Member of the Adjudication Core'"
-                    type="user-check"
+                    type="UserCheck"
                     size="18"
                   />
                 </th>
                 <th>
-                  <VueFeather
+                  <Icon
                     v-tooltip="'Independent Adjudicator'"
-                    type="user-plus"
+                    type="UserPlus"
                     size="18"
                   />
                 </th>
@@ -178,23 +173,19 @@ const dropFile = (target) => {
                     {{ instMap[adjudicator.institution]?.code || '' }}
                   </td>
                   <td>
-                    <VueFeather
-                      v-if="adjudicator.adjCore"
-                      type="check"
-                      size="18"
-                    />
+                    <Icon v-if="adjudicator.adjCore" type="Check" size="18" />
                   </td>
                   <td>
-                    <VueFeather
+                    <Icon
                       v-if="adjudicator.independent"
-                      type="check"
+                      type="Check"
                       size="18"
                     />
                   </td>
                   <td>
-                    <VueFeather
+                    <Icon
                       v-tooltip="'Edit'"
-                      type="edit"
+                      type="Edit"
                       size="18"
                       :stroke="
                         adjudicator._edit
@@ -372,26 +363,18 @@ const dropFile = (target) => {
         <div class="card">
           <div class="title">
             <h3>Teams</h3>
-            <VueFeather type="clipboard" size="22" />
-            <VueFeather
-              type="plus-circle"
-              size="22"
-              @click="newTeam = !newTeam"
-            />
+            <Icon type="Clipboard" size="22" />
+            <Icon type="PlusCircle" size="22" @click="newTeam = !newTeam" />
           </div>
           <table>
             <thead>
               <tr>
-                <th><VueFeather v-tooltip="'Name'" type="user" size="18" /></th>
+                <th><Icon v-tooltip="'Name'" type="User" size="18" /></th>
                 <th>
-                  <VueFeather
-                    v-tooltip="'Categories'"
-                    type="user-check"
-                    size="18"
-                  />
+                  <Icon v-tooltip="'Categories'" type="UserCheck" size="18" />
                 </th>
                 <th>
-                  <VueFeather v-tooltip="'Institution'" type="home" size="18" />
+                  <Icon v-tooltip="'Institution'" type="Home" size="18" />
                 </th>
                 <th class="actions"></th>
               </tr>
@@ -425,9 +408,9 @@ const dropFile = (target) => {
                     {{ instMap[team.institution]?.code || '' }}
                   </td>
                   <td>
-                    <VueFeather
+                    <Icon
                       v-tooltip="'Edit'"
-                      type="edit"
+                      type="Edit"
                       size="18"
                       :stroke="
                         team._edit
@@ -515,9 +498,9 @@ const dropFile = (target) => {
                     <td>{{ speakerCategories(speaker) }}</td>
                     <td></td>
                     <td>
-                      <VueFeather
+                      <Icon
                         v-tooltip="'Edit'"
-                        type="edit"
+                        type="Edit"
                         size="18"
                         :stroke="
                           speaker._edit
@@ -653,7 +636,7 @@ const dropFile = (target) => {
   text-decoration: line-through;
 }
 
-.vue-feather {
+.lucide-icon {
   cursor: pointer;
 
   :deep(svg) {

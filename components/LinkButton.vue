@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import VueFeather from 'vue-feather';
-
 defineProps<{
   to: String;
   icon?: String;
@@ -11,13 +9,13 @@ defineProps<{
   <li>
     <NuxtLink :to="to" class="link">
       <div v-if="icon" class="item-icon">
-        <VueFeather :type="icon" size="18" class="feather" />
+        <Icon :type="icon" size="18" class="icon" />
       </div>
       <div class="content">
         <slot />
       </div>
       <div class="chevron">
-        <VueFeather type="chevron-right" size="18" class="feather" />
+        <Icon type="ChevronRight" size="18" class="icon" />
       </div>
     </NuxtLink>
   </li>
@@ -68,7 +66,7 @@ li {
       padding-right: 0.25rem;
     }
 
-    .feather {
+    .icon {
       margin-top: -3px;
     }
   }

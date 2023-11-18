@@ -22,7 +22,7 @@ const { tournaments } = storeToRefs(tournamentsStore);
       <li v-for="tournament in tournaments" :key="tournament.url">
         <ButtonGroup :class="{ inactive: !tournament.active }">
           <LinkButton
-            icon="settings"
+            icon="Settings"
             :to="{
               name: 'tournament.admin.index',
               params: { tournamentSlug: tournament.slug },
@@ -31,7 +31,7 @@ const { tournaments } = storeToRefs(tournamentsStore);
             Administrator area for <b>{{ tournament.name }}</b>
           </LinkButton>
           <LinkButton
-            icon="globe"
+            icon="Globe"
             :to="{
               name: 'tournament.public.index',
               params: { tournamentSlug: tournament.slug },

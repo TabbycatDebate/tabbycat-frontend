@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import VueFeather from 'vue-feather';
-
 import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
@@ -31,13 +29,14 @@ const { currentTournament } = storeToRefs(tournamentsStore);
 function isCurrent(round) {
   return tournamentsStore.currentTournament.currentRounds.includes(round.url);
 }
-function circleClass(round) {
-  const current = isCurrent(round);
-  return {
-    completed: round.completed,
-    current,
-    future: !(current || round.completed),
-  };
+function roundStatus(round) {
+  if (round.completed) {
+    return { stroke: '#26ffc3', fill: '#00bf8a' };
+  }
+  if (isCurrent(round)) {
+    return { stroke: '#4cd3e9', fill: '#17a2b8' };
+  }
+  return { stroke: '#bdc1c5', fill: '#868e96' };
 }
 
 const breakStatus = computed(() => {
@@ -75,13 +74,13 @@ const curRoomCreationForm = ref(0);
               params: { tournamentSlug: currentTournament.slug },
             }"
           >
-            <VueFeather type="monitor" size="18" />
+            <Icon type="Monitor" size="18" />
             <div>Overview</div>
           </NuxtLink>
         </li>
         <li>
           <NuxtLink :to="{ name: 'tournament.new' }">
-            <VueFeather type="edit-2" size="18" />
+            <Icon type="Pencil" size="18" />
             <div>New Tournament</div>
           </NuxtLink>
         </li>
@@ -90,7 +89,7 @@ const curRoomCreationForm = ref(0);
       <ul>
         <li>
           <NuxtLink>
-            <VueFeather type="settings" size="18" />
+            <Icon type="Settings" size="18" />
             <div>Settings</div>
           </NuxtLink>
         </li>
@@ -101,11 +100,11 @@ const curRoomCreationForm = ref(0);
               params: { tournamentSlug: currentTournament.slug },
             }"
           >
-            <VueFeather type="users" size="18" />
+            <Icon type="Users" size="18" />
             <div>Participants</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
-            <VueFeather type="plus-circle" size="18" />
+            <Icon type="PlusCircle" size="18" />
             <template #popper>
               <div class="add-form">
                 <Tabs
@@ -131,11 +130,11 @@ const curRoomCreationForm = ref(0);
               params: { tournamentSlug: currentTournament.slug },
             }"
           >
-            <VueFeather type="map-pin" size="18" />
+            <Icon type="MapPin" size="18" />
             <div>Rooms</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
-            <VueFeather type="plus-circle" size="18" />
+            <Icon type="PlusCircle" size="18" />
 
             <template #popper>
               <div class="add-form">
@@ -152,23 +151,23 @@ const curRoomCreationForm = ref(0);
         </li>
         <li>
           <NuxtLink>
-            <VueFeather type="watch" size="18" />
+            <Icon type="Watch" size="18" />
             <div>Checkins</div>
           </NuxtLink>
           <NuxtLink class="add">
-            <VueFeather type="printer" size="18" />
+            <Icon type="Printer" size="18" />
           </NuxtLink>
           <NuxtLink class="add">
-            <VueFeather type="camera" size="18" />
+            <Icon type="Camera" size="18" />
           </NuxtLink>
         </li>
         <li>
           <NuxtLink>
-            <VueFeather type="message-circle" size="18" />
+            <Icon type="MessageCircle" size="18" />
             <div>Feedback</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
-            <VueFeather type="plus-circle" size="18" />
+            <Icon type="PlusCircle" size="18" />
             <template #popper>
               <div class="add-form"><LazyFormsSingleFeedback /></div>
             </template>
@@ -176,7 +175,7 @@ const curRoomCreationForm = ref(0);
         </li>
         <li>
           <NuxtLink>
-            <VueFeather type="bar-chart-2" size="18" />
+            <Icon type="BarChart2" size="18" />
             <div>Standings</div>
           </NuxtLink>
         </li>
@@ -185,7 +184,7 @@ const curRoomCreationForm = ref(0);
       <ul>
         <li v-for="round in prelimRounds" :key="round.url">
           <NuxtLink>
-            <VueFeather type="circle" size="16" :class="circleClass(round)" />
+            <Icon type="Circle" size="16" v-bind="roundStatus(round)" />
             <div>{{ round.name }}</div>
           </NuxtLink>
         </li>
@@ -195,7 +194,7 @@ const curRoomCreationForm = ref(0);
         <ul>
           <li>
             <NuxtLink>
-              <VueFeather type="target" size="16" :stroke="breakStatus" />
+              <Icon type="Target" size="16" :stroke="breakStatus" />
               <div>Breaks</div>
             </NuxtLink>
           </li>
@@ -205,11 +204,7 @@ const curRoomCreationForm = ref(0);
           <ul>
             <li v-for="round in value" :key="round.url">
               <NuxtLink>
-                <VueFeather
-                  type="circle"
-                  size="16"
-                  :class="circleClass(round)"
-                />
+                <Icon type="Circle" size="16" v-bind="roundStatus(round)" />
                 <div>{{ round.name }}</div>
               </NuxtLink>
             </li>
@@ -321,27 +316,6 @@ const curRoomCreationForm = ref(0);
   }
   main {
     grid-area: main;
-  }
-}
-
-.completed {
-  :deep(svg) {
-    stroke: #26ffc3;
-    fill: #00bf8a;
-  }
-}
-
-.current {
-  :deep(svg) {
-    stroke: #4cd3e9;
-    fill: #17a2b8;
-  }
-}
-
-.future {
-  :deep(svg) {
-    stroke: #bdc1c5;
-    fill: #868e96;
   }
 }
 

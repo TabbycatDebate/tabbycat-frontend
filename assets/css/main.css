@@ -366,3 +366,53 @@ th {
     color: var(--info-button-background);
   }
 }
+
+table {
+  width: 100%;
+
+  tr {
+    &.speaker-row > td:first-child {
+      padding-left: 1.5rem;
+    }
+    td,
+    th {
+      padding: 8px 8px 8px 4px;
+      vertical-align: middle;
+    }
+    th {
+      *:first-child {
+        float: left;
+      }
+      *:last-child {
+        float: right;
+      }
+    }
+  }
+  thead {
+    border-bottom: 2px solid var(--border-color);
+    position: sticky;
+    background: var(--background-inset-color);
+    inset-block-start: 0;
+    text-align: left;
+  }
+
+  tbody {
+    font-size: 0.875rem;
+    line-height: 1.375;
+
+    tr {
+      &.edit-row {
+        line-height: 1;
+        font-size: 1rem;
+      }
+      &:hover:not(.edit-row) {
+        transition: background-color 0.2s ease;
+        background-color: var(--active-background);
+      }
+
+      &:not(:last-child, .is-editing) {
+        border-bottom: 1px solid var(--border-color);
+      }
+    }
+  }
+}

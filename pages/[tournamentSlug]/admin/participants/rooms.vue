@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DragSelect from 'dragselect';
-import VueFeather from 'vue-feather';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 const tournamentsStore = useTournamentsStore();
@@ -115,28 +114,20 @@ onMounted(() => {
       <div class="card">
         <div class="title">
           <h3>Rooms</h3>
-          <VueFeather type="clipboard" size="22" />
-          <VueFeather
-            type="plus-circle"
-            size="22"
-            @click="newRoom = !newRoom"
-          />
+          <Icon type="Clipboard" size="22" />
+          <Icon type="PlusCircle" size="22" @click="newRoom = !newRoom" />
         </div>
         <table>
           <thead>
             <tr>
               <th>
-                <VueFeather v-tooltip="'Name'" type="map-pin" size="18" />
+                <Icon v-tooltip="'Name'" type="MapPin" size="18" />
               </th>
               <th>
-                <VueFeather
-                  v-tooltip="'Priority'"
-                  type="trending-up"
-                  size="18"
-                />
+                <Icon v-tooltip="'Priority'" type="TrendingUp" size="18" />
               </th>
               <th>
-                <VueFeather v-tooltip="'Categories'" type="map" size="18" />
+                <Icon v-tooltip="'Categories'" type="Map" size="18" />
               </th>
               <th class="actions"></th>
               <template v-for="(roundGroup, key) in rounds" :key="'h' + key">
@@ -172,9 +163,9 @@ onMounted(() => {
                   {{ getRoomCategories(room) }}
                 </td>
                 <td>
-                  <VueFeather
+                  <Icon
                     v-tooltip="'Edit'"
-                    type="edit"
+                    type="Edit"
                     size="18"
                     :stroke="
                       room._edit
