@@ -4,7 +4,7 @@ export const useUsersStore = defineStore({
   id: 'users-store',
   state: () => {
     return {
-      _token: 'b6fba1387e1520e6b41f8b1241e9a0ea96091d8e',
+      _token: import.meta.env.VITE_TABBYCAT_KEY,
       _user: {},
     };
   },

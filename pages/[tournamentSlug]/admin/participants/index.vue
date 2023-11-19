@@ -65,8 +65,6 @@ const maxScore = computed(
 );
 
 const isDragging = ref(false);
-const newAdj = ref(false);
-const newTeam = ref(false);
 
 const resetDragging = (event) => {
   if (!event.screenX && !event.screenY) {
@@ -78,6 +76,70 @@ const dropFile = (target) => {
   isDragging.value = false;
   target.value = null;
 };
+
+function getTeamName(team) {
+  return team.emoji + ' ' + team.shortName;
+}
+
+function getPersonName(person) {
+  return person.name ?? 'Redacted';
+}
+
+const adjTable = computed(() => ({
+  headers: [
+    { title: 'Name', icon: 'User' },
+    { title: 'Institution', icon: 'Home' },
+    { title: 'Member of the Adjudication Core', icon: 'UserCheck' },
+    { title: 'Independent Adjudicator', icon: 'UserPlus' },
+  ],
+  rows:
+    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
+      content: [
+        { component: 'Adjudicator', obj: adj, value: getPersonName(adj) },
+        { value: instMap.value[adj.institution]?.code || '' },
+        { component: 'Checkmark', value: adj.adjCore },
+        { component: 'Checkmark', value: adj.independent },
+      ],
+      subrows: [],
+      key: adj.url,
+      adjudicator: adj,
+      _edit: false,
+    })) ?? [],
+}));
+
+const teamTable = computed(() => ({
+  headers: [
+    { title: 'Name', icon: 'User' },
+    { title: 'Categories', icon: 'UserCheck' },
+    { title: 'Institution', icon: 'Home' },
+  ],
+  rows:
+    tournamentsStore.currentTournament.teams?.map((team) => ({
+      content: [
+        {
+          component: 'Team',
+          obj: team,
+          value: getTeamName(team),
+          sort: team.shortName,
+        },
+        { value: teamCategories(team) },
+        { value: instMap.value[team.institution]?.code || '' },
+      ],
+      subrows: team.speakers.map((speaker) => ({
+        content: [
+          { component: 'Speaker', obj: speaker, value: getPersonName(speaker) },
+          { value: speakerCategories(speaker) },
+          { value: '' },
+        ],
+        key: speaker.url,
+        speaker,
+        _edit: false,
+      })),
+      key: team.url,
+      team,
+      _edit: false,
+    })) ?? [],
+}));
 </script>
 
 <template>
@@ -108,470 +170,288 @@ const dropFile = (target) => {
         multiple
         @change="dropFile($event.target)"
       />
-      <label for="file" class="note"
-        >Drag-and-drop CSV files to quickly import participants</label
-      >
+      <label for="file" class="note">
+        Drag-and-drop CSV files to quickly import participants
+      </label>
       <div class="tables">
-        <div class="card">
-          <div class="title">
-            <h3>Adjudicators</h3>
-            <Icon type="Clipboard" size="22" />
-            <Icon type="PlusCircle" size="22" @click="newAdj = !newAdj" />
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th><Icon v-tooltip="'Name'" type="User" size="18" /></th>
-                <th>
-                  <Icon v-tooltip="'Institution'" type="Home" size="18" />
-                </th>
-                <th>
-                  <Icon
-                    v-tooltip="'Member of the Adjudication Core'"
-                    type="UserCheck"
-                    size="18"
+        <TableBase
+          title="Adjudicators"
+          :content="adjTable"
+          :can-create="true"
+          :can-edit="true"
+        >
+          <template #create>
+            <LazyFormsSingleAdjudicator />
+          </template>
+          <template #edit="{ row: { adjudicator } }">
+            <form @submit.prevent="updateAdjudicator(adjudicator)">
+              <div class="form-group combined">
+                <div>
+                  <label for="institution">Institution</label>
+                  <vSelect
+                    v-model="adjudicator.institution"
+                    input-id="institution"
+                    :loading="loading.institutions"
+                    name="institution"
+                    :options="institutions"
+                    :reduce="(inst) => inst.url"
+                    label="name"
+                    :clearable="false"
                   />
-                </th>
-                <th>
-                  <Icon
+                </div>
+                <div>
+                  <label
                     v-tooltip="'Independent Adjudicator'"
-                    type="UserPlus"
-                    size="18"
-                  />
-                </th>
-                <th class="actions"></th>
-              </tr>
-            </thead>
-            <tbody v-if="loading.adjudicators === false">
-              <Transition name="slide-fade">
-                <tr v-if="newAdj" class="edit-row">
-                  <td colspan="5">
-                    <LazyFormsSingleAdjudicator />
-                  </td>
-                </tr>
-              </Transition>
-              <template
-                v-for="adjudicator in currentTournament.adjudicators"
-                :key="adjudicator.url"
-              >
-                <tr :class="{ 'is-editing': adjudicator._edit }">
-                  <td>
-                    <NuxtLink
-                      :to="{
-                        name: 'tournament.admin.participants.adjudicator',
-                        params: {
-                          tournamentSlug: currentTournament.slug,
-                          id: adjudicator.id,
-                        },
-                      }"
-                      :class="{ redacted: adjudicator.anonymous }"
-                    >
-                      {{ adjudicator.name || 'Redacted' }}
-                    </NuxtLink>
-                  </td>
-                  <td>
-                    {{ instMap[adjudicator.institution]?.code || '' }}
-                  </td>
-                  <td>
-                    <Icon v-if="adjudicator.adjCore" type="Check" size="18" />
-                  </td>
-                  <td>
-                    <Icon
-                      v-if="adjudicator.independent"
-                      type="Check"
-                      size="18"
-                    />
-                  </td>
-                  <td>
-                    <Icon
-                      v-tooltip="'Edit'"
-                      type="Edit"
-                      size="18"
-                      :stroke="
-                        adjudicator._edit
-                          ? 'var(--secondary-button-background)'
-                          : 'var(--text-color)'
-                      "
-                      @click="adjudicator._edit = !adjudicator._edit"
-                    />
-                  </td>
-                </tr>
-                <Transition name="slide-fade">
-                  <tr v-if="adjudicator._edit" class="edit-row">
-                    <td colspan="5">
-                      <form @submit.prevent="updateAdjudicator(adjudicator)">
-                        <div class="form-group combined">
-                          <div>
-                            <label for="institution">Institution</label>
-                            <vSelect
-                              v-model="adjudicator.institution"
-                              input-id="institution"
-                              :loading="loading.institutions"
-                              name="institution"
-                              :options="institutions"
-                              :reduce="(inst) => inst.url"
-                              label="name"
-                              :clearable="false"
-                            />
-                          </div>
-                          <div>
-                            <label
-                              v-tooltip="'Independent Adjudicator'"
-                              for="independent"
-                            >
-                              IA
-                            </label>
-                            <input
-                              id="independent"
-                              v-model="adjudicator.independent"
-                              type="checkbox"
-                              class="form-control"
-                              name="independent"
-                            />
-                          </div>
-                        </div>
-                        <div class="form-group combined">
-                          <div>
-                            <label for="name">Name</label>
-                            <input
-                              id="name"
-                              v-model="adjudicator.name"
-                              name="name"
-                              type="text"
-                              class="form-control"
-                            />
-                          </div>
-                          <FormsFieldsGender v-model="adjudicator.gender" />
-                        </div>
-                        <div class="form-group">
-                          <label for="email">Email</label>
-                          <input
-                            id="email"
-                            v-model="adjudicator.email"
-                            name="email"
-                            type="email"
-                            class="form-control"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="score">Base score</label>
-                          <input
-                            id="score"
-                            v-model="adjudicator.baseScore"
-                            name="score"
-                            type="number"
-                            class="form-control"
-                            :min="minScore"
-                            :max="maxScore"
-                            step="any"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="adj-conflicts"
-                            >Adjudicator conflicts</label
-                          >
-                          <vSelect
-                            v-model="adjudicator.adjudicatorConflicts"
-                            input-id="adj-conflicts"
-                            :loading="loading.adjudicators"
-                            name="adj-conflicts"
-                            :options="currentTournament.adjudicators"
-                            :reduce="(adj) => adj.url"
-                            label="name"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="team-conflicts">Team conflicts</label>
-                          <vSelect
-                            v-model="adjudicator.teamConflicts"
-                            input-id="team-conflicts"
-                            :loading="loading.teams"
-                            name="team-conflicts"
-                            :options="currentTournament.teams"
-                            :reduce="(team) => team.url"
-                            label="shortName"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="institution-conflicts"
-                            >Institution conflicts</label
-                          >
-                          <vSelect
-                            v-model="adjudicator.institutionConflicts"
-                            input-id="institution-conflicts"
-                            :loading="loading.institutions"
-                            name="institution-conflicts"
-                            :options="institutions"
-                            :reduce="(inst) => inst.url"
-                            label="code"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <div class="form-group">
-                          <input
-                            id="adjCore"
-                            v-model="adjudicator.adjCore"
-                            type="checkbox"
-                            name="adjCore"
-                            class="form-control"
-                          />
-                          <label for="adjCore"
-                            >Member of the Adjudication Core</label
-                          >
-                        </div>
-                        <div class="form-group">
-                          <input
-                            id="trainee"
-                            v-model="adjudicator.trainee"
-                            type="checkbox"
-                            name="trainee"
-                            class="form-control"
-                          />
-                          <label for="trainee"
-                            >Always allocate as trainee</label
-                          >
-                        </div>
-                        <div class="form-group">
-                          <input
-                            id="anonymous"
-                            v-model="adjudicator.anonymous"
-                            type="checkbox"
-                            name="anonymous"
-                            class="form-control"
-                          />
-                          <label for="anonymous">Anonymous</label>
-                        </div>
-                        <button type="submit" class="form-control btn-success">
-                          <template v-if="adjudicator.url">
-                            Update adjudicator
-                          </template>
-                          <template v-else> Create adjudicator </template>
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                </Transition>
-              </template>
-            </tbody>
-          </table>
-        </div>
-        <div class="card">
-          <div class="title">
-            <h3>Teams</h3>
-            <Icon type="Clipboard" size="22" />
-            <Icon type="PlusCircle" size="22" @click="newTeam = !newTeam" />
-          </div>
-          <table>
-            <thead>
-              <tr>
-                <th><Icon v-tooltip="'Name'" type="User" size="18" /></th>
-                <th>
-                  <Icon v-tooltip="'Categories'" type="UserCheck" size="18" />
-                </th>
-                <th>
-                  <Icon v-tooltip="'Institution'" type="Home" size="18" />
-                </th>
-                <th class="actions"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <Transition name="slide-fade">
-                <tr v-if="newTeam" class="edit-row">
-                  <td colspan="5">
-                    <FormsSingleTeam />
-                  </td>
-                </tr>
-              </Transition>
-              <template v-for="team in currentTournament.teams" :key="team.url">
-                <tr class="team-row" :class="{ 'is-editing': team._edit }">
-                  <td>
-                    <NuxtLink
-                      :to="{
-                        name: 'tournament.admin.participants.team',
-                        params: {
-                          tournamentSlug: currentTournament.slug,
-                          id: team.id,
-                        },
-                      }"
-                    >
-                      <span class="emoji">{{ team.emoji }}</span>
-                      {{ team.shortName }}
-                    </NuxtLink>
-                  </td>
-                  <td>{{ teamCategories(team) }}</td>
-                  <td>
-                    {{ instMap[team.institution]?.code || '' }}
-                  </td>
-                  <td>
-                    <Icon
-                      v-tooltip="'Edit'"
-                      type="Edit"
-                      size="18"
-                      :stroke="
-                        team._edit
-                          ? 'var(--secondary-button-background)'
-                          : 'var(--text-color)'
-                      "
-                      @click="team._edit = !team._edit"
-                    />
-                  </td>
-                </tr>
-                <Transition name="slide-fade">
-                  <tr v-if="team._edit" class="edit-row">
-                    <td colspan="5">
-                      <form @submit.prevent="updateTeam(team)">
-                        <div class="form-group">
-                          <label for="institution">Institution</label>
-                          <vSelect
-                            v-if="loading.institutions === false"
-                            v-model="team.institution"
-                            input-id="institution"
-                            name="institution"
-                            :options="institutions"
-                            :reduce="(inst) => inst.url"
-                            label="name"
-                            :clearable="false"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="reference">Team name</label>
-                          <FormsFieldsTeamName
-                            v-model:prefixed="team.useInstitutionPrefix"
-                            v-model:name="team.reference"
-                            :institution="instMap[team.institution]?.code"
-                          />
-                        </div>
-                        <FormsFieldsEmoji
-                          v-model:emoji="team.emoji"
-                          v-model:code="team.codeName"
-                        />
-                        <div class="form-group">
-                          <label for="break-categories">Break categories</label>
-                          <vSelect
-                            v-if="loading.breakCategories === false"
-                            v-model="team.breakCategories"
-                            input-id="break-categories"
-                            name="break-categories"
-                            :options="currentTournament.breakCategories"
-                            :reduce="(bc) => bc.url"
-                            label="name"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="institution-conflicts"
-                            >Institution conflicts</label
-                          >
-                          <vSelect
-                            v-model="team.institutionConflicts"
-                            input-id="institution-conflicts"
-                            :loading="loading.institution"
-                            name="adj-conflicts"
-                            :options="institutions"
-                            :reduce="(inst) => inst.url"
-                            label="code"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <button type="submit" class="form-control btn-success">
-                          Update team
-                        </button>
-                      </form>
-                    </td>
-                  </tr>
-                </Transition>
-                <template v-for="speaker in team.speakers" :key="speaker.url">
-                  <tr
-                    class="speaker-row"
-                    :class="{ 'is-editing': speaker._edit }"
+                    for="independent"
                   >
-                    <td :class="{ redacted: speaker.anonymous }">
-                      <span>{{ speaker.name }}</span>
-                    </td>
-                    <td>{{ speakerCategories(speaker) }}</td>
-                    <td></td>
-                    <td>
-                      <Icon
-                        v-tooltip="'Edit'"
-                        type="Edit"
-                        size="18"
-                        :stroke="
-                          speaker._edit
-                            ? 'var(--secondary-button-background)'
-                            : 'var(--text-color)'
-                        "
-                        @click="speaker._edit = !speaker._edit"
-                      />
-                    </td>
-                  </tr>
-                  <Transition name="slide-fade">
-                    <tr v-if="speaker._edit" class="edit-row">
-                      <td colspan="4">
-                        <div class="form-group combined">
-                          <div>
-                            <label for="name">Name</label>
-                            <input
-                              id="name"
-                              v-model="speaker.name"
-                              name="name"
-                              type="text"
-                              class="form-control"
-                            />
-                          </div>
-                          <FormsFieldsGender v-model="speaker.gender" />
-                        </div>
-                        <div class="form-group">
-                          <label for="spk-email">Email</label>
-                          <input
-                            id="spk-email"
-                            v-model="speaker.email"
-                            name="spk-categories"
-                            type="email"
-                            class="form-control"
-                          />
-                        </div>
-                        <div class="form-group">
-                          <label for="spk-categories">Speaker categories</label>
-                          <vSelect
-                            v-if="loading.speakerCategories === false"
-                            v-model="speaker.categories"
-                            input-id="spk-categories"
-                            name="spk-categories"
-                            :options="currentTournament.speakerCategories"
-                            :reduce="(sc) => sc.url"
-                            label="name"
-                            :clearable="false"
-                            multiple
-                          />
-                        </div>
-                        <div class="form-group">
-                          <input
-                            id="anonymous"
-                            v-model="speaker.anonymous"
-                            type="checkbox"
-                            name="anonymous"
-                            class="form-control"
-                          />
-                          <label for="anonymous">Anonymous</label>
-                        </div>
-                        <button type="submit" class="form-control btn-success">
-                          Update speaker
-                        </button>
-                      </td>
-                    </tr>
-                  </Transition>
-                </template>
-              </template>
-            </tbody>
-          </table>
-        </div>
+                    IA
+                  </label>
+                  <input
+                    id="independent"
+                    v-model="adjudicator.independent"
+                    type="checkbox"
+                    class="form-control"
+                    name="independent"
+                  />
+                </div>
+              </div>
+              <div class="form-group combined">
+                <div>
+                  <label for="name">Name</label>
+                  <input
+                    id="name"
+                    v-model="adjudicator.name"
+                    name="name"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+                <FormsFieldsGender v-model="adjudicator.gender" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email</label>
+                <input
+                  id="email"
+                  v-model="adjudicator.email"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="score">Base score</label>
+                <input
+                  id="score"
+                  v-model="adjudicator.baseScore"
+                  name="score"
+                  type="number"
+                  class="form-control"
+                  :min="minScore"
+                  :max="maxScore"
+                  step="any"
+                />
+              </div>
+              <div class="form-group">
+                <label for="adj-conflicts">Adjudicator conflicts</label>
+                <vSelect
+                  v-model="adjudicator.adjudicatorConflicts"
+                  input-id="adj-conflicts"
+                  :loading="loading.adjudicators"
+                  name="adj-conflicts"
+                  :options="currentTournament.adjudicators"
+                  :reduce="(adj) => adj.url"
+                  label="name"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <div class="form-group">
+                <label for="team-conflicts">Team conflicts</label>
+                <vSelect
+                  v-model="adjudicator.teamConflicts"
+                  input-id="team-conflicts"
+                  :loading="loading.teams"
+                  name="team-conflicts"
+                  :options="currentTournament.teams"
+                  :reduce="(team) => team.url"
+                  label="shortName"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <div class="form-group">
+                <label for="institution-conflicts">Institution conflicts</label>
+                <vSelect
+                  v-model="adjudicator.institutionConflicts"
+                  input-id="institution-conflicts"
+                  :loading="loading.institutions"
+                  name="institution-conflicts"
+                  :options="institutions"
+                  :reduce="(inst) => inst.url"
+                  label="code"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  id="adjCore"
+                  v-model="adjudicator.adjCore"
+                  type="checkbox"
+                  name="adjCore"
+                  class="form-control"
+                />
+                <label for="adjCore">Member of the Adjudication Core</label>
+              </div>
+              <div class="form-group">
+                <input
+                  id="trainee"
+                  v-model="adjudicator.trainee"
+                  type="checkbox"
+                  name="trainee"
+                  class="form-control"
+                />
+                <label for="trainee">Always allocate as trainee</label>
+              </div>
+              <div class="form-group">
+                <input
+                  id="anonymous"
+                  v-model="adjudicator.anonymous"
+                  type="checkbox"
+                  name="anonymous"
+                  class="form-control"
+                />
+                <label for="anonymous">Anonymous</label>
+              </div>
+              <button type="submit" class="form-control btn-success">
+                <template v-if="adjudicator.url"> Update adjudicator </template>
+                <template v-else> Create adjudicator </template>
+              </button>
+            </form>
+          </template>
+        </TableBase>
+        <TableBase
+          title="Teams"
+          :content="teamTable"
+          :can-create="true"
+          :can-edit="true"
+        >
+          <template #create><FormsSingleTeam /></template>
+          <template #edit="{ row: { team } }">
+            <form @submit.prevent="updateTeam(team)">
+              <div class="form-group">
+                <label for="institution">Institution</label>
+                <vSelect
+                  v-if="loading.institutions === false"
+                  v-model="team.institution"
+                  input-id="institution"
+                  name="institution"
+                  :options="institutions"
+                  :reduce="(inst) => inst.url"
+                  label="name"
+                  :clearable="false"
+                />
+              </div>
+              <div class="form-group">
+                <label for="reference">Team name</label>
+                <FormsFieldsTeamName
+                  v-model:prefixed="team.useInstitutionPrefix"
+                  v-model:name="team.reference"
+                  :institution="instMap[team.institution]?.code"
+                />
+              </div>
+              <FormsFieldsEmoji
+                v-model:emoji="team.emoji"
+                v-model:code="team.codeName"
+              />
+              <div class="form-group">
+                <label for="break-categories">Break categories</label>
+                <vSelect
+                  v-if="loading.breakCategories === false"
+                  v-model="team.breakCategories"
+                  input-id="break-categories"
+                  name="break-categories"
+                  :options="currentTournament.breakCategories"
+                  :reduce="(bc) => bc.url"
+                  label="name"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <div class="form-group">
+                <label for="institution-conflicts">Institution conflicts</label>
+                <vSelect
+                  v-model="team.institutionConflicts"
+                  input-id="institution-conflicts"
+                  :loading="loading.institution"
+                  name="adj-conflicts"
+                  :options="institutions"
+                  :reduce="(inst) => inst.url"
+                  label="code"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <button type="submit" class="form-control btn-success">
+                Update team
+              </button>
+            </form>
+          </template>
+          <template #subedit="{ row: { speaker } }">
+            <form>
+              <div class="form-group combined">
+                <div>
+                  <label for="name">Name</label>
+                  <input
+                    id="name"
+                    v-model="speaker.name"
+                    name="name"
+                    type="text"
+                    class="form-control"
+                  />
+                </div>
+                <FormsFieldsGender v-model="speaker.gender" />
+              </div>
+              <div class="form-group">
+                <label for="spk-email">Email</label>
+                <input
+                  id="spk-email"
+                  v-model="speaker.email"
+                  name="spk-categories"
+                  type="email"
+                  class="form-control"
+                />
+              </div>
+              <div class="form-group">
+                <label for="spk-categories">Speaker categories</label>
+                <vSelect
+                  v-if="loading.speakerCategories === false"
+                  v-model="speaker.categories"
+                  input-id="spk-categories"
+                  name="spk-categories"
+                  :options="currentTournament.speakerCategories"
+                  :reduce="(sc) => sc.url"
+                  label="name"
+                  :clearable="false"
+                  multiple
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  id="anonymous"
+                  v-model="speaker.anonymous"
+                  type="checkbox"
+                  name="anonymous"
+                  class="form-control"
+                />
+                <label for="anonymous">Anonymous</label>
+              </div>
+              <button type="submit" class="form-control btn-success">
+                Update speaker
+              </button>
+            </form>
+          </template>
+        </TableBase>
       </div>
     </div>
   </LayoutsAdmin>
@@ -580,97 +460,6 @@ const dropFile = (target) => {
 <style lang="postcss" scoped>
 .tables {
   display: flex;
-
-  .card {
-    width: 100%;
-  }
-
-  table {
-    width: 100%;
-
-    tr {
-      &.speaker-row > td:first-child {
-        padding-left: 1.5rem;
-      }
-      td,
-      th {
-        padding: 8px 8px 8px 4px;
-        vertical-align: middle;
-      }
-    }
-    thead {
-      border-bottom: 2px solid var(--border-color);
-      position: sticky;
-      background: var(--background-inset-color);
-      inset-block-start: 0;
-      text-align: left;
-    }
-
-    tbody {
-      font-size: 0.875rem;
-      line-height: 1.375;
-
-      tr {
-        &.edit-row {
-          line-height: 1;
-          font-size: 1rem;
-        }
-        &:hover:not(.edit-row) {
-          transition: background-color 0.2s ease;
-          background-color: var(--active-background);
-        }
-
-        &:not(:last-child, .is-editing) {
-          border-bottom: 1px solid var(--border-color);
-        }
-      }
-    }
-  }
-}
-
-.team-row {
-  font-weight: 600;
-}
-
-.redacted {
-  text-decoration: line-through;
-}
-
-.lucide-icon {
-  cursor: pointer;
-
-  :deep(svg) {
-    transition: all 0.5s ease;
-  }
-
-  &:hover :deep(svg) {
-    stroke: var(--secondary-button-background);
-  }
-}
-
-.actions {
-  column-width: 18px;
-}
-
-.fade-in-enter-active,
-.fade-in-leave-active {
-  transition: opacity 0.3s ease;
-}
-
-.fade-in-enter-from,
-.fade-in-leave-to {
-  opacity: 0;
-}
-
-.slide-fade-enter-active,
-.slide-fade-leave-active {
-  transition: all 0.3s ease-in-out;
-}
-
-.slide-fade-enter-from,
-.slide-fade-leave-to {
-  transform: translateY(-30px);
-  opacity: 0;
 }
 
 .upload-overlay {

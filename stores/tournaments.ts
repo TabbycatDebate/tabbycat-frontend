@@ -3,6 +3,9 @@ import axios from 'axios';
 import { defineStore } from 'pinia';
 
 const client = applyCaseMiddleware(axios.create());
+const baseUrl = import.meta.env.VITE_TABBYCAT_URL;
+const token = import.meta.env.VITE_TABBYCAT_KEY;
+client.defaults.headers.common.Authorization = `Token ${token}`;
 
 interface TCAPIResponse {
   readonly id: number;
@@ -185,6 +188,61 @@ interface Tournament extends TCAPIResponse {
   roomCategories: RoomCategory[];
 }
 
+enum AnswerType {
+  BOOLEAN_CHECKBOX = 'bc',
+  BOOLEAN_SELECT = 'bs',
+  INTEGER_TEXTBOX = 'i',
+  INTEGER_SCALE = 'is',
+  FLOAT = 'f',
+  TEXT = 't',
+  LONGTEXT = 'tl',
+  SINGLE_SELECT = 'ss',
+  MULTIPLE_SELECT = 'ms',
+}
+
+enum SubmitterType {
+  TABROOM = 'T',
+  PUBLIC = 'P',
+}
+
+interface FeedbackQuestion extends TCAPIResponse {
+  choices: string[];
+  seq: number;
+  text: string;
+  name: string;
+  reference: string;
+  from_adj: boolean;
+  from_team: boolean;
+  answer_type: AnswerType;
+  required: boolean;
+  min_value: string;
+  max_value: string;
+}
+
+interface FeedbackAnswer {
+  question: URL;
+  answer: Any;
+}
+
+interface Feedback extends TCAPIResponse {
+  adjudicator: string;
+  source: string;
+  debate: string;
+  answers: FeedbackAnswer[];
+  timestamp: Date;
+  version: number;
+  submitter_type: SubmitterType;
+  confirmed: boolean;
+  confirm_timestamp: Date;
+  ip_address: string;
+  score: number;
+  ignored: boolean;
+  participant_submitter: URL;
+  private_url: boolean;
+  submitter: number;
+  confirmer: number;
+}
+
 export const useTournamentsStore = defineStore({
   id: 'tournaments-store',
   state: () => {
@@ -200,6 +258,7 @@ export const useTournamentsStore = defineStore({
         preferences: null,
         adjudicators: null,
         speakerCategories: null,
+        feedbackQuestions: null,
       },
     };
   },
@@ -211,11 +270,12 @@ export const useTournamentsStore = defineStore({
       this._loading.preferences = null;
       this._loading.adjudicators = null;
       this._loading.speakerCategories = null;
+      this._loading.feedbackQuestions = null;
 
-      /* const response = await client.get<Tournament[]>(
-        'http://localhost:8000/api/v1/tournaments',
+      const response = await client.get<Tournament[]>(
+        `${baseUrl}/api/v1/tournaments`,
       );
-      this.setTournaments(response.data); */
+      this.setTournaments(response.data);
       this._loading.tournaments = false;
     },
     setTournaments(tournaments: Tournament[]) {
@@ -226,23 +286,23 @@ export const useTournamentsStore = defineStore({
     },
     async getRoundsForCurrentTournament() {
       this._loading.rounds = true;
-      /* const response = await client.get<Round[]>(
+      const response = await client.get<Round[]>(
         this._currentTournament.links.rounds,
       );
-      this._currentTournament.rounds = response?.data; */
+      this._currentTournament.rounds = response?.data;
       this._loading.rounds = false;
     },
     async getInstitutions() {
       this._loading.institutions = true;
-      /* const response = await client.get<Institution[]>(
-        'http://localhost:8000/api/v1/institutions',
+      const response = await client.get<Institution[]>(
+        `${baseUrl}/api/v1/institutions`,
         {
           headers: {
-            Authorization: 'Token b6fba1387e1520e6b41f8b1241e9a0ea96091d8e',
+            Authorization: `Token ${token}`,
           },
         },
       );
-      this.setInstitutions(response.data); */
+      this.setInstitutions(response.data);
       this._loading.institutions = false;
     },
     setInstitutions(institutions: Institution[]) {
@@ -250,97 +310,138 @@ export const useTournamentsStore = defineStore({
     },
     async getBreakCategories() {
       this._loading.breakCategories = true;
-      /* const response = await client.get<BreakCategory[]>(
+      const response = await client.get<BreakCategory[]>(
         this._currentTournament.links.breakCategories,
       );
-      this._currentTournament.breakCategories = response?.data; */
+      this._currentTournament.breakCategories = response?.data;
       this._loading.breakCategories = false;
     },
     async getSpeakerCategories() {
       this._loading.speakerCategories = true;
-      /* const response = await client.get<SpeakerCategory[]>(
+      const response = await client.get<SpeakerCategory[]>(
         this._currentTournament.links.speakerCategories,
       );
-      this._currentTournament.speakerCategories = response?.data; */
+      this._currentTournament.speakerCategories = response?.data;
       this._loading.speakerCategories = false;
     },
     async getPreferences() {
       this._loading.preferences = true;
-      /* const response = await client.get<Preference[]>(
+      const response = await client.get<Preference[]>(
         this._currentTournament.links.preferences,
       );
-      this._currentTournament.preferences = response?.data; */
+      this._currentTournament.preferences = response?.data;
       this._loading.preferences = false;
     },
     async getAdjudicators() {
       this._loading.adjudicators = true;
-      /* const response = await client.get<Adjudicator[]>(
+      const response = await client.get<Adjudicator[]>(
         this._currentTournament.links.adjudicators,
       );
-      this._currentTournament.adjudicators = response?.data; */
+      this._currentTournament.adjudicators = response?.data;
       this._loading.adjudicators = false;
     },
-    addAdjudicator(adjudicator: Adjudicator) {
-      /* const response = await client.post(
+    async addAdjudicator(adjudicator: Adjudicator) {
+      const response = await client.post(
         this._currentTournament.links.adjudicators,
         adjudicator,
       );
       if (response.status === 201) {
         this._currentTournament.adjudicators.push(response.data);
-      } */
+      }
     },
     async getTeams() {
       this._loading.teams = true;
-      /* const response = await client.get<Team[]>(
+      const response = await client.get<Team[]>(
         this._currentTournament.links.teams,
       );
-      this._currentTournament.teams = response?.data; */
+      this._currentTournament.teams = response?.data;
       this._loading.teams = false;
     },
-    addTeam(team: Team) {
-      /* const response = await client.post(
+    async addTeam(team: Team) {
+      const response = await client.post(
         this._currentTournament.links.teams,
         team,
       );
       if (response.status === 201) {
         this._currentTournament.teams.push(response.data);
-      } */
+      }
     },
-    addInstitution(institution: Institution) {
-      /* const response = await client.post(
-        'http://localhost:8000/api/v1/institutions',
+    async addInstitution(institution: Institution) {
+      const response = await client.post(
+        `${baseUrl}/api/v1/institutions`,
         institution,
       );
       if (response.status === 201) {
         this.institutions.push(response.data);
-      } */
+      }
     },
     async getRooms() {
       this._loading.rooms = true;
+      const response = await client.get<Room[]>(
+        this._currentTournament.links.venues,
+      );
+      this._currentTournament.rooms = response?.data;
       this._loading.rooms = false;
     },
     async getRoomCategories() {
       this._loading.roomCategories = true;
+      const response = await client.get<RoomCategory[]>(
+        this._currentTournament.links.venueCategories,
+      );
+      this._currentTournament.roomCategories = response?.data;
       this._loading.roomCategories = false;
     },
-    addRoom(room: Room) {
-      //
+    async addRoom(room: Room) {
+      const response = await client.post(
+        this._currentTournament.links.rooms,
+        room,
+      );
+      if (response.status === 201) {
+        this._currentTournament.rooms.push(response.data);
+      }
     },
-    addRoomCategory(roomCategory: RoomCategory) {
-      //
+    async addRoomCategory(roomCategory: RoomCategory) {
+      const response = await client.post(
+        this._currentTournament.links.roomCategories,
+        roomCategory,
+      );
+      if (response.status === 201) {
+        this._currentTournament.roomCategories.push(response.data);
+      }
     },
     async toggleAvailable(item: Room, round: Round) {
       await client.patch(round.url + '/availabilities', item.url);
     },
-    createTournament(tournament: Tournament) {
-      //
+    async createTournament(tournament: Tournament) {
+      const response = await client.post(
+        `${baseUrl}/api/v1/tournaments`,
+        tournament,
+      );
+      if (response.status === 201) {
+        this.tournaments.push(response.data);
+      }
     },
     async getFeedbackQuestions() {
       this._loading.feedbackQuestions = true;
+      const response = await client.get<FeedbackQuestion[]>(
+        this._currentTournament.links.feedbackQuestions,
+      );
+      this._currentTournament.feedbackQuestions = response?.data;
       this._loading.feedbackQuestions = false;
     },
-    addFeedback(feedback) {
-      //
+    async addFeedback(feedback: Feedback) {
+      const response = await client.post(
+        this._currentTournament.links.feedback,
+        feedback,
+      );
+      if (response.status === 201) {
+        this._currentTournament.feedback.push(response.data);
+      }
+    },
+    async getRoundAvailabilities(round: Round) {
+      round.availabilities =
+        (await client.get(`${round.url}/availabilities?venues=true`))?.data ??
+        [];
     },
   },
   getters: {

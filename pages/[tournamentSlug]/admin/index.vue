@@ -15,8 +15,8 @@ const content = {
     { id: 2, title: 'User' },
   ],
   rows: [
-    [{ value: '1' }, { value: '2' }],
-    [{ value: '3' }, { value: '4' }],
+    { content: [{ value: '1' }, { value: '2' }], key: 1 },
+    { content: [{ value: '3' }, { value: '4' }], key: 2 },
   ],
 };
 </script>
@@ -24,6 +24,15 @@ const content = {
 <template>
   <LayoutsAdmin>
     <PageTitle emoji="👋">Hello!</PageTitle>
-    <TableBase title="Table" :content="content" />
+    <TableBase
+      title="Table"
+      :content="content"
+      :can-edit="true"
+      :can-create="true"
+    >
+      <template #edit="row">
+        {{ row }}
+      </template>
+    </TableBase>
   </LayoutsAdmin>
 </template>
