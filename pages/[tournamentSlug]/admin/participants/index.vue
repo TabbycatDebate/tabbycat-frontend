@@ -103,7 +103,6 @@ const adjTable = computed(() => ({
       subrows: [],
       key: adj.url,
       adjudicator: adj,
-      _edit: false,
     })) ?? [],
 }));
 

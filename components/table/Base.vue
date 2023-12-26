@@ -1,7 +1,12 @@
 <script setup lang="ts">
+interface Content {
+  headers: Object[];
+  rows: Object[];
+}
+
 interface Props {
   title: string;
-  content: Object;
+  content: Content;
   initialSortBy?: Object;
   canCreate?: Boolean;
   canEdit?: Boolean;
@@ -15,14 +20,31 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const sortBy = reactive({ ...props.initialSortBy });
-const sortedRows = ref(props.content.rows);
 const isCreating = ref(false);
+const editingRows = reactive({});
+
+const contentSorted = computed(() => {
+  const { index, asc } = sortBy;
+  return [...props.content.rows].sort((a, b) => {
+    if (index === null) return 0;
+    const x = a.content[index].sort ?? a.content[index].value;
+    const y = b.content[index].sort ?? b.content[index].value;
+    if (typeof x === 'string') {
+      return x.localeCompare(y) * (-1 * asc);
+    }
+    return (x - y) * (-1 * asc);
+  });
+});
+
+function toggleEditing(row) {
+  editingRows[row.key] = !editingRows?.[row.key];
+}
 
 async function copyTableToClipboard() {
   await navigator.clipboard.writeText(
     props.content.headers.map((h) => h.title).join('\t') +
       '\n' +
-      sortedRows.value
+      contentSorted.value
         .map((row) =>
           [
             row.content.map((r) => r.value).join('\t'),
@@ -42,17 +64,8 @@ function sortIcon(index) {
 
 function onSortClick(index) {
   if (sortBy.index === index) {
-    sortedRows.value.reverse();
     sortBy.asc = !sortBy.asc;
   } else {
-    sortedRows.value.sort((a, b) => {
-      const x = a.content[index].sort ?? a.content[index].value;
-      const y = b.content[index].sort ?? b.content[index].value;
-      if (typeof x === 'string') {
-        return -x.localeCompare(y);
-      }
-      return y - x;
-    });
     sortBy.index = index;
     sortBy.asc = true;
   }
@@ -87,6 +100,7 @@ function onSortClick(index) {
             v-for="(header, index) in content.headers"
             :key="header.title"
             scope="col"
+            :class="header.customClasses ?? []"
           >
             <Icon
               v-if="header.icon"
@@ -111,12 +125,13 @@ function onSortClick(index) {
             <slot name="create" />
           </td>
         </tr>
-        <template v-for="row in sortedRows" :key="row.key">
-          <tr :class="{ primary: row.subrows }">
+        <template v-for="row in contentSorted" :key="row.key">
+          <tr :class="{ primary: row.subrows?.length ?? false }">
             <TableCell
               v-for="(cell, index) in row.content"
               :key="index"
               v-bind="cell"
+              :class="row.customClasses ?? []"
             />
             <td v-if="canEdit" width="20px">
               <Icon
@@ -124,16 +139,16 @@ function onSortClick(index) {
                 type="Edit"
                 size="18"
                 :stroke="
-                  row._edit
+                  editingRows[row.key]
                     ? 'var(--secondary-button-background)'
                     : 'var(--text-color)'
                 "
                 class="action"
-                @click="row._edit = !row._edit"
+                @click="toggleEditing(row)"
               />
             </td>
           </tr>
-          <tr v-if="row._edit">
+          <tr v-if="editingRows[row.key]">
             <td :colspan="content.headers.length + 1">
               <slot name="edit" :row="row" />
             </td>
@@ -151,16 +166,16 @@ function onSortClick(index) {
                   type="Edit"
                   size="18"
                   :stroke="
-                    row._edit
+                    editingRows[row.key]
                       ? 'var(--secondary-button-background)'
                       : 'var(--text-color)'
                   "
                   class="action"
-                  @click="subrow._edit = !subrow._edit"
+                  @click="toggleEditing(subrow)"
                 />
               </td>
             </tr>
-            <tr v-if="subrow._edit">
+            <tr v-if="editingRows[subrow.key]">
               <td :colspan="content.headers.length + 1">
                 <slot name="subedit" :row="subrow" />
               </td>
@@ -173,6 +188,9 @@ function onSortClick(index) {
 </template>
 
 <style lang="postcss" scoped>
+.card {
+  width: 100%;
+}
 .title {
   > .action + .action {
     margin-left: 0.5rem;
@@ -190,5 +208,9 @@ function onSortClick(index) {
 
 .primary {
   font-weight: 600;
+}
+
+.first {
+  border-left: 1px solid var(--text-color);
 }
 </style>

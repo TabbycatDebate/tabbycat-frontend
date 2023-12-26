@@ -9,11 +9,13 @@ interface Props {
   colspan?: Number;
   component?: string;
   obj?: Object;
+  checkFunction?: Function;
 }
 withDefaults(defineProps<Props>(), {
   colspan: 1,
   obj: () => ({}),
   component: null,
+  checkFunction: () => {},
 });
 </script>
 
@@ -51,6 +53,14 @@ withDefaults(defineProps<Props>(), {
   </td>
   <td v-else-if="component === 'Checkmark'">
     <Icon v-if="value" type="Check" size="18" />
+  </td>
+  <td v-else-if="component === 'Checkbox'">
+    <input
+      type="checkbox"
+      class="form-control small center"
+      :checked="value"
+      @input="checkFunction"
+    />
   </td>
   <td v-else :colspan="colspan">{{ value }}</td>
 </template>

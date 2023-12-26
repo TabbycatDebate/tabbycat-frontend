@@ -420,3 +420,15 @@ table {
 .redacted {
   text-decoration: line-through;
 }
+
+.tables {
+  display: flex;
+
+  .round-col {
+    text-align: center;
+  }
+
+  .center {
+    margin: auto;
+  }
+}

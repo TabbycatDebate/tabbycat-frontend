@@ -285,6 +285,9 @@ export const useTournamentsStore = defineStore({
       this._currentTournament = this._tournaments.find((t) => t.slug === slug);
     },
     async getRoundsForCurrentTournament() {
+      if (this._loading.rounds === false) {
+        return;
+      }
       this._loading.rounds = true;
       const response = await client.get<Round[]>(
         this._currentTournament.links.rounds,
@@ -293,6 +296,9 @@ export const useTournamentsStore = defineStore({
       this._loading.rounds = false;
     },
     async getInstitutions() {
+      if (this._loading.institutions === false) {
+        return;
+      }
       this._loading.institutions = true;
       const response = await client.get<Institution[]>(
         `${baseUrl}/api/v1/institutions`,
@@ -309,6 +315,9 @@ export const useTournamentsStore = defineStore({
       this._institutions = [...institutions];
     },
     async getBreakCategories() {
+      if (this._loading.breakCategories === false) {
+        return;
+      }
       this._loading.breakCategories = true;
       const response = await client.get<BreakCategory[]>(
         this._currentTournament.links.breakCategories,
@@ -317,6 +326,9 @@ export const useTournamentsStore = defineStore({
       this._loading.breakCategories = false;
     },
     async getSpeakerCategories() {
+      if (this._loading.speakerCategories === false) {
+        return;
+      }
       this._loading.speakerCategories = true;
       const response = await client.get<SpeakerCategory[]>(
         this._currentTournament.links.speakerCategories,
@@ -333,6 +345,9 @@ export const useTournamentsStore = defineStore({
       this._loading.preferences = false;
     },
     async getAdjudicators() {
+      if (this._loading.adjudicators === false) {
+        return;
+      }
       this._loading.adjudicators = true;
       const response = await client.get<Adjudicator[]>(
         this._currentTournament.links.adjudicators,
@@ -350,6 +365,9 @@ export const useTournamentsStore = defineStore({
       }
     },
     async getTeams() {
+      if (this._loading.teams === false) {
+        return;
+      }
       this._loading.teams = true;
       const response = await client.get<Team[]>(
         this._currentTournament.links.teams,
@@ -376,6 +394,9 @@ export const useTournamentsStore = defineStore({
       }
     },
     async getRooms() {
+      if (this._loading.rooms === false) {
+        return;
+      }
       this._loading.rooms = true;
       const response = await client.get<Room[]>(
         this._currentTournament.links.venues,
@@ -384,6 +405,9 @@ export const useTournamentsStore = defineStore({
       this._loading.rooms = false;
     },
     async getRoomCategories() {
+      if (this._loading.roomCategories === false) {
+        return;
+      }
       this._loading.roomCategories = true;
       const response = await client.get<RoomCategory[]>(
         this._currentTournament.links.venueCategories,
@@ -422,6 +446,9 @@ export const useTournamentsStore = defineStore({
       }
     },
     async getFeedbackQuestions() {
+      if (this._loading.feedbackQuestions === false) {
+        return;
+      }
       this._loading.feedbackQuestions = true;
       const response = await client.get<FeedbackQuestion[]>(
         this._currentTournament.links.feedbackQuestions,
