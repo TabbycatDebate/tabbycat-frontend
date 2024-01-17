@@ -11,24 +11,6 @@ tournamentsStore.getInstitutions();
 tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
 
-function getInstitutionName(institution){
-  return institution.name;
-}
-
-function getInstitutionCode(institution){
-  return institution.code
-}
-
-function getInstitutionRegion(institution){
-  return institution.region
-}
-
-const instMap = computed(() =>
-  Object.fromEntries(
-    tournamentsStore.institutions.map((inst) => [inst.url, inst]),
-  ),
-);
-
 function getInstitutionTeams(institution){
   let number = 0;
   for (var team of tournamentsStore.currentTournament.teams){
@@ -51,7 +33,7 @@ function getInstitutionAdjudicators(institution){
 
 const institutionsTable = computed(() => ({
   headers: [
-    { title: 'Codename' },
+    { title: 'Code Name' },
     { title: 'Institution' },
     { title: 'Region' },
     { title: 'Teams' },
