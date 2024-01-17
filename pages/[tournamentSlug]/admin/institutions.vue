@@ -30,23 +30,11 @@ const instMap = computed(() =>
 );
 
 function getInstitutionTeams(institution){
-  let number = 0;
-  for (var team of tournamentsStore.currentTournament.teams){
-    if (instMap.value[team.institution]?.code == getInstitutionCode(institution)) {
-      number++;
-    }
-  }
-  return number;
+  return tournamentsStore.currentTournament.teams.filter(team => team.institution === institution.url).length;
 }
 
 function getInstitutionAdjudicators(institution){
-  let number = 0;
-  for (var adj of tournamentsStore.currentTournament.adjudicators){
-    if (instMap.value[adj.institution]?.code == getInstitutionCode(institution)) {
-      number++;
-    }
-  }
-  return number;
+  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length
 }
 
 const institutionsTable = computed(() => ({
@@ -60,9 +48,9 @@ const institutionsTable = computed(() => ({
   rows:
     tournamentsStore.institutions?.map((inst) => ({
       content: [
-        { value: getInstitutionCode(inst) },
-        { value: getInstitutionName(inst) },
-        { value: getInstitutionRegion(inst) },
+        { value: inst.code },
+        { value: inst.name },
+        { value: inst.region },
         { value: getInstitutionTeams(inst) },
         { value: getInstitutionAdjudicators(inst) },
       ],
