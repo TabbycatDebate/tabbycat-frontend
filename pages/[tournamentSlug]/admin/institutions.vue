@@ -34,7 +34,7 @@ function getInstitutionTeams(institution){
 }
 
 function getInstitutionAdjudicators(institution){
-  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length
+  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length;
 }
 
 const institutionsTable = computed(() => ({
