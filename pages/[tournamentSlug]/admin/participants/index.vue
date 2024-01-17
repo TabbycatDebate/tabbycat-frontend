@@ -157,6 +157,7 @@ const teamTable = computed(() => ({
       <PageTitle emoji="🚌">
         Participants
         <template #nav>
+          <NuxtLink class="btn outline-primary">Institutions</NuxtLink>
           <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
           <NuxtLink class="btn outline-primary">Private URLs</NuxtLink>
         </template>
