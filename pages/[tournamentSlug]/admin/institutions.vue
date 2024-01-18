@@ -11,35 +11,17 @@ tournamentsStore.getInstitutions();
 tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
 
-function getInstitutionName(institution){
-  return institution.name;
-}
-
-function getInstitutionCode(institution){
-  return institution.code
-}
-
-function getInstitutionRegion(institution){
-  return institution.region
-}
-
-const instMap = computed(() =>
-  Object.fromEntries(
-    tournamentsStore.institutions.map((inst) => [inst.url, inst]),
-  ),
-);
-
-function getInstitutionTeams(institution){
+function getInstitutionTeams(institution) {
   return tournamentsStore.currentTournament.teams.filter(team => team.institution === institution.url).length;
 }
 
-function getInstitutionAdjudicators(institution){
-  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length;
+function getInstitutionAdjudicators(institution) {
+  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length
 }
 
 const institutionsTable = computed(() => ({
   headers: [
-    { title: 'Codename' },
+    { title: 'Code Name' },
     { title: 'Institution' },
     { title: 'Region' },
     { title: 'Teams' },
@@ -56,20 +38,19 @@ const institutionsTable = computed(() => ({
       ],
       subrows: [],
       key: inst.url,
-      institution: inst,
     })) ?? [],
 }));
 
 </script>
 
 <template>
-    <LayoutsAdmin>
+  <LayoutsAdmin>
     <PageTitle emoji="🏫">Institutions
       <template #nav>
-          <NuxtLink class="btn outline-primary" to="./participants">Participants</NuxtLink>
-          <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
-          <NuxtLink class="btn outline-primary">Private URLs</NuxtLink>
-        </template>
+        <NuxtLink class="btn outline-primary" to="./participants">Participants</NuxtLink>
+        <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
+        <NuxtLink class="btn outline-primary">Private URLs</NuxtLink>
+      </template>
     </PageTitle>
     <div class="tables">
       <TableBase
