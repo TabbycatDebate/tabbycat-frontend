@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
 definePageMeta({
@@ -12,11 +11,15 @@ tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
 
 function getInstitutionTeams(institution) {
-  return tournamentsStore.currentTournament.teams.filter(team => team.institution === institution.url).length;
+  return tournamentsStore.currentTournament.teams.filter(
+    (team) => team.institution === institution.url,
+  ).length;
 }
 
 function getInstitutionAdjudicators(institution) {
-  return tournamentsStore.currentTournament.adjudicators.filter(adj => adj.institution === institution.url).length
+  return tournamentsStore.currentTournament.adjudicators.filter(
+    (adj) => adj.institution === institution.url,
+  ).length;
 }
 
 const institutionsTable = computed(() => ({
@@ -40,24 +43,22 @@ const institutionsTable = computed(() => ({
       key: inst.url,
     })) ?? [],
 }));
-
 </script>
 
 <template>
   <LayoutsAdmin>
-    <PageTitle emoji="🏫">Institutions
+    <PageTitle emoji="🏫"
+      >Institutions
       <template #nav>
-        <NuxtLink class="btn outline-primary" to="./participants">Participants</NuxtLink>
+        <NuxtLink class="btn outline-primary" to="./participants"
+          >Participants</NuxtLink
+        >
         <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
         <NuxtLink class="btn outline-primary">Private URLs</NuxtLink>
       </template>
     </PageTitle>
     <div class="tables">
-      <TableBase
-        title="Institutions"
-        :content="institutionsTable"
-      >
-      </TableBase>
+      <TableBase title="Institutions" :content="institutionsTable"> </TableBase>
     </div>
   </LayoutsAdmin>
 </template>
