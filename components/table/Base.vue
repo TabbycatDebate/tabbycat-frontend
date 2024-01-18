@@ -23,9 +23,11 @@ const sortBy = reactive({ ...props.initialSortBy });
 const isCreating = ref(false);
 const editingRows = reactive({});
 
+const rows = [...props.content.rows];
+
 const contentSorted = computed(() => {
   const { index, asc } = sortBy;
-  return [...props.content.rows].sort((a, b) => {
+  return rows.sort((a, b) => {
     if (index === null) return 0;
     const x = a.content[index].sort ?? a.content[index].value;
     const y = b.content[index].sort ?? b.content[index].value;

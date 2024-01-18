@@ -157,9 +157,23 @@ const teamTable = computed(() => ({
       <PageTitle emoji="🚌">
         Participants
         <template #nav>
-          <NuxtLink class="btn outline-primary" to="./institutions">Institutions</NuxtLink>
+          <NuxtLink
+            class="btn outline-primary"
+            :to="{
+              name: 'tournament.admin.participants',
+              params: { tournamentSlug: currentTournament.slug },
+            }"
+            >Institutions</NuxtLink
+          >
           <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
-          <NuxtLink class="btn outline-primary" to="./participants/privateurls">Private URLs</NuxtLink>
+          <NuxtLink
+            class="btn outline-primary"
+            :to="{
+              name: 'tournament.admin.participants.privateurls',
+              params: { tournamentSlug: currentTournament.slug },
+            }"
+            >Private URLs</NuxtLink
+          >
         </template>
       </PageTitle>
 

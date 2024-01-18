@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTournamentsStore } from '~/stores/tournaments';
+import { storeToRefs } from 'pinia';
 
 definePageMeta({
   name: 'tournament.admin.participants.institutions',
@@ -9,6 +10,7 @@ const tournamentsStore = useTournamentsStore();
 tournamentsStore.getInstitutions();
 tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
+const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
 function getInstitutionTeams(institution) {
   return tournamentsStore.currentTournament.teams.filter(
@@ -50,10 +52,23 @@ const institutionsTable = computed(() => ({
     <PageTitle emoji="🏫"
       >Institutions
       <template #nav>
-        <NuxtLink class="btn outline-primary" to="./participants">Participants</NuxtLink
+        <NuxtLink
+          class="btn outline-primary"
+          :to="{
+            name: 'tournament.admin.participants',
+            params: { tournamentSlug: currentTournament.slug },
+          }"
+          >Participants</NuxtLink
         >
         <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
-        <NuxtLink class="btn outline-primary" to="./participants/privateurls">Private URLs</NuxtLink>
+        <NuxtLink
+          class="btn outline-primary"
+          :to="{
+            name: 'tournament.admin.participants.privateurls',
+            params: { tournamentSlug: currentTournament.slug },
+          }"
+          >Private URLs</NuxtLink
+        >
       </template>
     </PageTitle>
     <div class="tables">
