@@ -78,7 +78,7 @@
     --background-outset-color: #161616;
     --background-inset-color: #101010;
     --background-inset-active-color: #222222;
-    --border-color: #312B25;
+    --border-color: #312b25;
     --field-border-color: #a88ad2;
     --active-background: var(--background-inset-active-color);
     --text-color: #d5d9dd;
@@ -236,7 +236,9 @@
   transition: var(--field-transition);
   appearance: inherit;
 
-  &:focus, &.ds-selected, &.ds-hover {
+  &:focus,
+  &.ds-selected,
+  &.ds-hover {
     color: var(--text-color);
     background-color: var(--background-inset-color);
     border-color: var(--field-border-color);

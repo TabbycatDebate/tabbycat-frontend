@@ -112,22 +112,23 @@ function createFeedback() {
         :clearable="false"
       />
     </div>
-    <div
-      v-for="question in answerableQuestions"
-      v-if="feedback.source"
-      :key="question.url"
-      class="form-group"
-    >
-      <label :for="question.reference">{{ question.name }}</label>
-      <component
-        v-bind="attrsForQuestion(question)"
-        :is="attrsForQuestion(question).is"
-        :id="question.reference"
-        v-model="feedback.answers[question.url]"
-        :name="question.reference"
-        class="form-control"
-      />
-    </div>
+    <template v-if="feedback.source">
+      <div
+        v-for="question in answerableQuestions"
+        :key="question.url"
+        class="form-group"
+      >
+        <label :for="question.reference">{{ question.name }}</label>
+        <component
+          v-bind="attrsForQuestion(question)"
+          :is="attrsForQuestion(question).is"
+          :id="question.reference"
+          v-model="feedback.answers[question.url]"
+          :name="question.reference"
+          class="form-control"
+        />
+      </div>
+    </template>
     <button type="submit" class="form-control btn-success">
       Submit feedback
     </button>
