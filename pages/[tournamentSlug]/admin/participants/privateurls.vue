@@ -12,40 +12,26 @@ useHead({
   title: `${tournamentsStore.currentTournament.shortName} | Admin - Participants - Private URLs`,
 });
 
-tournamentsStore.getInstitutions();
-tournamentsStore.getTeams();
+tournamentsStore.getSpeakers();
 tournamentsStore.getAdjudicators();
 const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
-function getPersonName(person) {
-  return person.name ?? 'Redacted';
-}
-
-const adjTable = computed(() => ({
-  headers: [{ title: 'Name', icon: 'User' }, { title: 'URLs' }],
-  rows:
+const adjTable = computed(
+  () =>
     tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
-      content: [{ obj: adj, value: getPersonName(adj) }, { value: adj.urlKey }],
-      subrows: [],
-      key: adj.url,
-    })) ?? [],
-}));
-
-const speakerTable = computed(() => ({
-  headers: [{ title: 'Name', icon: 'User' }, { title: 'URLs' }],
-  rows:
-    tournamentsStore.currentTournament.teams?.map((team) => ({
-      content: [],
-      subrows: team.speakers.map((speaker) => ({
-        content: [
-          { component: 'Speaker', obj: speaker, value: getPersonName(speaker) },
-          { value: speaker.urlKey },
-        ],
-        key: speaker.url,
-      })),
-      key: team.url,
-    })) ?? [],
-}));
+      obj: adj,
+      name: adj.name,
+      urlKey: adj.urlKey,
+    })),
+);
+const speakerTable = computed(
+  () =>
+    tournamentsStore.currentTournament.speakers?.map((spk) => ({
+      obj: spk,
+      name: spk.name,
+      urlKey: spk.urlKey,
+    })),
+);
 </script>
 
 <template>
@@ -65,7 +51,7 @@ const speakerTable = computed(() => ({
         <NuxtLink
           class="btn outline-primary"
           :to="{
-            name: 'tournament.admin.participants',
+            name: 'tournament.admin.participants.institutions',
             params: { tournamentSlug: currentTournament.slug },
           }"
         >
@@ -75,8 +61,78 @@ const speakerTable = computed(() => ({
       </template>
     </PageTitle>
     <div class="tables">
-      <TableBase title="Adjudicators" :content="adjTable" />
-      <TableBase title="Speakers" :content="speakerTable" />
+      <div class="card">
+        <DataTable
+          ref="dt"
+          :value="adjTable"
+          sort-mode="multiple"
+          :loading="loading.adjudicators !== false"
+        >
+          <template #header>
+            <div class="title">
+              <h3>Adjudicators</h3>
+              <button class="btn info small" @click="exportCSV($event)">
+                <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+              </button>
+              <NuxtLink class="btn info small" to="">
+                <Icon v-tooltip="'Print'" type="Printer" size="22" />
+              </NuxtLink>
+            </div>
+          </template>
+          <Column field="name" sortable>
+            <template #header>
+              <Icon v-tooltip="'Name'" type="User" size="18" />
+            </template>
+            <template #body="{ data }">
+              <div v-if="data.obj.anonymous" class="redacted">
+                {{ data.obj.name || 'Anonymous' }}
+              </div>
+              <template v-else>{{ data.obj.name }}</template>
+            </template>
+          </Column>
+          <Column field="urlKey" sortable>
+            <template #header>
+              <Icon v-tooltip="'URL Key'" type="Key" size="18" />
+            </template>
+          </Column>
+        </DataTable>
+      </div>
+      <div class="card">
+        <DataTable
+          ref="dt"
+          :value="speakerTable"
+          sort-mode="multiple"
+          :loading="loading.speakers !== false"
+        >
+          <template #header>
+            <div class="title">
+              <h3>Speakers</h3>
+              <button class="btn info small" @click="exportCSV($event)">
+                <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+              </button>
+              <NuxtLink class="btn info small" to="">
+                <Icon v-tooltip="'Print'" type="Printer" size="22" />
+              </NuxtLink>
+            </div>
+          </template>
+          <Column field="name" sortable>
+            <template #header>
+              <Icon v-tooltip="'Name'" type="User" size="18" />
+            </template>
+            <template #body="{ data }">
+              <div v-if="data.obj.anonymous" class="redacted">
+                {{ data.obj.name || 'Anonymous' }}
+              </div>
+              <template v-else>{{ data.obj.name }}</template>
+            </template>
+          </Column>
+          <Column field="urlKey" sortable>
+            <template #header>
+              <Icon v-tooltip="'URL Key'" type="Key" size="18" />
+            </template>
+          </Column>
+        </DataTable>
+      </div>
     </div>
   </LayoutsAdmin>
 </template>

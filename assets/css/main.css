@@ -366,6 +366,10 @@
       background-color: var(--tertiary-button-background);
     }
   }
+
+  &.small {
+    padding: 0.25rem 0.25rem;
+  }
 }
 
 th {
@@ -409,7 +413,11 @@ table {
       vertical-align: middle;
     }
     th {
-      [data-pc-section='sort'] {
+      svg {
+        float: left;
+      }
+      [data-pc-section='sort'],
+      [data-pc-section='sortbadge'] {
         float: right;
       }
     }

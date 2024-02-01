@@ -259,6 +259,7 @@ export const useTournamentsStore = defineStore({
       speakerCategories: null,
       feedbackQuestions: null,
       teams: null,
+      speakers: null,
     },
   }),
   actions: {
@@ -374,6 +375,24 @@ export const useTournamentsStore = defineStore({
       );
       this._currentTournament.teams = response?.data;
       this._loading.teams = false;
+    },
+    async getSpeakers() {
+      if (this._loading.speakers === false) {
+        return;
+      }
+      if (this._loading.teams === false) {
+        this._currentTournament.speakers = this._currentTournament.teams.reduce(
+          (acc, team) => acc.push(...team.speakers),
+          [],
+        );
+      } else {
+        this._loading.speakers = true;
+        const response = await client.get<Speaker[]>(
+          this._currentTournament.links.speakers,
+        );
+        this._currentTournament.speakers = response?.data;
+        this._loading.speakers = false;
+      }
     },
     async addTeam(team: Team) {
       const response = await client.post(
