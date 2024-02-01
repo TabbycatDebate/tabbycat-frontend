@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import vSelect from 'vue-select';
 import emojis from '~/assets/json/emoji.json';
+
 const props = defineProps<{
   emoji: String;
   code: String;

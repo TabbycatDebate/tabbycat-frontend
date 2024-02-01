@@ -169,7 +169,9 @@ const curRoomCreationForm = ref(0);
           <VDropdown class="add" placement="right-start">
             <Icon type="PlusCircle" size="18" />
             <template #popper>
-              <div class="add-form"><LazyFormsSingleFeedback /></div>
+              <div class="add-form">
+                <LazyFormsSingleFeedback />
+              </div>
             </template>
           </VDropdown>
         </li>

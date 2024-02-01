@@ -2,12 +2,10 @@ import { defineStore } from 'pinia';
 
 export const useUsersStore = defineStore({
   id: 'users-store',
-  state: () => {
-    return {
-      _token: import.meta.env.VITE_TABBYCAT_KEY,
-      _user: {},
-    };
-  },
+  state: () => ({
+    _token: import.meta.env.VITE_TABBYCAT_KEY,
+    _user: {},
+  }),
   actions: {},
   getters: {
     token: (state) => state._token,

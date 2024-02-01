@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useTournamentsStore } from '~/stores/tournaments';
 import { storeToRefs } from 'pinia';
+import { useTournamentsStore } from '~/stores/tournaments';
 
 definePageMeta({
   name: 'tournament.admin.participants.privateurls',
@@ -22,26 +22,17 @@ function getPersonName(person) {
 }
 
 const adjTable = computed(() => ({
-  headers: [
-    { title: 'Name', icon: 'User' },
-    { title: 'URLs' },
-  ],
+  headers: [{ title: 'Name', icon: 'User' }, { title: 'URLs' }],
   rows:
-  tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
-      content: [
-        { obj: adj, value: getPersonName(adj) },
-        { value: adj.urlKey },
-      ],
+    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
+      content: [{ obj: adj, value: getPersonName(adj) }, { value: adj.urlKey }],
       subrows: [],
       key: adj.url,
     })) ?? [],
 }));
 
 const speakerTable = computed(() => ({
-  headers: [
-    { title: 'Name', icon: 'User' },
-    { title: 'URLs' },
-  ],
+  headers: [{ title: 'Name', icon: 'User' }, { title: 'URLs' }],
   rows:
     tournamentsStore.currentTournament.teams?.map((team) => ({
       content: [],
@@ -55,28 +46,37 @@ const speakerTable = computed(() => ({
       key: team.url,
     })) ?? [],
 }));
-
-
 </script>
 
 <template>
-    <LayoutsAdmin>
-      <PageTitle emoji="🎲">Private URLs
-        <template #nav>
-          <NuxtLink class="btn outline-primary" :to="{
+  <LayoutsAdmin>
+    <PageTitle emoji="🎲">
+      Private URLs
+      <template #nav>
+        <NuxtLink
+          class="btn outline-primary"
+          :to="{
             name: 'tournament.admin.participants',
             params: { tournamentSlug: currentTournament.slug },
-          }">Participants</NuxtLink>
-          <NuxtLink class="btn outline-primary" :to="{
-              name: 'tournament.admin.participants',
-              params: { tournamentSlug: currentTournament.slug },
-            }">Institutions</NuxtLink>
-          <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
-        </template>
-      </PageTitle>
-      <div class="tables">
-        <TableBase title="Adjudicators" :content="adjTable"> </TableBase>
-        <TableBase title="Speakers" :content="speakerTable"> </TableBase>
-      </div>
-    </LayoutsAdmin>
+          }"
+        >
+          Participants
+        </NuxtLink>
+        <NuxtLink
+          class="btn outline-primary"
+          :to="{
+            name: 'tournament.admin.participants',
+            params: { tournamentSlug: currentTournament.slug },
+          }"
+        >
+          Institutions
+        </NuxtLink>
+        <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
+      </template>
+    </PageTitle>
+    <div class="tables">
+      <TableBase title="Adjudicators" :content="adjTable" />
+      <TableBase title="Speakers" :content="speakerTable" />
+    </div>
+  </LayoutsAdmin>
 </template>

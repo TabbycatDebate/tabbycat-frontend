@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const tournamentsStore = useTournamentsStore();
 
 definePageMeta({
@@ -12,6 +13,6 @@ useHead({
 
 <template>
   <LayoutsAdmin>
-    <PageTitle emoji="👋">Hello!</PageTitle>
+    <PageTitle emoji="👋"> Hello! </PageTitle>
   </LayoutsAdmin>
 </template>

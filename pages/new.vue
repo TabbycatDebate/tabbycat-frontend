@@ -2,11 +2,12 @@
 import vSelect from 'vue-select';
 import slugify from 'slugify';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 definePageMeta({
   name: 'tournament.new',
 });
 useHead({
-  title: `Tabbycat | New Tournament`,
+  title: 'Tabbycat | New Tournament',
 });
 
 const dataEntry = [

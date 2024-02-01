@@ -245,23 +245,22 @@ interface Feedback extends TCAPIResponse {
 
 export const useTournamentsStore = defineStore({
   id: 'tournaments-store',
-  state: () => {
-    return {
-      _tournaments: [],
-      _currentTournament: {},
-      _institutions: [],
-      _loading: {
-        tournaments: null,
-        rounds: null,
-        institutions: null,
-        breakCategories: null,
-        preferences: null,
-        adjudicators: null,
-        speakerCategories: null,
-        feedbackQuestions: null,
-      },
-    };
-  },
+  state: () => ({
+    _tournaments: [],
+    _currentTournament: {},
+    _institutions: [],
+    _loading: {
+      tournaments: null,
+      rounds: null,
+      institutions: null,
+      breakCategories: null,
+      preferences: null,
+      adjudicators: null,
+      speakerCategories: null,
+      feedbackQuestions: null,
+      teams: null,
+    },
+  }),
   actions: {
     async getTournaments() {
       this._loading.tournaments = true;
@@ -271,6 +270,7 @@ export const useTournamentsStore = defineStore({
       this._loading.adjudicators = null;
       this._loading.speakerCategories = null;
       this._loading.feedbackQuestions = null;
+      this._loading.teams = null;
 
       const response = await client.get<Tournament[]>(
         `${baseUrl}/api/v1/tournaments`,
@@ -434,7 +434,7 @@ export const useTournamentsStore = defineStore({
       }
     },
     async toggleAvailable(item: Room, round: Round) {
-      await client.patch(round.url + '/availabilities', item.url);
+      await client.patch(`${round.url}/availabilities`, item.url);
     },
     async createTournament(tournament: Tournament) {
       const response = await client.post(

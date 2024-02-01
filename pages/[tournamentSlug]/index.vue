@@ -20,7 +20,9 @@ useHead({
       <PublicNavigation />
     </template>
     <template #title>
-      <PageTitle emoji="👋">Welcome to {{ currentTournament.name }}!</PageTitle>
+      <PageTitle emoji="👋">
+        Welcome to {{ currentTournament.name }}!
+      </PageTitle>
     </template>
     Yes!
   </LayoutsPublic>

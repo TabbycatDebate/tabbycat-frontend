@@ -18,7 +18,12 @@ tournamentsStore.getPreferences().then(() => {
   ).value;
   team.speakers = Array(nSpeakers)
     .fill()
-    .map(() => ({ name: '', gender: null, email: '', categories: [] }));
+    .map(() => ({
+      name: '',
+      gender: null,
+      email: '',
+      categories: [],
+    }));
 });
 tournamentsStore.getInstitutions();
 tournamentsStore.getBreakCategories().then(() => {

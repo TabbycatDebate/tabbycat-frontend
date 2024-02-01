@@ -2,6 +2,7 @@
 import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const room = reactive({
   categories: [],
   name: null,

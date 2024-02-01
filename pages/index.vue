@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 definePageMeta({
   emoji: '👋',
   title: 'Welcome!',
   name: 'index',
 });
 useHead({
-  title: `Tabbycat | Home`,
+  title: 'Tabbycat | Home',
 });
 
 const tournamentsStore = useTournamentsStore();

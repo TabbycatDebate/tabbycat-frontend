@@ -44,16 +44,16 @@ function toggleEditing(row) {
 
 async function copyTableToClipboard() {
   await navigator.clipboard.writeText(
-    props.content.headers.map((h) => h.title).join('\t') +
-      '\n' +
-      contentSorted.value
-        .map((row) =>
-          [
-            row.content.map((r) => r.value).join('\t'),
-            ...(row.content.subrows ?? []).map((sr) => sr.value).join('\t'),
-          ].join('\n'),
-        )
-        .join('\n'),
+    `${props.content.headers
+      .map((h) => h.title)
+      .join('\t')}\n${contentSorted.value
+      .map((row) =>
+        [
+          row.content.map((r) => r.value).join('\t'),
+          ...(row.content.subrows ?? []).map((sr) => sr.value).join('\t'),
+        ].join('\n'),
+      )
+      .join('\n')}`,
   );
 }
 
@@ -110,7 +110,9 @@ function onSortClick(index) {
               :type="header.icon"
               size="18"
             />
-            <div v-else>{{ header.title }}</div>
+            <div v-else>
+              {{ header.title }}
+            </div>
             <Icon
               :type="sortIcon(index)"
               size="18"
@@ -118,7 +120,7 @@ function onSortClick(index) {
               @click="onSortClick(index)"
             />
           </th>
-          <th v-if="canEdit"></th>
+          <th v-if="canEdit" />
         </tr>
       </thead>
       <tbody v-if="loaded">

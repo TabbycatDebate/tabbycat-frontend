@@ -9,10 +9,12 @@ export default defineNuxtConfig({
     'nuxt-route-meta',
     '@nuxtjs/eslint-module',
     'floating-vue/nuxt',
+    'nuxt-primevue',
   ],
   postcss: {
     plugins: {
       'postcss-nesting': {},
     },
   },
+  primevue: { options: { unstyled: true } },
 });

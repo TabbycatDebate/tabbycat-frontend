@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const tournamentsStore = useTournamentsStore();
 const { currentTournament } = storeToRefs(tournamentsStore);
 
@@ -62,5 +63,7 @@ withDefaults(defineProps<Props>(), {
       @input="checkFunction"
     />
   </td>
-  <td v-else :colspan="colspan">{{ value }}</td>
+  <td v-else :colspan="colspan">
+    {{ value }}
+  </td>
 </template>

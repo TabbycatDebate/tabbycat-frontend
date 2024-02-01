@@ -78,7 +78,7 @@ const dropFile = (target) => {
 };
 
 function getTeamName(team) {
-  return team.emoji + ' ' + team.shortName;
+  return `${team.emoji} ${team.shortName}`;
 }
 
 function getPersonName(person) {
@@ -160,20 +160,22 @@ const teamTable = computed(() => ({
           <NuxtLink
             class="btn outline-primary"
             :to="{
-              name: 'tournament.admin.participants',
+              name: 'tournament.admin.participants.institutions',
               params: { tournamentSlug: currentTournament.slug },
             }"
-            >Institutions</NuxtLink
           >
-          <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
+            Institutions
+          </NuxtLink>
+          <NuxtLink class="btn outline-primary"> Speaker Categories </NuxtLink>
           <NuxtLink
             class="btn outline-primary"
             :to="{
               name: 'tournament.admin.participants.privateurls',
               params: { tournamentSlug: currentTournament.slug },
             }"
-            >Private URLs</NuxtLink
           >
+            Private URLs
+          </NuxtLink>
         </template>
       </PageTitle>
 
@@ -338,8 +340,8 @@ const teamTable = computed(() => ({
                 <label for="anonymous">Anonymous</label>
               </div>
               <button type="submit" class="form-control btn-success">
-                <template v-if="adjudicator.url"> Update adjudicator </template>
-                <template v-else> Create adjudicator </template>
+                <template v-if="adjudicator.url">Update adjudicator</template>
+                <template v-else>Create adjudicator</template>
               </button>
             </form>
           </template>
@@ -350,7 +352,9 @@ const teamTable = computed(() => ({
           :can-create="true"
           :can-edit="true"
         >
-          <template #create><FormsSingleTeam /></template>
+          <template #create>
+            <FormsSingleTeam />
+          </template>
           <template #edit="{ row: { team } }">
             <form @submit.prevent="updateTeam(team)">
               <div class="form-group">

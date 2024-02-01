@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const roomCategory = reactive({
   name: null,
   description: null,

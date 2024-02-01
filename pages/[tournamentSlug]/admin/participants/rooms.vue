@@ -2,6 +2,7 @@
 import DragSelect from 'dragselect';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const tournamentsStore = useTournamentsStore();
 tournamentsStore.getRoomCategories();
 
@@ -149,9 +150,11 @@ const roomsTable = computed(() => ({
         :can-create="true"
         :can-edit="true"
       >
-        <template #create><LazyFormsSingleRoom /></template>
+        <template #create>
+          <LazyFormsSingleRoom />
+        </template>
         <template #edit="{ row: { room } }">
-          <form @submit.prevent="updateRoom(room)"></form>
+          <form @submit.prevent="updateRoom(room)" />
         </template>
       </TableBase>
     </div>

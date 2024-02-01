@@ -30,7 +30,7 @@ const route = useRoute();
       </div>
       <slot />
     </main>
-    <footer></footer>
+    <footer />
   </div>
 </template>
 

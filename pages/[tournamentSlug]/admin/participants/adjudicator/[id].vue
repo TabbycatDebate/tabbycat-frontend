@@ -6,6 +6,6 @@ definePageMeta({
 
 <template>
   <LayoutsAdmin>
-    <div></div>
+    <div />
   </LayoutsAdmin>
 </template>

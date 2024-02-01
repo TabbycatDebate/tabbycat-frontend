@@ -2,6 +2,7 @@
 import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
 const adjudicator = reactive({
   url: null,
   institution: null,
