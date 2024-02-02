@@ -89,6 +89,12 @@
     --link-hover-color: #bc8cff;
     --header-color: #d5d9dd;
     --link-color: #ad73ff;
+
+    --secondary-button-background: #ad73ff;
+
+    --tertiary-button-text: white;
+    --tertiary-button-background: #333333;
+    --tertiary-button-hover-border: #777777;
   }
 }
 
@@ -337,7 +343,7 @@
   }
 
   &.outline-primary {
-    color: var(--link-color);
+    color: var(--secondary-button-background);
     border-color: var(--secondary-button-background);
 
     &:hover {
@@ -368,7 +374,7 @@
   }
 
   &.small {
-    padding: 0.25rem 0.25rem;
+    padding: 0.2rem 0.2rem;
   }
 }
 
@@ -453,6 +459,10 @@ table {
 
 .redacted {
   text-decoration: line-through;
+}
+
+.link {
+  font-family: monospace;
 }
 
 .tables {

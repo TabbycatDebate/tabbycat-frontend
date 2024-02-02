@@ -94,6 +94,9 @@ const speakerTable = computed(
             <template #header>
               <Icon v-tooltip="'URL Key'" type="Key" size="18" />
             </template>
+            <template #body="{ data }">
+              <div class="link">{{ data.obj.urlKey }}</div>
+            </template>
           </Column>
         </DataTable>
       </div>
@@ -129,6 +132,9 @@ const speakerTable = computed(
           <Column field="urlKey" sortable>
             <template #header>
               <Icon v-tooltip="'URL Key'" type="Key" size="18" />
+            </template>
+            <template #body="{ data }">
+              <div class="link">{{ data.obj.urlKey }}</div>
             </template>
           </Column>
         </DataTable>
