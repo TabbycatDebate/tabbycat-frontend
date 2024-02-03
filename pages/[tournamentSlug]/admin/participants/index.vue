@@ -46,22 +46,18 @@ const scMap = Object.fromEntries(
   ]) ?? [],
 );
 
-const teamCategories = (team) =>
-  team.breakCategories.map((bc) => bcMap[bc]?.name).join(', ');
 const speakerCategories = (speaker) =>
   speaker.categories.map((sc) => scMap[sc]?.name).join(', ');
 
 const minScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences?.find(
-      (pref) => pref.identifier === 'feedback__adj_min_score',
-    ).value ?? 0,
+    tournamentsStore.currentTournament.preferences?.feedback?.adj_min_score
+      ?.value ?? 0,
 );
 const maxScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences?.find(
-      (pref) => pref.identifier === 'feedback__adj_max_score',
-    ).value ?? 0,
+    tournamentsStore.currentTournament.preferences?.feedback?.adj_max_score
+      ?.value ?? 0,
 );
 
 const isDragging = ref(false);
@@ -77,53 +73,42 @@ const dropFile = (target) => {
   target.value = null;
 };
 
-function getTeamName(team) {
-  return `${team.emoji} ${team.shortName}`;
-}
-
 function getPersonName(person) {
   return person.name ?? 'Redacted';
 }
 
-const adjTable = computed(() => ({
-  headers: [
-    { title: 'Name', icon: 'User' },
-    { title: 'Institution', icon: 'Home' },
-    { title: 'Member of the Adjudication Core', icon: 'UserCheck' },
-    { title: 'Independent Adjudicator', icon: 'UserPlus' },
-  ],
-  rows:
-    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
-      content: [
-        { component: 'Adjudicator', obj: adj, value: getPersonName(adj) },
-        { value: instMap.value[adj.institution]?.code || '' },
-        { component: 'Checkmark', value: adj.adjCore },
-        { component: 'Checkmark', value: adj.independent },
-      ],
-      subrows: [],
-      key: adj.url,
-      adjudicator: adj,
-    })) ?? [],
-}));
+function getTeamName(team, admin) {
+  const useCodes =
+    tournamentsStore.currentTournament.preferences.ui_options.team_code_names
+      .value;
+  const showEmoji =
+    tournamentsStore.currentTournament.preferences.ui_options.show_emoji.value;
+  const emoji = showEmoji ? `${team.emoji} ` : '';
+  const name =
+    admin && ['admin-tooltips-real', 'everywhere'].includes(useCodes)
+      ? team.codeName
+      : team.shortName ?? team.codeName;
+  return `${emoji}${name}`;
+}
 
-const teamTable = computed(() => ({
-  headers: [
-    { title: 'Name', icon: 'User' },
-    { title: 'Categories', icon: 'UserCheck' },
-    { title: 'Institution', icon: 'Home' },
-  ],
-  rows:
+const adjTable = computed(
+  () =>
+    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
+      obj: adj,
+      name: adj.name,
+      institution: instMap.value[adj.institution]?.code,
+      adjCore: adj.adjCore,
+      independent: adj.independent,
+    })),
+);
+
+const teamTable = computed(
+  () =>
     tournamentsStore.currentTournament.teams?.map((team) => ({
-      content: [
-        {
-          component: 'Team',
-          obj: team,
-          value: getTeamName(team),
-          sort: team.shortName,
-        },
-        { value: teamCategories(team) },
-        { value: instMap.value[team.institution]?.code || '' },
-      ],
+      obj: team,
+      name: getTeamName(team, true),
+      categories: team.breakCategories.map((bc) => bcMap[bc]?.name).join(', '),
+      institution: instMap.value[team.institution]?.code,
       subrows: team.speakers.map((speaker) => ({
         content: [
           { component: 'Speaker', obj: speaker, value: getPersonName(speaker) },
@@ -134,11 +119,13 @@ const teamTable = computed(() => ({
         speaker,
         _edit: false,
       })),
-      key: team.url,
-      team,
-      _edit: false,
-    })) ?? [],
-}));
+    })),
+);
+
+const dt = ref();
+function exportCSV(event) {
+  dt.value.exportCSV();
+}
 </script>
 
 <template>
@@ -166,7 +153,7 @@ const teamTable = computed(() => ({
           >
             Institutions
           </NuxtLink>
-          <NuxtLink class="btn outline-primary"> Speaker Categories </NuxtLink>
+          <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
           <NuxtLink
             class="btn outline-primary"
             :to="{
@@ -190,286 +177,121 @@ const teamTable = computed(() => ({
         Drag-and-drop CSV files to quickly import participants
       </label>
       <div class="tables">
-        <TableBase
-          title="Adjudicators"
-          :content="adjTable"
-          :can-create="true"
-          :can-edit="true"
-        >
-          <template #create>
-            <LazyFormsSingleAdjudicator />
-          </template>
-          <template #edit="{ row: { adjudicator } }">
-            <form @submit.prevent="updateAdjudicator(adjudicator)">
-              <div class="form-group combined">
-                <div>
-                  <label for="institution">Institution</label>
-                  <vSelect
-                    v-model="adjudicator.institution"
-                    input-id="institution"
-                    :loading="loading.institutions"
-                    name="institution"
-                    :options="institutions"
-                    :reduce="(inst) => inst.url"
-                    label="name"
-                    :clearable="false"
-                  />
-                </div>
-                <div>
-                  <label
-                    v-tooltip="'Independent Adjudicator'"
-                    for="independent"
+        <div class="card">
+          <DataTable
+            ref="dt"
+            :value="adjTable"
+            sort-mode="multiple"
+            :loading="loading.adjudicators !== false"
+          >
+            <template #header>
+              <div class="title">
+                <h3>Adjudicators</h3>
+                <button class="btn info small" @click="exportCSV($event)">
+                  <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+                </button>
+                <button
+                  class="btn info small"
+                  @click="isCreating = !isCreating"
+                >
+                  <Icon v-tooltip="'Create'" type="PlusCircle" size="22" />
+                </button>
+              </div>
+            </template>
+            <Column field="name" sortable>
+              <template #header>
+                <Icon v-tooltip="'Name'" type="User" size="18" />
+              </template>
+              <template #body="{ data }">
+                <TableAdjudicatorCell :adjudicator="data.obj" />
+              </template>
+            </Column>
+            <Column field="institution" sortable>
+              <template #header>
+                <Icon v-tooltip="'Institution'" type="Home" size="18" />
+              </template>
+            </Column>
+            <Column field="adjCore" sortable>
+              <template #header>
+                <Icon
+                  v-tooltip="'Member of the Adjudication Core'"
+                  type="UserCheck"
+                  size="18"
+                />
+              </template>
+              <template #body="{ data, field }">
+                <Icon v-if="data.obj[field]" type="Check" size="18" />
+              </template>
+            </Column>
+            <Column field="independent" sortable>
+              <template #header>
+                <Icon
+                  v-tooltip="'Independent Adjudicator'"
+                  type="UserPlus"
+                  size="18"
+                />
+              </template>
+              <template #body="{ data, field }">
+                <Icon v-if="data.obj[field]" type="Check" size="18" />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
+        <div class="card">
+          <DataTable
+            :value="teamTable"
+            sort-mode="multiple"
+            :loading="loading.teams !== false"
+          >
+            <template #header>
+              <div class="title">
+                <h3>Teams</h3>
+                <button class="btn info small" @click="exportCSV($event)">
+                  <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+                </button>
+                <button
+                  class="btn info small"
+                  @click="isCreating = !isCreating"
+                >
+                  <Icon v-tooltip="'Create'" type="PlusCircle" size="22" />
+                </button>
+              </div>
+            </template>
+            <Column field="name" sortable>
+              <template #header>
+                <Icon v-tooltip="'Name'" type="User" size="18" />
+              </template>
+              <template #body="{ data, field }">
+                <VTooltip style="display: inline">
+                  <NuxtLink
+                    :to="{
+                      name: 'tournament.admin.participants.team',
+                      params: {
+                        tournamentSlug: currentTournament.slug,
+                        id: data.obj.id,
+                      },
+                    }"
+                    >{{ data[field] }}</NuxtLink
                   >
-                    IA
-                  </label>
-                  <input
-                    id="independent"
-                    v-model="adjudicator.independent"
-                    type="checkbox"
-                    class="form-control"
-                    name="independent"
-                  />
-                </div>
-              </div>
-              <div class="form-group combined">
-                <div>
-                  <label for="name">Name</label>
-                  <input
-                    id="name"
-                    v-model="adjudicator.name"
-                    name="name"
-                    type="text"
-                    class="form-control"
-                  />
-                </div>
-                <FormsFieldsGender v-model="adjudicator.gender" />
-              </div>
-              <div class="form-group">
-                <label for="email">Email</label>
-                <input
-                  id="email"
-                  v-model="adjudicator.email"
-                  name="email"
-                  type="email"
-                  class="form-control"
-                />
-              </div>
-              <div class="form-group">
-                <label for="score">Base score</label>
-                <input
-                  id="score"
-                  v-model="adjudicator.baseScore"
-                  name="score"
-                  type="number"
-                  class="form-control"
-                  :min="minScore"
-                  :max="maxScore"
-                  step="any"
-                />
-              </div>
-              <div class="form-group">
-                <label for="adj-conflicts">Adjudicator conflicts</label>
-                <vSelect
-                  v-model="adjudicator.adjudicatorConflicts"
-                  input-id="adj-conflicts"
-                  :loading="loading.adjudicators"
-                  name="adj-conflicts"
-                  :options="currentTournament.adjudicators"
-                  :reduce="(adj) => adj.url"
-                  label="name"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <label for="team-conflicts">Team conflicts</label>
-                <vSelect
-                  v-model="adjudicator.teamConflicts"
-                  input-id="team-conflicts"
-                  :loading="loading.teams"
-                  name="team-conflicts"
-                  :options="currentTournament.teams"
-                  :reduce="(team) => team.url"
-                  label="shortName"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <label for="institution-conflicts">Institution conflicts</label>
-                <vSelect
-                  v-model="adjudicator.institutionConflicts"
-                  input-id="institution-conflicts"
-                  :loading="loading.institutions"
-                  name="institution-conflicts"
-                  :options="institutions"
-                  :reduce="(inst) => inst.url"
-                  label="code"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <input
-                  id="adjCore"
-                  v-model="adjudicator.adjCore"
-                  type="checkbox"
-                  name="adjCore"
-                  class="form-control"
-                />
-                <label for="adjCore">Member of the Adjudication Core</label>
-              </div>
-              <div class="form-group">
-                <input
-                  id="trainee"
-                  v-model="adjudicator.trainee"
-                  type="checkbox"
-                  name="trainee"
-                  class="form-control"
-                />
-                <label for="trainee">Always allocate as trainee</label>
-              </div>
-              <div class="form-group">
-                <input
-                  id="anonymous"
-                  v-model="adjudicator.anonymous"
-                  type="checkbox"
-                  name="anonymous"
-                  class="form-control"
-                />
-                <label for="anonymous">Anonymous</label>
-              </div>
-              <button type="submit" class="form-control btn-success">
-                <template v-if="adjudicator.url">Update adjudicator</template>
-                <template v-else>Create adjudicator</template>
-              </button>
-            </form>
-          </template>
-        </TableBase>
-        <TableBase
-          title="Teams"
-          :content="teamTable"
-          :can-create="true"
-          :can-edit="true"
-        >
-          <template #create>
-            <FormsSingleTeam />
-          </template>
-          <template #edit="{ row: { team } }">
-            <form @submit.prevent="updateTeam(team)">
-              <div class="form-group">
-                <label for="institution">Institution</label>
-                <vSelect
-                  v-if="loading.institutions === false"
-                  v-model="team.institution"
-                  input-id="institution"
-                  name="institution"
-                  :options="institutions"
-                  :reduce="(inst) => inst.url"
-                  label="name"
-                  :clearable="false"
-                />
-              </div>
-              <div class="form-group">
-                <label for="reference">Team name</label>
-                <FormsFieldsTeamName
-                  v-model:prefixed="team.useInstitutionPrefix"
-                  v-model:name="team.reference"
-                  :institution="instMap[team.institution]?.code"
-                />
-              </div>
-              <FormsFieldsEmoji
-                v-model:emoji="team.emoji"
-                v-model:code="team.codeName"
-              />
-              <div class="form-group">
-                <label for="break-categories">Break categories</label>
-                <vSelect
-                  v-if="loading.breakCategories === false"
-                  v-model="team.breakCategories"
-                  input-id="break-categories"
-                  name="break-categories"
-                  :options="currentTournament.breakCategories"
-                  :reduce="(bc) => bc.url"
-                  label="name"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <label for="institution-conflicts">Institution conflicts</label>
-                <vSelect
-                  v-model="team.institutionConflicts"
-                  input-id="institution-conflicts"
-                  :loading="loading.institution"
-                  name="adj-conflicts"
-                  :options="institutions"
-                  :reduce="(inst) => inst.url"
-                  label="code"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <button type="submit" class="form-control btn-success">
-                Update team
-              </button>
-            </form>
-          </template>
-          <template #subedit="{ row: { speaker } }">
-            <form>
-              <div class="form-group combined">
-                <div>
-                  <label for="name">Name</label>
-                  <input
-                    id="name"
-                    v-model="speaker.name"
-                    name="name"
-                    type="text"
-                    class="form-control"
-                  />
-                </div>
-                <FormsFieldsGender v-model="speaker.gender" />
-              </div>
-              <div class="form-group">
-                <label for="spk-email">Email</label>
-                <input
-                  id="spk-email"
-                  v-model="speaker.email"
-                  name="spk-categories"
-                  type="email"
-                  class="form-control"
-                />
-              </div>
-              <div class="form-group">
-                <label for="spk-categories">Speaker categories</label>
-                <vSelect
-                  v-if="loading.speakerCategories === false"
-                  v-model="speaker.categories"
-                  input-id="spk-categories"
-                  name="spk-categories"
-                  :options="currentTournament.speakerCategories"
-                  :reduce="(sc) => sc.url"
-                  label="name"
-                  :clearable="false"
-                  multiple
-                />
-              </div>
-              <div class="form-group">
-                <input
-                  id="anonymous"
-                  v-model="speaker.anonymous"
-                  type="checkbox"
-                  name="anonymous"
-                  class="form-control"
-                />
-                <label for="anonymous">Anonymous</label>
-              </div>
-              <button type="submit" class="form-control btn-success">
-                Update speaker
-              </button>
-            </form>
-          </template>
-        </TableBase>
+
+                  <template #popper>
+                    {{ data.obj.speakers[0].name }}
+                  </template>
+                </VTooltip>
+              </template>
+            </Column>
+            <Column field="categories" sortable>
+              <template #header>
+                <Icon v-tooltip="'Categories'" type="UserCheck" size="18" />
+              </template>
+            </Column>
+            <Column field="institution" sortable>
+              <template #header>
+                <Icon v-tooltip="'Institution'" type="Home" size="18" />
+              </template>
+            </Column>
+          </DataTable>
+        </div>
       </div>
     </div>
   </LayoutsAdmin>

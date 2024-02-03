@@ -84,10 +84,7 @@ const speakerTable = computed(
               <Icon v-tooltip="'Name'" type="User" size="18" />
             </template>
             <template #body="{ data }">
-              <div v-if="data.obj.anonymous" class="redacted">
-                {{ data.obj.name || 'Anonymous' }}
-              </div>
-              <template v-else>{{ data.obj.name }}</template>
+              <TableAdjudicatorCell :adjudicator="data.obj" />
             </template>
           </Column>
           <Column field="urlKey" sortable>

@@ -342,7 +342,18 @@ export const useTournamentsStore = defineStore({
       const response = await client.get<Preference[]>(
         this._currentTournament.links.preferences,
       );
-      this._currentTournament.preferences = response?.data;
+      this._currentTournament.preferences = Object.fromEntries(
+        Object.entries(
+          groupBy(response?.data ?? [], ({ section }) => section),
+        ).map(([key, val]) => [
+          key,
+          Object.fromEntries(
+            Object.entries(groupBy(val, ({ name }) => name)).map(
+              ([key, val]) => [key, val[0]],
+            ),
+          ),
+        ]),
+      );
       this._loading.preferences = false;
     },
     async getAdjudicators() {
@@ -385,6 +396,7 @@ export const useTournamentsStore = defineStore({
           (acc, team) => acc.push(...team.speakers),
           [],
         );
+        this._loading.speakers = false;
       } else {
         this._loading.speakers = true;
         const response = await client.get<Speaker[]>(

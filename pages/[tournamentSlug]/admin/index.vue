@@ -13,6 +13,6 @@ useHead({
 
 <template>
   <LayoutsAdmin>
-    <PageTitle emoji="👋"> Hello! </PageTitle>
+    <PageTitle emoji="👋">Hello!</PageTitle>
   </LayoutsAdmin>
 </template>

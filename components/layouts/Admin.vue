@@ -3,18 +3,6 @@ import { computed } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
-const groupBy = <T,>(
-  array: T[],
-  predicate: (value: T, index: number, array: T[]) => string,
-) =>
-  array.reduce(
-    (acc, value, index, array) => {
-      (acc[predicate(value, index, array)] ||= []).push(value);
-      return acc;
-    },
-    {} as { [key: string]: T[] },
-  );
-
 const tournamentsStore = useTournamentsStore();
 await tournamentsStore.getRoundsForCurrentTournament();
 const rounds = groupBy(
