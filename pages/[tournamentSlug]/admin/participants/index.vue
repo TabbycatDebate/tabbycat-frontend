@@ -79,10 +79,10 @@ function getPersonName(person) {
 
 function getTeamName(team, admin) {
   const useCodes =
-    tournamentsStore.currentTournament.preferences.ui_options.team_code_names
-      .value;
+    tournamentsStore.currentTournament.preferences?.ui_options?.team_code_names
+      ?.value;
   const showEmoji =
-    tournamentsStore.currentTournament.preferences.ui_options.show_emoji.value;
+    tournamentsStore.currentTournament.preferences?.ui_options?.show_emoji?.value;
   const emoji = showEmoji ? `${team.emoji} ` : '';
   const name =
     admin && ['admin-tooltips-real', 'everywhere'].includes(useCodes)
@@ -109,16 +109,7 @@ const teamTable = computed(
       name: getTeamName(team, true),
       categories: team.breakCategories.map((bc) => bcMap[bc]?.name).join(', '),
       institution: instMap.value[team.institution]?.code,
-      subrows: team.speakers.map((speaker) => ({
-        content: [
-          { component: 'Speaker', obj: speaker, value: getPersonName(speaker) },
-          { value: speakerCategories(speaker) },
-          { value: '' },
-        ],
-        key: speaker.url,
-        speaker,
-        _edit: false,
-      })),
+      speakers: team.speakers.map(({ name }) => name).join(', '),
     })),
 );
 
@@ -187,14 +178,15 @@ function exportCSV(event) {
             <template #header>
               <div class="title">
                 <h3>Adjudicators</h3>
-                <button class="btn info small" @click="exportCSV($event)">
-                  <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+                <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                  <Icon type="Clipboard" size="22" />
                 </button>
                 <button
+                  v-tooltip="'Create'"
                   class="btn info small"
                   @click="isCreating = !isCreating"
                 >
-                  <Icon v-tooltip="'Create'" type="PlusCircle" size="22" />
+                  <Icon type="PlusCircle" size="22" />
                 </button>
               </div>
             </template>
@@ -246,14 +238,15 @@ function exportCSV(event) {
             <template #header>
               <div class="title">
                 <h3>Teams</h3>
-                <button class="btn info small" @click="exportCSV($event)">
-                  <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+                <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                  <Icon type="Clipboard" size="22" />
                 </button>
                 <button
+                  v-tooltip="'Create'"
                   class="btn info small"
                   @click="isCreating = !isCreating"
                 >
-                  <Icon v-tooltip="'Create'" type="PlusCircle" size="22" />
+                  <Icon type="PlusCircle" size="22" />
                 </button>
               </div>
             </template>
@@ -262,7 +255,7 @@ function exportCSV(event) {
                 <Icon v-tooltip="'Name'" type="User" size="18" />
               </template>
               <template #body="{ data, field }">
-                <VTooltip style="display: inline">
+                <VTooltip style="display: inline" theme="full-context">
                   <NuxtLink
                     :to="{
                       name: 'tournament.admin.participants.team',
@@ -271,11 +264,18 @@ function exportCSV(event) {
                         id: data.obj.id,
                       },
                     }"
-                    >{{ data[field] }}</NuxtLink
-                  >
+                    >
+                      {{ data[field] }}
+                    </NuxtLink>
 
                   <template #popper>
-                    {{ data.obj.speakers[0].name }}
+                    <h6>
+                      {{ data.obj.longName }}
+                    </h6>
+                    <hr />
+                    <div class="popover-content">
+                      {{ data.speakers }}
+                    </div>
                   </template>
                 </VTooltip>
               </template>

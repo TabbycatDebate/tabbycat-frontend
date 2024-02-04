@@ -78,11 +78,11 @@ function exportCSV(event) {
           <template #header>
             <div class="title">
               <h3>Institutions</h3>
-              <button class="btn info small" @click="exportCSV($event)">
-                <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                <Icon type="Clipboard" size="22" />
               </button>
-              <button class="btn info small" @click="isCreating = !isCreating">
-                <Icon v-tooltip="'Create'" type="PlusCircle" size="22" />
+              <button v-tooltip="'Create'" class="btn info small" @click="isCreating = !isCreating">
+                <Icon type="PlusCircle" size="22" />
               </button>
             </div>
           </template>

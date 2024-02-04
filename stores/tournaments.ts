@@ -393,7 +393,7 @@ export const useTournamentsStore = defineStore({
       }
       if (this._loading.teams === false) {
         this._currentTournament.speakers = this._currentTournament.teams.reduce(
-          (acc, team) => acc.push(...team.speakers),
+          (acc, team) => acc.concat(team.speakers),
           [],
         );
         this._loading.speakers = false;

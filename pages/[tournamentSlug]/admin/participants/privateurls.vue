@@ -9,7 +9,7 @@ definePageMeta({
 const tournamentsStore = useTournamentsStore();
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Admin - Participants - Private URLs`,
+  title: `${tournamentsStore.currentTournament.shortName} | Private URLs`,
 });
 
 tournamentsStore.getSpeakers();
@@ -71,11 +71,11 @@ const speakerTable = computed(
           <template #header>
             <div class="title">
               <h3>Adjudicators</h3>
-              <button class="btn info small" @click="exportCSV($event)">
-                <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                <Icon type="Clipboard" size="22" />
               </button>
-              <NuxtLink class="btn info small" to="">
-                <Icon v-tooltip="'Print'" type="Printer" size="22" />
+              <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+                <Icon type="Printer" size="22" />
               </NuxtLink>
             </div>
           </template>
@@ -107,11 +107,11 @@ const speakerTable = computed(
           <template #header>
             <div class="title">
               <h3>Speakers</h3>
-              <button class="btn info small" @click="exportCSV($event)">
-                <Icon v-tooltip="'Save as CSV'" type="Clipboard" size="22" />
+              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                <Icon type="Clipboard" size="22" />
               </button>
-              <NuxtLink class="btn info small" to="">
-                <Icon v-tooltip="'Print'" type="Printer" size="22" />
+              <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+                <Icon type="Printer" size="22" />
               </NuxtLink>
             </div>
           </template>
