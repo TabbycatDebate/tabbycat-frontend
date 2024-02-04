@@ -25,15 +25,11 @@ const institutions = computed(() => [
 
 const minScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences.find(
-      (pref) => pref.identifier === 'feedback__adj_min_score',
-    ).value,
+    tournamentsStore.currentTournament.preferences.feedback.adj_min_score.value,
 );
 const maxScore = computed(
   () =>
-    tournamentsStore.currentTournament.preferences.find(
-      (pref) => pref.identifier === 'feedback__adj_max_score',
-    ).value,
+    tournamentsStore.currentTournament.preferences.feedback.adj_max_score.value,
 );
 
 const { loading } = storeToRefs(tournamentsStore);

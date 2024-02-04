@@ -13,9 +13,7 @@ const team = reactive({
 
 const tournamentsStore = useTournamentsStore();
 tournamentsStore.getPreferences().then(() => {
-  const nSpeakers = tournamentsStore.currentTournament.preferences.find(
-    (pref) => pref.identifier === 'debate_rules__substantive_speakers',
-  ).value;
+  const nSpeakers = tournamentsStore.currentTournament.preferences.debate_rules.substantive_speakers.value;
   team.speakers = Array(nSpeakers)
     .fill()
     .map(() => ({
