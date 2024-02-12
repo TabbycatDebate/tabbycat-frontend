@@ -3,15 +3,22 @@ import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
+interface Props {
+  initial: Adjudicator;
+}
+const { initial } = withDefaults(defineProps<Props>(), {
+  initial: null,
+});
 const adjudicator = reactive({
-  url: null,
-  institution: null,
-  gender: null,
-  email: '',
-  adjCore: false,
-  independent: false,
-  trainee: false,
-  baseScore: null,
+  url: initial?.url ?? null,
+  institution: initial?.institution ?? null,
+  name: initial?.name ?? '',
+  gender: initial?.gender ?? null,
+  email: initial?.email ?? '',
+  adjCore: initial?.adjCore ?? false,
+  independent: initial?.independent ?? false,
+  trainee: initial?.trainee ?? false,
+  baseScore: initial?.baseScore ?? null,
 });
 
 const tournamentsStore = useTournamentsStore();
@@ -34,13 +41,17 @@ const maxScore = computed(
 
 const { loading } = storeToRefs(tournamentsStore);
 
-function createAdjudicator() {
-  tournamentsStore.addAdjudicator(adjudicator);
+function saveAdjudicator() {
+  if (adjudicator.url) {
+    tournamentsStore.updateAdjudicator(adjudicator);
+  } else {
+    tournamentsStore.addAdjudicator(adjudicator);
+  }
 }
 </script>
 
 <template>
-  <form @submit.prevent="createAdjudicator">
+  <form @submit.prevent="saveAdjudicator">
     <div class="form-group combined">
       <div>
         <label for="institution">Institution</label>

@@ -71,7 +71,11 @@ const speakerTable = computed(
           <template #header>
             <div class="title">
               <h3>Adjudicators</h3>
-              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+              <button
+                v-tooltip="'Save as CSV'"
+                class="btn info small"
+                @click="exportCSV($event)"
+              >
                 <Icon type="Clipboard" size="22" />
               </button>
               <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
@@ -107,7 +111,11 @@ const speakerTable = computed(
           <template #header>
             <div class="title">
               <h3>Speakers</h3>
-              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+              <button
+                v-tooltip="'Save as CSV'"
+                class="btn info small"
+                @click="exportCSV($event)"
+              >
                 <Icon type="Clipboard" size="22" />
               </button>
               <NuxtLink v-tooltip="'Print'" class="btn info small" to="">

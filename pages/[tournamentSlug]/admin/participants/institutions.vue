@@ -36,8 +36,8 @@ const institutions = computed(
 );
 
 const dt = ref();
-function exportCSV(event) {
-  dt.value.exportCSV();
+function exportCSV(table) {
+  table.exportCSV();
 }
 </script>
 
@@ -78,10 +78,18 @@ function exportCSV(event) {
           <template #header>
             <div class="title">
               <h3>Institutions</h3>
-              <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+              <button
+                v-tooltip="'Save as CSV'"
+                class="btn info small"
+                @click="exportCSV(dt)"
+              >
                 <Icon type="Clipboard" size="22" />
               </button>
-              <button v-tooltip="'Create'" class="btn info small" @click="isCreating = !isCreating">
+              <button
+                v-tooltip="'Create'"
+                class="btn info small"
+                @click="isCreating = !isCreating"
+              >
                 <Icon type="PlusCircle" size="22" />
               </button>
             </div>

@@ -3,25 +3,39 @@ import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
+interface Props {
+  initial: Team;
+}
+const props = withDefaults(defineProps<Props>(), {
+  initial: null,
+});
+
+const toCreate = !props.initial?.url;
+
 const team = reactive({
-  institution: null,
-  speakers: null,
-  reference: '',
-  useInstitutionPrefix: true,
-  breakCategories: [],
+  url: props.initial?.url ?? null,
+  institution: props.initial?.institution ?? null,
+  speakers: [...(props.initial?.speakers ?? [])],
+  reference: props.initial?.reference ?? '',
+  useInstitutionPrefix: props.initial?.useInstitutionPrefix ?? true,
+  breakCategories: [...(props.initial?.breakCategories ?? [])],
 });
 
 const tournamentsStore = useTournamentsStore();
 tournamentsStore.getPreferences().then(() => {
-  const nSpeakers = tournamentsStore.currentTournament.preferences.debate_rules.substantive_speakers.value;
-  team.speakers = Array(nSpeakers)
-    .fill()
-    .map(() => ({
-      name: '',
-      gender: null,
-      email: '',
-      categories: [],
-    }));
+  const nSpeakers =
+    tournamentsStore.currentTournament.preferences.debate_rules
+      .substantive_speakers.value;
+  if (!team.speakers.length) {
+    team.speakers = Array(nSpeakers)
+      .fill()
+      .map(() => ({
+        name: '',
+        gender: null,
+        email: '',
+        categories: [],
+      }));
+  }
 });
 tournamentsStore.getInstitutions();
 tournamentsStore.getBreakCategories().then(() => {
@@ -42,11 +56,12 @@ const teamInstitution = computed(() =>
 
 const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
-const spkTabs = computed(() => team.speakers.map((_, i) => String(i + 1)));
-const curSpeaker = ref(0);
-
 function createTeam() {
-  tournamentsStore.addTeam(team);
+  if (team.url) {
+    tournamentsStore.updateTeam(team);
+  } else {
+    tournamentsStore.addTeam(team);
+  }
 }
 </script>
 
@@ -89,44 +104,51 @@ function createTeam() {
     </div>
     <template v-if="team.speakers !== null">
       <div class="section-label">Speakers</div>
-      <Tabs v-model="curSpeaker" :tabs="spkTabs" />
-      <div class="form-group combined">
-        <div>
-          <label for="name">Name</label>
-          <input
-            id="name"
-            v-model="team.speakers[curSpeaker].name"
-            name="name"
-            type="text"
-            class="form-control"
-          />
-        </div>
-        <FormsFieldsGender v-model="team.speakers[curSpeaker].gender" />
-      </div>
-      <div class="form-group">
-        <label for="spk-email">Email</label>
-        <input
-          id="spk-email"
-          v-model="team.speakers[curSpeaker].email"
-          name="spk-categories"
-          type="email"
-          class="form-control"
-        />
-      </div>
-      <div class="form-group">
-        <label for="spk-categories">Speaker categories</label>
-        <vSelect
-          v-if="loading.speakerCategories === false"
-          v-model="team.speakers[curSpeaker].categories"
-          input-id="spk-categories"
-          name="spk-categories"
-          :options="currentTournament.speakerCategories"
-          :reduce="(sc) => sc.url"
-          label="name"
-          :clearable="false"
-          multiple
-        />
-      </div>
+      <TabView>
+        <TabPanel
+          v-for="(speaker, i) in team.speakers"
+          :key="i"
+          :header="'Speaker ' + (i + 1)"
+        >
+          <div class="form-group combined">
+            <div>
+              <label for="name">Name</label>
+              <input
+                id="name"
+                v-model="speaker.name"
+                name="name"
+                type="text"
+                class="form-control"
+              />
+            </div>
+            <FormsFieldsGender v-model="speaker.gender" />
+          </div>
+          <div class="form-group">
+            <label for="spk-email">Email</label>
+            <input
+              id="spk-email"
+              v-model="speaker.email"
+              name="spk-categories"
+              type="email"
+              class="form-control"
+            />
+          </div>
+          <div class="form-group">
+            <label for="spk-categories">Speaker categories</label>
+            <vSelect
+              v-if="loading.speakerCategories === false"
+              v-model="speaker.categories"
+              input-id="spk-categories"
+              name="spk-categories"
+              :options="currentTournament.speakerCategories"
+              :reduce="(sc) => sc.url"
+              label="name"
+              :clearable="false"
+              multiple
+            />
+          </div>
+        </TabPanel>
+      </TabView>
     </template>
     <button type="submit" class="form-control btn-success">Create team</button>
   </form>

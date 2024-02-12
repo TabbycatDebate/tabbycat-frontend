@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import vSelect from 'vue-select';
+import * as Papa from 'papaparse';
 
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
@@ -9,55 +9,38 @@ definePageMeta({
 });
 
 const tournamentsStore = useTournamentsStore();
+const bcMap = ref({});
+const scMap = ref({});
 tournamentsStore.getAdjudicators();
 tournamentsStore.getTeams();
 tournamentsStore.getInstitutions();
 tournamentsStore.getPreferences();
-tournamentsStore.getBreakCategories();
-tournamentsStore.getSpeakerCategories();
+tournamentsStore.getBreakCategories().then(() => {
+  bcMap.value = Object.fromEntries(
+    tournamentsStore.currentTournament.breakCategories?.map((bc) => [
+      bc.url,
+      bc,
+    ]) ?? [],
+  );
+});
+tournamentsStore.getSpeakerCategories().then(() => {
+  scMap.value = Object.fromEntries(
+    tournamentsStore.currentTournament.speakerCategories?.map((sc) => [
+      sc.url,
+      sc,
+    ]) ?? [],
+  );
+});
 const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
 useHead({
   title: `${tournamentsStore.currentTournament.shortName} | Admin - Participants`,
 });
 
-const institutions = computed(() => [
-  { name: 'No institution', url: null },
-  ...tournamentsStore.institutions,
-]);
-
 const instMap = computed(() =>
   Object.fromEntries(
     tournamentsStore.institutions.map((inst) => [inst.url, inst]),
   ),
-);
-
-const bcMap = Object.fromEntries(
-  tournamentsStore.currentTournament.breakCategories?.map((bc) => [
-    bc.url,
-    bc,
-  ]) ?? [],
-);
-
-const scMap = Object.fromEntries(
-  tournamentsStore.currentTournament.speakerCategories?.map((sc) => [
-    sc.url,
-    sc,
-  ]) ?? [],
-);
-
-const speakerCategories = (speaker) =>
-  speaker.categories.map((sc) => scMap[sc]?.name).join(', ');
-
-const minScore = computed(
-  () =>
-    tournamentsStore.currentTournament.preferences?.feedback?.adj_min_score
-      ?.value ?? 0,
-);
-const maxScore = computed(
-  () =>
-    tournamentsStore.currentTournament.preferences?.feedback?.adj_max_score
-      ?.value ?? 0,
 );
 
 const isDragging = ref(false);
@@ -68,9 +51,43 @@ const resetDragging = (event) => {
   }
 };
 
+const isProcessingFiles = ref(false);
+const reconcilingFile = ref(null);
+const currentCSV = ref(null);
+const fileList = ref([]);
+watch(isProcessingFiles, (to, _from) => {
+  if (!to) {
+    fileList.value = [];
+  }
+});
 const dropFile = (target) => {
   isDragging.value = false;
-  target.value = null;
+  fileList.value = [...target.files].map((file) => ({
+    name: file.name,
+    file,
+    role:
+      csvFileNames.find(
+        ({ fileName }) =>
+          fileName.localeCompare(file.name.slice(0, -4), 'en', {
+            sensitivity: 'base',
+          }) === 0,
+      )?.fileName ?? '',
+  }));
+  isProcessingFiles.value = true;
+};
+const csvsNamed = () => {
+  fileList.value = fileList.value.sort(
+    (a, b) =>
+      csvFileNames.indexOf(itemsArray[a].role) -
+      csvFileNames.indexOf(itemsArray[b].role),
+  );
+  reconcilingFile.value = fileList.value[0];
+  Papa.parse(fileList.value[0].file, {
+    header: true,
+    complete: (results) => {
+      currentCSV.value = results;
+    },
+  });
 };
 
 function getPersonName(person) {
@@ -82,7 +99,8 @@ function getTeamName(team, admin) {
     tournamentsStore.currentTournament.preferences?.ui_options?.team_code_names
       ?.value;
   const showEmoji =
-    tournamentsStore.currentTournament.preferences?.ui_options?.show_emoji?.value;
+    tournamentsStore.currentTournament.preferences?.ui_options?.show_emoji
+      ?.value;
   const emoji = showEmoji ? `${team.emoji} ` : '';
   const name =
     admin && ['admin-tooltips-real', 'everywhere'].includes(useCodes)
@@ -91,7 +109,7 @@ function getTeamName(team, admin) {
   return `${emoji}${name}`;
 }
 
-const adjTable = computed(
+const adjData = computed(
   () =>
     tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
       obj: adj,
@@ -102,20 +120,74 @@ const adjTable = computed(
     })),
 );
 
-const teamTable = computed(
+const teamData = computed(
   () =>
     tournamentsStore.currentTournament.teams?.map((team) => ({
       obj: team,
+      url: team.url,
       name: getTeamName(team, true),
-      categories: team.breakCategories.map((bc) => bcMap[bc]?.name).join(', '),
+      categories: team.breakCategories
+        .map((bc) => bcMap.value[bc]?.name)
+        .join(', '),
       institution: instMap.value[team.institution]?.code,
       speakers: team.speakers.map(({ name }) => name).join(', '),
+      speakerTable: team.speakers.map((speaker) => ({
+        obj: speaker,
+        url: speaker.url,
+        name: getPersonName(speaker),
+        categories: speaker.categories
+          .map((sc) => scMap.value[sc]?.name)
+          .join(', '),
+      })),
     })),
 );
 
-const dt = ref();
-function exportCSV(event) {
-  dt.value.exportCSV();
+const adjTable = ref();
+const teamTable = ref();
+function exportCSV(table) {
+  table.exportCSV();
+}
+const teamExpandedRows = ref([]);
+const expandAll = () => {
+  teamExpandedRows.value = products.value.reduce(
+    (acc, p) => (acc[p.id] = true) && acc,
+    {},
+  );
+};
+const collapseAll = () => {
+  teamExpandedRows.value = null;
+};
+
+const showAdjDialog = ref(false);
+const submittedAdj = ref(false);
+const newAdj = ref({});
+function createAdjudicator() {
+  newAdj.value = {};
+  submittedAdj.value = false;
+  showAdjDialog.value = true;
+}
+function saveAdjudicator() {
+  submittedAdj.value = true;
+}
+function editAdj(adj) {
+  newAdj.value = { ...adj };
+  showAdjDialog.value = true;
+}
+
+const showTeamDialog = ref(false);
+const submittedTeam = ref(false);
+const newTeam = ref({});
+function createTeam() {
+  newTeam.value = {};
+  submittedTeam.value = false;
+  showTeamDialog.value = true;
+}
+function saveTeam() {
+  submittedTeam.value = true;
+}
+function editTeam(team) {
+  newTeam.value = { ...team };
+  showTeamDialog.value = true;
 }
 </script>
 
@@ -170,21 +242,25 @@ function exportCSV(event) {
       <div class="tables">
         <div class="card">
           <DataTable
-            ref="dt"
-            :value="adjTable"
+            ref="adjTable"
+            :value="adjData"
             sort-mode="multiple"
             :loading="loading.adjudicators !== false"
           >
             <template #header>
               <div class="title">
                 <h3>Adjudicators</h3>
-                <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                <button
+                  v-tooltip="'Save as CSV'"
+                  class="btn info small"
+                  @click="exportCSV(adjTable)"
+                >
                   <Icon type="Clipboard" size="22" />
                 </button>
                 <button
                   v-tooltip="'Create'"
                   class="btn info small"
-                  @click="isCreating = !isCreating"
+                  @click="createAdjudicator"
                 >
                   <Icon type="PlusCircle" size="22" />
                 </button>
@@ -227,29 +303,42 @@ function exportCSV(event) {
                 <Icon v-if="data.obj[field]" type="Check" size="18" />
               </template>
             </Column>
+            <Column :exportable="false" style="min-width: 1rem">
+              <template #body="{ data }">
+                <Icon type="Pencil" size="18" @click="editAdj(data.obj)" />
+              </template>
+            </Column>
           </DataTable>
         </div>
         <div class="card">
           <DataTable
-            :value="teamTable"
+            ref="teamTable"
+            :value="teamData"
             sort-mode="multiple"
             :loading="loading.teams !== false"
+            :expanded-rows="teamExpandedRows"
+            data-key="url"
           >
             <template #header>
               <div class="title">
                 <h3>Teams</h3>
-                <button v-tooltip="'Save as CSV'" class="btn info small" @click="exportCSV($event)">
+                <button
+                  v-tooltip="'Save as CSV'"
+                  class="btn info small"
+                  @click="exportCSV(teamTable)"
+                >
                   <Icon type="Clipboard" size="22" />
                 </button>
                 <button
                   v-tooltip="'Create'"
                   class="btn info small"
-                  @click="isCreating = !isCreating"
+                  @click="createTeam"
                 >
                   <Icon type="PlusCircle" size="22" />
                 </button>
               </div>
             </template>
+            <Column expander style="width: 30px" />
             <Column field="name" sortable>
               <template #header>
                 <Icon v-tooltip="'Name'" type="User" size="18" />
@@ -264,9 +353,9 @@ function exportCSV(event) {
                         id: data.obj.id,
                       },
                     }"
-                    >
-                      {{ data[field] }}
-                    </NuxtLink>
+                  >
+                    {{ data[field] }}
+                  </NuxtLink>
 
                   <template #popper>
                     <h6>
@@ -282,7 +371,11 @@ function exportCSV(event) {
             </Column>
             <Column field="categories" sortable>
               <template #header>
-                <Icon v-tooltip="'Categories'" type="UserCheck" size="18" />
+                <Icon
+                  v-tooltip="'Break Categories'"
+                  type="UserCheck"
+                  size="18"
+                />
               </template>
             </Column>
             <Column field="institution" sortable>
@@ -290,10 +383,102 @@ function exportCSV(event) {
                 <Icon v-tooltip="'Institution'" type="Home" size="18" />
               </template>
             </Column>
+            <Column :exportable="false" style="min-width: 1rem">
+              <template #body="{ data }">
+                <Icon type="Pencil" size="18" @click="editTeam(data.obj)" />
+              </template>
+            </Column>
+            <template #expansion="slotProps">
+              <DataTable
+                :value="slotProps.data.speakerTable"
+                data-key="url"
+                class="subtable"
+              >
+                <Column field="name" sortable>
+                  <template #header>
+                    <Icon v-tooltip="'Name'" type="User" size="18" />
+                  </template>
+                  <template #body="{ data }">
+                    <div :class="{ redacted: data.obj.anonymous }">
+                      {{ data.obj.name || 'Redacted' }}
+                    </div>
+                  </template>
+                </Column>
+                <Column field="categories" sortable>
+                  <template #header>
+                    <Icon
+                      v-tooltip="'Speaker Categories'"
+                      type="UserCheck"
+                      size="18"
+                    />
+                  </template>
+                </Column>
+              </DataTable>
+            </template>
           </DataTable>
         </div>
       </div>
     </div>
+    <Dialog
+      v-model:visible="showAdjDialog"
+      :style="{ width: '450px' }"
+      :modal="true"
+    >
+      <FormsSingleAdjudicator :initial="newAdj" />
+    </Dialog>
+    <Dialog
+      v-model:visible="showTeamDialog"
+      :style="{ width: '450px' }"
+      :modal="true"
+    >
+      <FormsSingleTeam :initial="newTeam" />
+    </Dialog>
+    <Dialog
+      v-model:visible="isProcessingFiles"
+      :style="{ width: '450px' }"
+      :modal="true"
+      header="CSV Upload"
+    >
+      <template v-if="reconcilingFile === null">
+        <DataTable
+          :value="fileList"
+          sort-mode="single"
+          :loading="loading.adjudicators !== false"
+          edit-mode="cell"
+        >
+          <Column field="name" header="File name" sortable />
+          <Column field="role" header="Data" sortable>
+            <template #body="{ data, field }">
+              {{ csvNameMapping[data[field]] }}
+            </template>
+            <template #editor="{ data, field }">
+              <select v-model="data[field]" autofocus class="form-control">
+                <option
+                  v-for="g in csvFileNames"
+                  :key="g.fileName"
+                  :value="g.fileName"
+                >
+                  {{ g.name }}
+                </option>
+              </select>
+            </template>
+          </Column>
+        </DataTable>
+        <button class="form-control btn-success" @click="csvsNamed">
+          Next step
+        </button>
+      </template>
+      <template v-else>
+        <DataTable :value="currentCSV.data" paginator :rows="5">
+          <Column
+            v-for="col in currentCSV.meta.fields"
+            :key="col"
+            :header="col"
+            :field="col"
+          />
+        </DataTable>
+      </template>
+    </Dialog>
   </LayoutsAdmin>
 </template>
 
@@ -339,5 +524,9 @@ input[type='file'] {
   padding: 0.5rem;
   display: block;
   cursor: pointer;
+}
+
+.subtable {
+  margin-left: 30px;
 }
 </style>

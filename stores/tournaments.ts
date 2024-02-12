@@ -247,7 +247,7 @@ export const useTournamentsStore = defineStore({
   id: 'tournaments-store',
   state: () => ({
     _tournaments: [],
-    _currentTournament: {},
+    _currentTournament: null,
     _institutions: [],
     _loading: {
       tournaments: null,
@@ -276,7 +276,7 @@ export const useTournamentsStore = defineStore({
       const response = await client.get<Tournament[]>(
         `${baseUrl}/api/v1/tournaments`,
       );
-      this.setTournaments(response.data);
+      this._tournaments = response?.data;
       this._loading.tournaments = false;
     },
     setTournaments(tournaments: Tournament[]) {
@@ -338,6 +338,9 @@ export const useTournamentsStore = defineStore({
       this._loading.speakerCategories = false;
     },
     async getPreferences() {
+      if (this._loading.preferences === false) {
+        return;
+      }
       this._loading.preferences = true;
       const response = await client.get<Preference[]>(
         this._currentTournament.links.preferences,
@@ -500,6 +503,20 @@ export const useTournamentsStore = defineStore({
       round.availabilities =
         (await client.get(`${round.url}/availabilities?venues=true`))?.data ??
         [];
+    },
+    async updateAdjudicator(adjudicator: Adjudicator) {
+      const url = adjudicator.url;
+      delete adjudicator.url;
+      delete adjudicator.id;
+      delete adjudicator._links;
+      const response = await client.post<Adjudicator[]>(url, adjudicator);
+      this._currentTournament.adjudicators.splice(
+        this._currentTournament.adjudicators.findIndex(
+          (adj) => adj.url === url,
+        ),
+        1,
+        response?.data,
+      );
     },
   },
   getters: {

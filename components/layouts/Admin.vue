@@ -42,9 +42,6 @@ const breakStatus = computed(() => {
   // Prelim aren't finished
   return '#bdc1c5';
 });
-
-const curParticipantCreationForm = ref(0);
-const curRoomCreationForm = ref(0);
 </script>
 
 <template>
@@ -95,18 +92,17 @@ const curRoomCreationForm = ref(0);
             <Icon type="PlusCircle" size="18" />
             <template #popper>
               <div class="add-form">
-                <Tabs
-                  v-model="curParticipantCreationForm"
-                  :tabs="['Team', 'Adjudicator', 'Institution']"
-                  class="form-tabs"
-                />
-                <LazyFormsSingleTeam v-if="curParticipantCreationForm === 0" />
-                <LazyFormsSingleAdjudicator
-                  v-if="curParticipantCreationForm === 1"
-                />
-                <LazyFormsSingleInstitution
-                  v-if="curParticipantCreationForm === 2"
-                />
+                <TabView>
+                  <TabPanel header="Team">
+                    <LazyFormsSingleTeam />
+                  </TabPanel>
+                  <TabPanel header="Adjudicator">
+                    <LazyFormsSingleAdjudicator />
+                  </TabPanel>
+                  <TabPanel header="Institution">
+                    <LazyFormsSingleInstitution />
+                  </TabPanel>
+                </TabView>
               </div>
             </template>
           </VDropdown>
@@ -126,13 +122,14 @@ const curRoomCreationForm = ref(0);
 
             <template #popper>
               <div class="add-form">
-                <Tabs
-                  v-model="curRoomCreationForm"
-                  :tabs="['Room', 'Category']"
-                  class="form-tabs"
-                />
-                <LazyFormsSingleRoom v-if="curRoomCreationForm === 0" />
-                <LazyFormsSingleRoomCategory v-if="curRoomCreationForm === 1" />
+                <TabView>
+                  <TabPanel header="Room">
+                    <LazyFormsSingleRoom />
+                  </TabPanel>
+                  <TabPanel header="Category">
+                    <LazyFormsSingleRoomCategory />
+                  </TabPanel>
+                </TabView>
               </div>
             </template>
           </VDropdown>
