@@ -97,6 +97,7 @@
 
     --tertiary-button-background: #222222;
     --tertiary-button-hover-background: #473e35;
+    --tertiary-button-border: var(--border-color);
     --tertiary-shadow: rgba(75, 69, 64, .5);
   }
 }
@@ -415,6 +416,33 @@
 
 th {
   font-weight: 600;
+}
+
+.searchbar {
+  display: inline-block;
+  font-weight: 400;
+  color: var(--text-color);
+  text-align: center;
+  vertical-align: middle;
+  user-select: none;
+  background-color: var(--background-inset-color);
+  border: 1px solid var(--tertiary-button-border);
+  padding: 0.4rem 10rem;
+  font-size: 1rem;
+  line-height: 1.375;
+  border-radius: var(--border-radius);
+  margin: auto;
+  transition: all 0.2s ease;
+
+  &.small {
+    padding: 0.4rem 0.4rem;
+    margin: 0px 0.1rem;
+  }
+
+  &:focus {
+    box-shadow: 0 0 0 0.2rem var(--tertiary-shadow);
+    border-color: var(--tertiary-button-border);
+  }
 }
 
 .card {
