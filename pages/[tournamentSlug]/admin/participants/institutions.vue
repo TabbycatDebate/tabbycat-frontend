@@ -43,7 +43,7 @@ function exportCSV(table) {
 }
 
 const institutionfilters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 
@@ -77,16 +77,20 @@ const institutionfilters = ref({
       <div class="card">
         <DataTable
           ref="dt"
+          v-model:filters="institutionfilters"
           :value="institutions"
           sort-mode="multiple"
           :loading="loading.teams !== false || loading.adjudicators !== false"
-          v-model:filters="institutionfilters"
-          :globalFilterFields="['name', 'code', 'region']"
+          :global-filter-fields="['name', 'code', 'region']"
         >
           <template #header>
             <div class="title">
               <h3>Institutions</h3>
-              <InputText v-model="institutionfilters['global'].value" placeholder="Search Institutions" class="searchbar" />
+              <InputText
+                v-model="institutionfilters['global'].value"
+                placeholder="Search Institutions"
+                class="searchbar"
+              />
               <button
                 v-tooltip="'Save as CSV'"
                 class="btn info small"
