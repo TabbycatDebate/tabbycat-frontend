@@ -23,12 +23,12 @@ h2 {
   flex-grow: 1;
 
   .emoji {
-    margin-right: 0.5rem;
+    margin: 0 0.5rem;
   }
 }
 
 .header {
-  padding: 1rem 0.5rem;
+  padding: 1rem 0;
   display: flex;
   align-items: center;
 

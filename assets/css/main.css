@@ -98,7 +98,7 @@
     --tertiary-button-background: #222222;
     --tertiary-button-hover-background: #473e35;
     --tertiary-button-border: var(--border-color);
-    --tertiary-shadow: rgba(75, 69, 64, .5);
+    --tertiary-shadow: rgba(75, 69, 64, 0.5);
   }
 }
 
@@ -447,7 +447,6 @@ th {
 }
 
 .card {
-  margin: 0.5rem;
   padding: 0.9rem;
   background: var(--background-inset-color);
   border: 1px solid var(--border-color);
@@ -531,6 +530,7 @@ table {
 
 .tables {
   display: flex;
+  gap: 0.5rem;
 
   .round-col {
     text-align: center;

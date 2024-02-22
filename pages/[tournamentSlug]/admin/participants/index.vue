@@ -509,10 +509,6 @@ const paginatorPt = ref({
 </template>
 
 <style lang="postcss" scoped>
-.tables {
-  display: flex;
-}
-
 .upload-overlay {
   background-color: var(--background-outset-color);
   height: 100%;
@@ -541,7 +537,7 @@ input[type='file'] {
   display: none;
 }
 .note {
-  margin: 0.5rem;
+  margin: 0.5rem 0;
   background: var(--background-inset-color);
   text-align: center;
   border: 1px solid var(--border-color);

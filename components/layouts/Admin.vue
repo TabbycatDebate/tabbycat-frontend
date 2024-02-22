@@ -303,6 +303,7 @@ const breakStatus = computed(() => {
   }
   main {
     grid-area: main;
+    margin: 0.5rem;
   }
 }
 
