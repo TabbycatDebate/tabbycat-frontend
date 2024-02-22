@@ -14,7 +14,7 @@ useHead({
   title: `${tournamentsStore.currentTournament.shortName} | Private URLs`,
 });
 
-tournamentsStore.getSpeakers();
+tournamentsStore.getTeams();
 tournamentsStore.getAdjudicators();
 const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
@@ -28,17 +28,19 @@ const adjTable = computed(
 );
 const speakerTable = computed(
   () =>
-    tournamentsStore.currentTournament.speakers?.map((spk) => ({
-      obj: spk,
-      name: spk.name,
-      urlKey: spk.urlKey,
-    })),
+    tournamentsStore.currentTournament.teams
+      ?.map((team) =>
+        team.speakers.map((spk) => ({
+          obj: spk,
+          name: spk.name,
+          urlKey: spk.urlKey,
+          team: team.shortName,
+        })),
+      )
+      .flat(),
 );
-const speakerfilters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-const adjudicatorfilters = ref({
-    global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
 });
 </script>
 
@@ -68,20 +70,26 @@ const adjudicatorfilters = ref({
         <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
       </template>
     </PageTitle>
+
+    <InputText
+      v-model="filters['global'].value"
+      placeholder="Search"
+      class="searchbar"
+    />
+
     <div class="tables">
       <div class="card">
         <DataTable
           ref="dt"
+          v-model:filters="filters"
           :value="adjTable"
           sort-mode="multiple"
           :loading="loading.adjudicators !== false"
-          v-model:filters="adjudicatorfilters"
-          :globalFilterFields="['name', 'urlKey']"
+          :global-filter-fields="['name', 'urlKey']"
         >
           <template #header>
             <div class="title">
               <h3>Adjudicators</h3>
-              <InputText v-model="adjudicatorfilters['global'].value" placeholder="Search Adjudicators" class="searchbar small" />
               <button
                 v-tooltip="'Save as CSV'"
                 class="btn info small"
@@ -115,16 +123,15 @@ const adjudicatorfilters = ref({
       <div class="card">
         <DataTable
           ref="dt"
+          v-model:filters="filters"
           :value="speakerTable"
           sort-mode="multiple"
-          :loading="loading.speakers !== false"
-          v-model:filters="speakerfilters"
-          :globalFilterFields="['name', 'urlKey']"
+          :loading="loading.teams !== false"
+          :global-filter-fields="['name', 'urlKey', 'team']"
         >
           <template #header>
             <div class="title">
               <h3>Speakers</h3>
-              <InputText v-model="speakerfilters['global'].value" placeholder="Search Speakers" class="searchbar small" />
               <button
                 v-tooltip="'Save as CSV'"
                 class="btn info small"
