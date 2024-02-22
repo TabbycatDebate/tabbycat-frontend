@@ -11,8 +11,60 @@ export const groupBy = <T>(
   );
 
 export const csvFileNames = [
-  { fileName: 'venue_categories', name: 'Room Categories' },
-  { fileName: 'venues', name: 'Rooms' },
+  {
+    fileName: 'venue_categories',
+    name: 'Room Categories',
+    api: 'venue-categories',
+    columns: [
+      { name: 'Name', field: 'name', required: true, type: 'string' },
+      { name: 'Description', field: 'description', type: 'string' },
+      /* {
+        name: 'Display in room name',
+        field: 'display_in_venue_name',
+        type: 'string',
+        default: RoomSuffixPosition.None,
+        choices: [
+          { name: RoomSuffixPosition.None, label: 'Do not show' },
+          { name: RoomSuffixPosition.Prefix, label: 'As prefix' },
+          { name: RoomSuffixPosition.Suffix, label: 'As suffix' },
+        ],
+      }, */
+      {
+        name: 'Display in public tooltip',
+        field: 'display_in_public_tooltip',
+        type: 'boolean',
+        default: false,
+      },
+      {
+        name: 'Rooms',
+        field: 'rooms',
+        type: 'string',
+        transform: (data, tournament) =>
+          data.split(';').map((d) => tournament.venues[d.trim()]),
+        default: '',
+      },
+    ],
+    identifier: 'name',
+  },
+  {
+    fileName: 'venues',
+    name: 'Rooms',
+    api: 'venues',
+    columns: [
+      { name: 'Name', field: 'name', required: true, type: 'string' },
+      { name: 'Priority', field: 'priority', required: true, type: 'number' },
+      { name: 'External URL', field: 'external_url', type: 'string' },
+      {
+        name: 'Categories',
+        field: 'categories',
+        type: 'string',
+        transform: (data, tournament) =>
+          data.split(';').map((d) => tournament['venue-categories'][d.trim()]),
+        default: '',
+      },
+    ],
+    identifier: 'name',
+  },
   { fileName: 'institutions', name: 'Institutions' },
   { fileName: 'break_categories', name: 'Break Categories' },
   { fileName: 'speaker_categories', name: 'Speaker Categories' },

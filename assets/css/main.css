@@ -578,3 +578,69 @@ div[role='tablist'] > div > div > ul > li {
     cursor: pointer;
   }
 }
+
+.icon-btn {
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--link-color);
+  }
+}
+
+.p-datatable .p-paginator-bottom {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+}
+
+.p-paginator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-next,
+  .p-paginator-last {
+    background-color: transparent;
+    border: 0 none;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    margin: 0.143rem;
+    transition:
+      background-color 0.2s,
+      color 0.2s,
+      border-color 0.2s,
+      box-shadow 0.2s,
+      outline-color 0.2s;
+    border-radius: 50%;
+
+    &:not(:disabled):not(.p-highlight):hover {
+      background: var(--secondary-shadow);
+    }
+  }
+  .p-paginator-page,
+  .p-paginator-next,
+  .p-paginator-last,
+  .p-paginator-first,
+  .p-paginator-prev,
+  .p-paginator-current {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .p-paginator-current {
+    border: 0 none;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    margin: 0.143rem;
+    padding: 0 0.5rem;
+  }
+}

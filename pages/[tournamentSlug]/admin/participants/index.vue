@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import * as Papa from 'papaparse';
+import PaginatorStyle from 'primevue/paginator/style';
 
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
@@ -84,6 +85,7 @@ const csvsNamed = () => {
   reconcilingFile.value = fileList.value[0];
   Papa.parse(fileList.value[0].file, {
     header: true,
+    skipEmptyLines: true,
     complete: (results) => {
       currentCSV.value = results;
     },
@@ -189,6 +191,13 @@ function editTeam(team) {
   newTeam.value = { ...team };
   showTeamDialog.value = true;
 }
+
+const paginatorPt = ref({
+  paginator: {
+    ...PaginatorStyle.classes,
+    root: PaginatorStyle.classes.paginator,
+  },
+});
 </script>
 
 <template>
@@ -305,7 +314,12 @@ function editTeam(team) {
             </Column>
             <Column :exportable="false" style="min-width: 1rem">
               <template #body="{ data }">
-                <Icon type="Pencil" size="18" @click="editAdj(data.obj)" />
+                <Icon
+                  type="Pencil"
+                  size="18"
+                  class="icon-btn"
+                  @click="editAdj(data.obj)"
+                />
               </template>
             </Column>
           </DataTable>
@@ -385,7 +399,12 @@ function editTeam(team) {
             </Column>
             <Column :exportable="false" style="min-width: 1rem">
               <template #body="{ data }">
-                <Icon type="Pencil" size="18" @click="editTeam(data.obj)" />
+                <Icon
+                  type="Pencil"
+                  size="18"
+                  class="icon-btn"
+                  @click="editTeam(data.obj)"
+                />
               </template>
             </Column>
             <template #expansion="slotProps">
@@ -469,7 +488,14 @@ function editTeam(team) {
         </button>
       </template>
       <template v-else>
-        <DataTable :value="currentCSV.data" paginator :rows="5">
+        <DataTable
+          :value="currentCSV.data"
+          paginator
+          paginator-template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
+          current-page-report-template="{first} to {last} of {totalRecords}"
+          :rows="5"
+          :pt="paginatorPt"
+        >
           <Column
             v-for="col in currentCSV.meta.fields"
             :key="col"
