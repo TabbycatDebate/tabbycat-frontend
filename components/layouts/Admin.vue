@@ -272,7 +272,7 @@ const breakStatus = computed(() => {
           cursor: text;
         }
         &:hover:not(.router-link-active) {
-          color: #8d65c4;
+          color: var(--link-color);
         }
       }
 
