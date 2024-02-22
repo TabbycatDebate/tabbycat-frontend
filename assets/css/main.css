@@ -644,3 +644,104 @@ div[role='tablist'] > div > div > ul > li {
     padding: 0 0.5rem;
   }
 }
+
+.p-steps {
+  .p-steps-list {
+    padding: 0;
+    margin: 0;
+    list-style-type: none;
+    display: flex;
+
+    .p-steps-item {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      flex: 1 1 auto;
+      overflow: hidden;
+
+      &:first-child::before {
+        width: calc(50% + 0.5rem);
+        transform: translateX(100%);
+      }
+
+      &:last-child::before {
+        width: 50%;
+      }
+
+      &:before {
+        border-top-width: 2px;
+        margin-top: calc(-1rem + 1px);
+        content: ' ';
+        border-top: 1px solid var(--field-border-color);
+        width: 100%;
+        top: 50%;
+        left: 0;
+        display: block;
+        position: absolute;
+        margin-top: -0.75rem;
+      }
+
+      &[data-p-highlight='true'] .p-menuitem-link {
+        .p-steps-title {
+          color: var(--link-color);
+        }
+        .p-steps-number {
+          border-color: var(--secondary-button-background);
+          background-color: var(--secondary-button-background);
+        }
+      }
+
+      .p-menuitem-link {
+        background: transparent;
+        transition:
+          background-color 0.2s,
+          color 0.2s,
+          border-color 0.2s,
+          box-shadow 0.2s,
+          outline-color 0.2s;
+        border-radius: 6px;
+        outline-color: transparent;
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+        text-decoration: none;
+
+        .p-steps-number {
+          transition:
+            background-color 0.2s,
+            color 0.2s,
+            border-color 0.2s,
+            box-shadow 0.2s,
+            outline-color 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+          font-weight: 500;
+          border: 2px solid var(--field-border-color);
+          background-color: var(--background-outset-color);
+          min-width: 2rem;
+          height: 2rem;
+          line-height: 2rem;
+          font-size: 1.143rem;
+          z-index: 1;
+          border-radius: 50%;
+
+          &::after {
+            content: ' ';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+          }
+        }
+
+        .p-steps-title {
+          margin-top: 0.5rem;
+        }
+      }
+    }
+  }
+}
+

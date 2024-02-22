@@ -1,4 +1,5 @@
-// https://nuxt.com/docs/api/configuration/nuxt-config
+import DialogStyle from 'primevue/dialog/style';
+
 export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
   devtools: { enabled: true },
@@ -16,5 +17,17 @@ export default defineNuxtConfig({
       'postcss-nesting': {},
     },
   },
-  primevue: { options: { unstyled: true } },
+  primevue: {
+    options: {
+      unstyled: true,
+      pt: {
+        steps: {
+          root: 'p-steps',
+          menu: 'p-steps-list',
+          menuitem: 'p-steps-item',
+          nav: 'p-stepper-nav',
+        },
+      },
+    },
+  },
 });
