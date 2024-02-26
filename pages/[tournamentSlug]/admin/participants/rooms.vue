@@ -4,7 +4,9 @@ import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
 const tournamentsStore = useTournamentsStore();
+tournamentsStore.getRooms();
 tournamentsStore.getRoomCategories();
+const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
 definePageMeta({
   name: 'tournament.admin.rooms',
@@ -90,60 +92,100 @@ onMounted(async () => {
   window.addEventListener('keydown', handleSpaceKeyDown);
 });
 
-const roomsTable = computed(() => ({
-  headers: [
-    { title: 'Name', icon: 'MapPin' },
-    { title: 'Priority', icon: 'TrendingUp' },
-    { title: 'Categories', icon: 'Map' },
-    ...Object.values(rounds)
-      .map((rg) =>
-        rg.map((r, i) => ({
-          title: r.abbreviation,
-          customClasses: i === 0 ? ['first', 'round-col'] : ['round-col'],
-        })),
-      )
-      .flat(),
-  ],
-  rows:
+const roomData = computed(
+  () =>
     tournamentsStore.currentTournament.rooms?.map((room) => ({
-      content: [
-        { value: room.displayName },
-        { value: room.priority },
-        { value: getRoomCategories(room) },
-        ...Object.values(rounds)
-          .map((rg) =>
-            rg.map((round, i) => ({
-              component: 'Checkbox',
-              value: isAvailable(room, round),
-              checkFunction: () => toggleAvailability(room, round),
-              customClasses: i === 0 ? ['first', 'center'] : ['center'],
-            })),
-          )
+      obj: room,
+      name: room.name,
+      priority: room.priority,
+      categories: getRoomCategories(room),
+      ...Object.fromEntries(
+        Object.values(rounds)
+          .map((rg) => rg.map((r, i) => [r.seq, isAvailable(room, r)]))
           .flat(),
-      ],
-      room,
-      key: room.url,
-    })) ?? [],
-}));
+      ),
+    })),
+);
 </script>
 
 <template>
   <LayoutsAdmin>
     <PageTitle emoji="🎪">Rooms</PageTitle>
     <div class="tables">
-      <TableBase
-        title="Rooms"
-        :content="roomsTable"
-        :can-create="true"
-        :can-edit="true"
-      >
-        <template #create>
-          <LazyFormsSingleRoom />
-        </template>
-        <template #edit="{ row: { room } }">
-          <form @submit.prevent="updateRoom(room)" />
-        </template>
-      </TableBase>
+      <div class="card">
+        <DataTable
+          ref="roomTable"
+          :value="roomData"
+          sort-mode="multiple"
+          :loading="loading.rooms !== false"
+        >
+          <template #header>
+            <div class="title">
+              <h3>Rooms</h3>
+              <button
+                v-tooltip="'Save as CSV'"
+                class="btn info small"
+                @click="exportCSV(roomTable)"
+              >
+                <Icon type="Clipboard" size="22" />
+              </button>
+              <button
+                v-tooltip="'Create'"
+                class="btn info small"
+                @click="createRoom"
+              >
+                <Icon type="PlusCircle" size="22" />
+              </button>
+            </div>
+          </template>
+          <Column field="name" sortable>
+            <template #header>
+              <Icon v-tooltip="'Name'" type="MapPin" size="18" />
+            </template>
+          </Column>
+          <Column field="priority" sortable>
+            <template #header>
+              <Icon v-tooltip="'Priority'" type="TrendingUp" size="18" />
+            </template>
+          </Column>
+          <Column field="categories" sortable>
+            <template #header>
+              <Icon v-tooltip="'Room Categories'" type="Map" size="18" />
+            </template>
+          </Column>
+          <Column :exportable="false" style="min-width: 1rem">
+            <template #body="{ data }">
+              <Icon
+                type="Pencil"
+                size="18"
+                class="icon-btn"
+                @click="editRoom(data.obj)"
+              />
+            </template>
+          </Column>
+          <template v-for="(roundCat, bc) in rounds" :key="bc">
+            <Column
+              v-for="(round, index) in roundCat"
+              :key="round.url"
+              :field="round.seq"
+              sortable
+              :class="{ first: index === 0 }"
+            >
+              <template #header>
+                <div v-tooltip="round.name">{{ round.abbreviation }}</div>
+              </template>
+              <template #body="{ data, field }">
+                <input
+                  type="checkbox"
+                  :value="data.obj[field]"
+                  class="form-control small center"
+                  @click="toggleAvailability(data.obj, round)"
+                />
+              </template>
+            </Column>
+          </template>
+        </DataTable>
+      </div>
     </div>
   </LayoutsAdmin>
 </template>

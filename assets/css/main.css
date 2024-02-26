@@ -745,3 +745,26 @@ div[role='tablist'] > div > div > ul > li {
   }
 }
 
+.p-buttonset {
+  .p-button {
+    padding: 0.5rem 1rem;
+
+    &:first-of-type:not(:only-of-type) {
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+    &:not(:last-child),
+    &:not(:last-child):hover {
+      border-right: 0 none;
+    }
+    &.p-highlight {
+      background: #f1f5f9;
+      border-color: #f1f5f9;
+      color: #0f172a;
+    }
+  }
+}
+
+.first {
+  border-left: 1px solid var(--border-color);
+}
