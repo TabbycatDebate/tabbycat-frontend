@@ -5,6 +5,8 @@ import { useTournamentsStore } from '~/stores/tournaments';
 
 definePageMeta({
   name: 'tournament.new',
+  emoji: '🏆',
+  title: 'New Tournament',
 });
 useHead({
   title: 'Tabbycat | New Tournament',
@@ -57,9 +59,6 @@ function createTournament() {
 
 <template>
   <LayoutsPublic>
-    <template #title>
-      <PageTitle emoji="🏆">New Tournament</PageTitle>
-    </template>
     <div class="card info">
       <strong>Just trying out Tabbycat?</strong> If you're learning or playing
       around with Tabbycat, it's easiest to create a demo tournament that is

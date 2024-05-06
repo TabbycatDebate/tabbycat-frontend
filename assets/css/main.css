@@ -266,9 +266,13 @@
   transition: var(--field-transition);
   appearance: inherit;
 
+  &:disabled {
+    opacity: var(--disabled-opacity);
+  }
+
   &:focus,
   &.ds-selected,
-  &.ds-hover {
+  &.ds-hover:not(:disabled) {
     color: var(--text-color);
     background-color: var(--background-inset-color);
     border-color: var(--field-border-color);
@@ -319,7 +323,7 @@
   border-color: var(--success-button-background);
   color: var(--success-button-text);
 
-  &:hover,
+  &:hover:not(:disabled),
   &:focus {
     background-color: var(--success-button-hover-background);
     border-color: var(--success-button-hover-border);
@@ -328,6 +332,10 @@
 
   &:focus {
     box-shadow: 0 0 0 0.2rem var(--success-shadow);
+  }
+
+  &:disabled {
+    opacity: var(--disabled-opacity);
   }
 }
 
@@ -352,12 +360,16 @@
   margin: 0px 0.1rem;
   transition: all 0.2s ease;
 
+  &:disabled {
+    opacity: var(--disabled-opacity);
+  }
+
   &.primary {
     color: var(--secondary-button-text);
     background-color: var(--secondary-button-background);
     border-color: var(--secondary-button-background);
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--secondary-button-hover-background);
       border-color: var(--secondary-button-hover-border);
     }
@@ -371,7 +383,7 @@
     color: var(--secondary-button-background);
     border-color: var(--secondary-button-background);
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: var(--background-inset-color);
       background-color: var(--secondary-button-background);
     }
@@ -386,7 +398,7 @@
     background-color: var(--tertiary-button-background);
     border-color: var(--tertiary-button-border);
 
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: var(--tertiary-button-hover-background);
       border-color: var(--tertiary-button-hover-border);
     }
@@ -400,7 +412,7 @@
     color: var(--link-color);
     border-color: var(--tertiary-button-border);
 
-    &:hover {
+    &:hover:not(:disabled) {
       color: var(--background-inset-color);
       background-color: var(--tertiary-button-background);
     }
@@ -428,21 +440,28 @@ th {
   user-select: none;
   background-color: var(--background-inset-color);
   border: 1px solid var(--tertiary-button-border);
-  padding: 0.4rem 10rem;
+  padding-top: 0.4rem;
+  padding-bottom: 0.4rem;
   font-size: 1rem;
   line-height: 1.375;
   border-radius: var(--border-radius);
   margin: auto;
   transition: all 0.2s ease;
+  margin: 0px 0.1rem;
+  appearance: inherit;
 
   &.small {
     padding: 0.4rem 0.4rem;
     margin: 0px 0.1rem;
   }
 
-  &:focus {
+  &:focus,
+  &.ds-selected,
+  &.ds-hover {
+    color: var(--text-color);
+    background-color: var(--background-inset-color);
+    outline: 0;
     box-shadow: 0 0 0 0.2rem var(--tertiary-shadow);
-    border-color: var(--tertiary-button-border);
   }
 }
 
@@ -761,6 +780,15 @@ div[role='tablist'] > div > div > ul > li {
       background: #f1f5f9;
       border-color: #f1f5f9;
       color: #0f172a;
+    }
+  }
+}
+
+[data-pc-name='datatable'] table {
+  > thead {
+    > tr > th {
+      position: sticky;
+      top: 0;
     }
   }
 }

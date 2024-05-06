@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useTournamentsStore } from '~/stores/tournaments';
 
+const emit = defineEmits(['institution']);
 const institution = reactive({
   name: null,
   codeName: null,
@@ -9,8 +10,11 @@ const institution = reactive({
 
 const tournamentsStore = useTournamentsStore();
 
-function createInstitution() {
-  tournamentsStore.addInstitution(institution);
+const saving = ref(false);
+async function createInstitution() {
+  saving.value = true;
+  const created = await tournamentsStore.addInstitution(institution);
+  emit('institution', created);
 }
 </script>
 
@@ -46,7 +50,7 @@ function createInstitution() {
         class="form-control"
       />
     </div>
-    <button type="submit" class="form-control btn-success">
+    <button type="submit" class="form-control btn-success" :disabled="saving">
       Create institution
     </button>
   </form>

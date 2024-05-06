@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import DragSelect from 'dragselect';
+import { FilterMatchMode } from 'primevue/api';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -71,6 +72,26 @@ function handleSpaceKeyDown(e) {
   }
 }
 
+const showRoomDialog = ref(false);
+const submittedRoom = ref(false);
+const newRoom = ref({});
+function createRoom() {
+  newRoom.value = {};
+  submittedRoom.value = false;
+  showRoomDialog.value = true;
+}
+function saveRoom() {
+  submittedRoom.value = true;
+}
+function editRoom(room) {
+  newRoom.value = { ...room };
+  showRoomDialog.value = true;
+}
+
+const filters = ref({
+  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
+});
+
 onMounted(async () => {
   await tournamentsStore.getRoundsForCurrentTournament().then(() => {
     tournamentsStore.currentTournament.rounds.forEach((round) => {
@@ -96,12 +117,13 @@ const roomData = computed(
   () =>
     tournamentsStore.currentTournament.rooms?.map((room) => ({
       obj: room,
+      url: room.url,
       name: room.name,
       priority: room.priority,
       categories: getRoomCategories(room),
       ...Object.fromEntries(
         Object.values(rounds)
-          .map((rg) => rg.map((r, i) => [r.seq, isAvailable(room, r)]))
+          .map((rg) => rg.map((r, i) => ['R' + r.seq, isAvailable(room, r)]))
           .flat(),
       ),
     })),
@@ -115,13 +137,22 @@ const roomData = computed(
       <div class="card">
         <DataTable
           ref="roomTable"
+          v-model:filters="filters"
           :value="roomData"
           sort-mode="multiple"
           :loading="loading.rooms !== false"
+          data-key="url"
+          :global-filter-fields="['name', 'categories']"
         >
           <template #header>
             <div class="title">
               <h3>Rooms</h3>
+              <input
+                v-model="filters['global'].value"
+                type="text"
+                placeholder="Search"
+                class="searchbar"
+              />
               <button
                 v-tooltip="'Save as CSV'"
                 class="btn info small"
@@ -138,6 +169,7 @@ const roomData = computed(
               </button>
             </div>
           </template>
+          <template #empty>No data available.</template>
           <Column field="name" sortable>
             <template #header>
               <Icon v-tooltip="'Name'" type="MapPin" size="18" />
@@ -167,7 +199,7 @@ const roomData = computed(
             <Column
               v-for="(round, index) in roundCat"
               :key="round.url"
-              :field="round.seq"
+              :field="'R' + round.seq"
               sortable
               :class="{ first: index === 0 }"
             >
@@ -177,7 +209,7 @@ const roomData = computed(
               <template #body="{ data, field }">
                 <input
                   type="checkbox"
-                  :value="data.obj[field]"
+                  :checked="data[field]"
                   class="form-control small center"
                   @click="toggleAvailability(data.obj, round)"
                 />
@@ -187,5 +219,12 @@ const roomData = computed(
         </DataTable>
       </div>
     </div>
+    <Dialog
+      v-model:visible="showRoomDialog"
+      :style="{ width: '450px' }"
+      :modal="true"
+    >
+      <FormsSingleRoom :initial="newRoom" @closed="showRoomDialog = !$event" />
+    </Dialog>
   </LayoutsAdmin>
 </template>

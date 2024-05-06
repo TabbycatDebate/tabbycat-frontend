@@ -3,10 +3,19 @@ import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
+interface Props {
+  initial: Room;
+}
+const { initial } = withDefaults(defineProps<Props>(), {
+  initial: null,
+});
+const emit = defineEmits(['closed']);
+
 const room = reactive({
-  categories: [],
-  name: null,
-  priority: 100,
+  url: initial?.url ?? null,
+  categories: initial?.categories ?? [],
+  name: initial?.name ?? null,
+  priority: initial?.priority ?? 100,
 });
 
 const tournamentsStore = useTournamentsStore();
@@ -14,8 +23,13 @@ tournamentsStore.getRoomCategories();
 
 const { loading, currentTournament } = storeToRefs(tournamentsStore);
 
-function createRoom() {
-  tournamentsStore.addRoom(room);
+function saveRoom() {
+  if (room.url) {
+    tournamentsStore.updateRoom(room);
+  } else {
+    tournamentsStore.addRoom(room);
+  }
+  emit('closed', true);
 }
 
 function suffixes(position: string) {
@@ -80,7 +94,9 @@ const suffix = computed(() => suffixes('S'));
         name="priority"
       />
     </div>
-    <button type="submit" class="form-control btn-success">Create room</button>
+    <button type="submit" class="form-control btn-success">
+      {{ room.url ? 'Update' : 'Create' }} room
+    </button>
   </form>
 </template>
 

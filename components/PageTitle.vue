@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useSlots } from 'vue';
 defineProps<{
   emoji?: String;
 }>();
+
+const slots = useSlots();
 </script>
 
 <template>
@@ -9,6 +12,9 @@ defineProps<{
     <h2>
       <span v-if="emoji" class="emoji">{{ emoji }}</span>
       <slot />
+      <span v-if="slots.subtitle" class="subtitle"
+        ><slot name="subtitle"
+      /></span>
     </h2>
     <div class="right">
       <slot name="nav" />
@@ -24,6 +30,10 @@ h2 {
 
   .emoji {
     margin: 0 0.5rem;
+  }
+
+  .subtitle {
+    color: var(--secondary-text-color);
   }
 }
 

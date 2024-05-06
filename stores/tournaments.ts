@@ -102,6 +102,8 @@ interface Team extends TCAPIResponse {
   useInstitutionPrefix: boolean;
   breakCategories: URL[];
   institutionConflicts: URL[];
+  venueConstraints: URL[];
+  seed: number;
 }
 
 enum RoundStage {
@@ -249,6 +251,7 @@ export const useTournamentsStore = defineStore({
     _tournaments: [],
     _currentTournament: null,
     _institutions: [],
+    _pageRound: null,
     _loading: {
       tournaments: null,
       rounds: null,
@@ -284,6 +287,12 @@ export const useTournamentsStore = defineStore({
     },
     setCurrentTournament(slug: string) {
       this._currentTournament = this._tournaments.find((t) => t.slug === slug);
+    },
+    async setPageRound(seq: number) {
+      await this.getRoundsForCurrentTournament();
+      this._pageRound = this._currentTournament.rounds.find(
+        (r) => r.seq === seq,
+      );
     },
     async getRoundsForCurrentTournament() {
       if (this._loading.rounds === false) {
@@ -425,6 +434,7 @@ export const useTournamentsStore = defineStore({
       );
       if (response.status === 201) {
         this.institutions.push(response.data);
+        return response.data;
       }
     },
     async getRooms() {
@@ -505,15 +515,31 @@ export const useTournamentsStore = defineStore({
         [];
     },
     async updateAdjudicator(adjudicator: Adjudicator) {
-      const url = adjudicator.url;
-      delete adjudicator.url;
-      delete adjudicator.id;
-      delete adjudicator._links;
-      const response = await client.post<Adjudicator[]>(url, adjudicator);
+      const { url } = adjudicator;
+      const response = await client.post<Adjudicator[]>(url, {
+        ...adjudicator,
+        url: undefined,
+        id: undefined,
+        _links: undefined,
+      });
       this._currentTournament.adjudicators.splice(
         this._currentTournament.adjudicators.findIndex(
           (adj) => adj.url === url,
         ),
+        1,
+        response?.data,
+      );
+    },
+    async updateTeam(team: Team) {
+      const { url } = team;
+      const response = await client.post(url, {
+        ...team,
+        id: undefined,
+        url: undefined,
+        speakers: undefined,
+      });
+      this._currentTournament.teams.splice(
+        this._currentTournament.teams.findIndex((team) => team.url === url),
         1,
         response?.data,
       );
@@ -524,5 +550,6 @@ export const useTournamentsStore = defineStore({
     currentTournament: (state) => state._currentTournament,
     institutions: (state) => state._institutions,
     loading: (state) => state._loading,
+    pageRound: (state) => state._pageRound,
   },
 });

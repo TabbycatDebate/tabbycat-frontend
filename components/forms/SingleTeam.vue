@@ -9,16 +9,20 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   initial: null,
 });
+const emit = defineEmits(['closed']);
 
 const toCreate = !props.initial?.url;
 
 const team = reactive({
   url: props.initial?.url ?? null,
   institution: props.initial?.institution ?? null,
+  codeName: props.initial?.codeName ?? null,
+  emoji: props.initial?.emoji ?? null,
   speakers: [...(props.initial?.speakers ?? [])],
   reference: props.initial?.reference ?? '',
   useInstitutionPrefix: props.initial?.useInstitutionPrefix ?? true,
   breakCategories: [...(props.initial?.breakCategories ?? [])],
+  institutionConflicts: [...(props.initial?.institutionConflicts ?? [])],
 });
 
 const tournamentsStore = useTournamentsStore();
@@ -45,11 +49,6 @@ tournamentsStore.getBreakCategories().then(() => {
 });
 tournamentsStore.getSpeakerCategories();
 
-const institutions = computed(() => [
-  { name: 'No institution', url: null },
-  ...tournamentsStore.institutions,
-]);
-
 const teamInstitution = computed(() =>
   tournamentsStore.institutions.find((inst) => inst.url === team.institution),
 );
@@ -62,6 +61,7 @@ function createTeam() {
   } else {
     tournamentsStore.addTeam(team);
   }
+  emit('closed', true);
 }
 </script>
 
@@ -69,16 +69,7 @@ function createTeam() {
   <form @submit.prevent="createTeam">
     <div class="form-group">
       <label for="institution">Institution</label>
-      <vSelect
-        v-if="loading.institutions === false"
-        v-model="team.institution"
-        input-id="institution"
-        name="institution"
-        :options="institutions"
-        :reduce="(inst) => inst.url"
-        label="name"
-        :clearable="false"
-      />
+      <FormsFieldsInstitution v-model="team.institution" name="institution" />
     </div>
     <div class="form-group">
       <label for="reference">Team name</label>
@@ -88,6 +79,7 @@ function createTeam() {
         :institution="teamInstitution?.code"
       />
     </div>
+    <FormsFieldsEmoji v-model:emoji="team.emoji" v-model:code="team.codeName" />
     <div class="form-group">
       <label for="break-categories">Break categories</label>
       <vSelect
@@ -150,6 +142,8 @@ function createTeam() {
         </TabPanel>
       </TabView>
     </template>
-    <button type="submit" class="form-control btn-success">Create team</button>
+    <button type="submit" class="form-control btn-success">
+      {{ team.url ? 'Update' : 'Create' }} team
+    </button>
   </form>
 </template>

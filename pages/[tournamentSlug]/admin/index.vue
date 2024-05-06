@@ -28,7 +28,7 @@ const shownRoundSeq = computed(() =>
 const items = ref([
   { label: 'Availabilities', icon: 'ClipboardCheck' },
   { label: 'Draw', icon: 'Component' },
-  { label: 'Publish', icon: 'Rss' },
+  { label: 'Release', icon: 'Rss' },
   { label: 'Results', icon: 'Trophy' },
 ]);
 </script>

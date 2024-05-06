@@ -9,6 +9,8 @@ interface Props {
 const { initial } = withDefaults(defineProps<Props>(), {
   initial: null,
 });
+const emit = defineEmits(['closed']);
+
 const adjudicator = reactive({
   url: initial?.url ?? null,
   institution: initial?.institution ?? null,
@@ -19,16 +21,13 @@ const adjudicator = reactive({
   independent: initial?.independent ?? false,
   trainee: initial?.trainee ?? false,
   baseScore: initial?.baseScore ?? null,
+  institutionConflicts: [...(initial?.institutionConflicts ?? [])],
+  teamConflicts: [...(initial?.teamConflicts ?? [])],
+  adjudicatorConflicts: [...(initial?.adjudicatorConflicts ?? [])],
 });
 
 const tournamentsStore = useTournamentsStore();
-tournamentsStore.getInstitutions();
 tournamentsStore.getPreferences();
-
-const institutions = computed(() => [
-  { name: 'No institution', url: null },
-  ...tournamentsStore.institutions,
-]);
 
 const minScore = computed(
   () =>
@@ -47,6 +46,7 @@ function saveAdjudicator() {
   } else {
     tournamentsStore.addAdjudicator(adjudicator);
   }
+  emit('closed', true);
 }
 </script>
 
@@ -55,16 +55,7 @@ function saveAdjudicator() {
     <div class="form-group combined">
       <div>
         <label for="institution">Institution</label>
-        <vSelect
-          v-model="adjudicator.institution"
-          input-id="institution"
-          :loading="loading.institutions"
-          name="institution"
-          :options="institutions"
-          :reduce="(inst) => inst.url"
-          label="name"
-          :clearable="false"
-        />
+        <FormsFieldsInstitution v-model="adjudicator.institution" />
       </div>
       <div>
         <label v-tooltip="'Independent Adjudicator'" for="independent">
@@ -136,7 +127,7 @@ function saveAdjudicator() {
       <label for="trainee">Always allocate as trainee</label>
     </div>
     <button type="submit" class="form-control btn-success">
-      Create adjudicator
+      {{ adjudicator.url ? 'Update' : 'Create' }} adjudicator
     </button>
   </form>
 </template>

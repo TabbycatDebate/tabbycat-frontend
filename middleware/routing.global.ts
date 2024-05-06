@@ -9,5 +9,9 @@ export default defineNuxtRouteMiddleware(async (to, _from) => {
     if (to.params.tournamentSlug !== tournamentsStore.currentTournament?.slug) {
       tournamentsStore.setCurrentTournament(to.params.tournamentSlug);
     }
+
+    if ('roundSeq' in to.params) {
+      await tournamentsStore.setPageRound(Number(to.params.roundSeq));
+    }
   }
 });

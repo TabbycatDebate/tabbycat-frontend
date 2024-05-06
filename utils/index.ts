@@ -10,6 +10,19 @@ export const groupBy = <T>(
     {} as { [key: string]: T[] },
   );
 
+export const objDiff = (o1, o2) =>
+  Object.keys(o2).reduce((diff, key) => {
+    if (typeof o2[key] === 'array') return { ...diff, [key]: o2[key] };
+    if (typeof o2[key] === 'object') {
+      const recDiff = objDiff(o1[key], o2[key]);
+      if (recDiff) return diff;
+    }
+    if (o1[key] === o2[key]) return diff;
+    return { ...diff, [key]: o2[key] };
+  }, {});
+
+export const getPersonName = (person) => person.name ?? 'Redacted';
+
 export const csvFileNames = [
   {
     fileName: 'venue_categories',

@@ -1,5 +1,10 @@
 <script setup lang="ts">
+import { storeToRefs } from 'pinia';
+import { useUsersStore } from '~/stores/users';
+
+const usersStore = useUsersStore();
 const route = useRoute();
+const { user } = storeToRefs(usersStore);
 </script>
 
 <template>
@@ -15,7 +20,7 @@ const route = useRoute();
         </ul>
         <ul>
           <li>
-            <a href="/accounts/logout/">Log Out (admin)</a>
+            <a href="/accounts/logout/">Log Out ({{ user.username }})</a>
           </li>
         </ul>
       </nav>
@@ -74,5 +79,9 @@ header {
       }
     }
   }
+}
+
+main {
+  margin: 0.5rem;
 }
 </style>
