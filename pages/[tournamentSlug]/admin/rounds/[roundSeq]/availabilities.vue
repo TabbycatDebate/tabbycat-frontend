@@ -7,7 +7,7 @@ definePageMeta({
 });
 
 const tournamentsStore = useTournamentsStore();
-const { pageRound } = storeToRefs(tournamentsStore);
+const { pageRound, loading } = storeToRefs(tournamentsStore);
 
 useHead({
   title: `${tournamentsStore.currentTournament.shortName} | ${tournamentsStore.pageRound.name} - Availabilities`,
