@@ -60,13 +60,13 @@ const breakStatus = computed(() => {
             }"
           >
             <Icon type="Monitor" size="18" />
-            <div>Overview</div>
+            <div>{{ $t('nav.overview') }}</div>
           </NuxtLink>
         </li>
         <li>
           <NuxtLink :to="{ name: 'tournament.new' }">
             <Icon type="Pencil" size="18" />
-            <div>New Tournament</div>
+            <div>{{ $t('nav.newtournament') }}</div>
           </NuxtLink>
         </li>
       </ul>
@@ -75,7 +75,7 @@ const breakStatus = computed(() => {
         <li>
           <NuxtLink>
             <Icon type="Settings" size="18" />
-            <div>Settings</div>
+            <div>{{ $t('nav.settings') }}</div>
           </NuxtLink>
         </li>
         <li>
@@ -86,23 +86,30 @@ const breakStatus = computed(() => {
             }"
           >
             <Icon type="Users" size="18" />
-            <div>Participants</div>
+            <div>{{ $t('nav.participants') }}</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
             <Icon type="PlusCircle" size="18" />
             <template #popper>
               <div class="add-form">
-                <TabView>
-                  <TabPanel header="Team">
-                    <LazyFormsSingleTeam />
-                  </TabPanel>
-                  <TabPanel header="Adjudicator">
-                    <LazyFormsSingleAdjudicator />
-                  </TabPanel>
-                  <TabPanel header="Institution">
-                    <LazyFormsSingleInstitution />
-                  </TabPanel>
-                </TabView>
+                <Tabs>
+                  <TabList>
+                    <Tab value="Team">{{ $t('nav.team') }}</Tab>
+                    <Tab value="Adjudicator">{{ $t('nav.adjudicator') }}</Tab>
+                    <Tab value="Institution">{{ $t('nav.institution') }}</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel value="Team">
+                      <LazyFormsSingleTeam />
+                    </TabPanel>
+                    <TabPanel value="Adjudicator">
+                      <LazyFormsSingleAdjudicator />
+                    </TabPanel>
+                    <TabPanel value="Institution">
+                      <LazyFormsSingleInstitution />
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               </div>
             </template>
           </VDropdown>
@@ -115,21 +122,27 @@ const breakStatus = computed(() => {
             }"
           >
             <Icon type="MapPin" size="18" />
-            <div>Rooms</div>
+            <div>{{ $t('nav.rooms') }}</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
             <Icon type="PlusCircle" size="18" />
 
             <template #popper>
               <div class="add-form">
-                <TabView>
-                  <TabPanel header="Room">
-                    <LazyFormsSingleRoom />
-                  </TabPanel>
-                  <TabPanel header="Category">
-                    <LazyFormsSingleRoomCategory />
-                  </TabPanel>
-                </TabView>
+                <Tabs>
+                  <TabList>
+                    <Tab value="Room">{{ $t('nav.room') }}</Tab>
+                    <Tab value="Category">{{ $t('nav.roomcategory') }}</Tab>
+                  </TabList>
+                  <TabPanels>
+                    <TabPanel value="Room">
+                      <LazyFormsSingleRoom />
+                    </TabPanel>
+                    <TabPanel value="Category">
+                      <LazyFormsSingleRoomCategory />
+                    </TabPanel>
+                  </TabPanels>
+                </Tabs>
               </div>
             </template>
           </VDropdown>
@@ -137,7 +150,7 @@ const breakStatus = computed(() => {
         <li>
           <NuxtLink>
             <Icon type="Watch" size="18" />
-            <div>Checkins</div>
+            <div>{{ $t('nav.checkins') }}</div>
           </NuxtLink>
           <NuxtLink class="add">
             <Icon type="Printer" size="18" />
@@ -149,7 +162,7 @@ const breakStatus = computed(() => {
         <li>
           <NuxtLink>
             <Icon type="MessageCircle" size="18" />
-            <div>Feedback</div>
+            <div>{{ $t('nav.feedback') }}</div>
           </NuxtLink>
           <VDropdown class="add" placement="right-start">
             <Icon type="PlusCircle" size="18" />
@@ -163,7 +176,7 @@ const breakStatus = computed(() => {
         <li>
           <NuxtLink>
             <Icon type="BarChart2" size="18" />
-            <div>Standings</div>
+            <div>{{ $t('nav.standings') }}</div>
           </NuxtLink>
         </li>
       </ul>
@@ -182,7 +195,7 @@ const breakStatus = computed(() => {
           <li>
             <NuxtLink>
               <Icon type="Target" size="16" :stroke="breakStatus" />
-              <div>Breaks</div>
+              <div>{{ $t('nav.breaks') }}</div>
             </NuxtLink>
           </li>
         </ul>

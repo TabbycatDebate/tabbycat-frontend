@@ -12,9 +12,9 @@ const slots = useSlots();
     <h2>
       <span v-if="emoji" class="emoji">{{ emoji }}</span>
       <slot />
-      <span v-if="slots.subtitle" class="subtitle"
-        ><slot name="subtitle"
-      /></span>
+      <span v-if="slots.subtitle" class="subtitle">
+        <slot name="subtitle" />
+      </span>
     </h2>
     <div class="right">
       <slot name="nav" />

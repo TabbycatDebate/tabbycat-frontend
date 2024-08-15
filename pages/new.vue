@@ -1,21 +1,24 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import vSelect from 'vue-select';
 import slugify from 'slugify';
 import { useTournamentsStore } from '~/stores/tournaments';
 
+const { t } = useI18n();
+
 definePageMeta({
   name: 'tournament.new',
   emoji: '🏆',
-  title: 'New Tournament',
+  title: t('newTournament.title'),
 });
 useHead({
-  title: 'Tabbycat | New Tournament',
+  title: `Tabbycat | ${t('newTournament.title')}`,
 });
 
 const dataEntry = [
-  'Disabled (tab staff only)',
-  'Use private URLs',
-  'Use publicly-accessible forms',
+  t('options.presets.dataEntry.disabled'),
+  t('options.presets.dataEntry.privateURLs'),
+  t('options.presets.dataEntry.public'),
 ];
 
 const tournament = reactive({
@@ -41,15 +44,15 @@ watch(
 );
 
 const presets = [
-  '2 vs 2 Impromptu',
-  '3 vs 3 Prepared',
-  'American Parliamentary Debate Association',
-  'Australian Easters',
-  'Australs',
-  'British Parliamentary',
-  'Canadian Parliamentary ',
-  'United Asian Debating Championships',
-  'World Schools Debating Championships',
+  t('options.presets.formats.2v2'),
+  t('options.presets.formats.3v3'),
+  t('options.presets.formats.apda'),
+  t('options.presets.formats.easters'),
+  t('options.presets.formats.australs'),
+  t('options.presets.formats.bp'),
+  t('options.presets.formats.cp'),
+  t('options.presets.formats.uadc'),
+  t('options.presets.formats.wsdc'),
 ];
 
 function createTournament() {
@@ -60,17 +63,18 @@ function createTournament() {
 <template>
   <LayoutsPublic>
     <div class="card info">
-      <strong>Just trying out Tabbycat?</strong> If you're learning or playing
-      around with Tabbycat, it's easiest to create a demo tournament that is
-      prepopulated with a fake (but typical) set of teams, adjudicators, rooms,
-      and the like. You can then delete this demo tournament later on, or deploy
-      a new instance for your real tournament.
+      <i18n-t keypath="newTournament.demo.message">
+        <template #tagline>
+          <strong>{{ $t('newTournament.demo.tagline') }}</strong>
+        </template>
+      </i18n-t>
+      <strong></strong>
       <div class="row"></div>
     </div>
     <div class="card">
       <form @submit.prevent="createTournament">
         <div class="form-group">
-          <label for="name">Name</label>
+          <label for="name">{{ $t('newTournament.name.title') }}</label>
           <input
             id="name"
             v-model="tournament.name"
@@ -78,14 +82,13 @@ function createTournament() {
             type="text"
             class="form-control"
           />
-          <div class="help-text">
-            The full name, e.g. "Australasian Intervarsity Debating
-            Championships 2016"
-          </div>
+          <div class="help-text">{{ $t('newTournament.name.help') }}</div>
         </div>
         <div class="form-group combined equal">
           <div>
-            <label for="short-name">Short name</label>
+            <label for="short-name">{{
+              $t('newTournament.shortName.title')
+            }}</label>
             <input
               id="short-name"
               v-model="tournament.shortName"
@@ -94,11 +97,11 @@ function createTournament() {
               class="form-control"
             />
             <div class="help-text">
-              The name used in the menu, e.g. "Australs 2016"
+              {{ $t('newTournament.shortName.help') }}
             </div>
           </div>
           <div>
-            <label for="slug">Slug</label>
+            <label for="slug">{{ $t('newTournament.slug.title') }}</label>
             <input
               id="slug"
               v-model="tournament.slug"
@@ -108,13 +111,12 @@ function createTournament() {
               pattern="^[A-Za-z0-9_\-]{1,50}$"
             />
             <div class="help-text">
-              The sub-URL of the tournament, cannot have spaces, e.g.
-              "australs2016"
+              {{ $t('newTournament.slug.help') }}
             </div>
           </div>
         </div>
         <div class="form-group">
-          <label for="format">Format</label>
+          <label for="format">{{ $t('newTournament.format.title') }}</label>
           <vSelect
             v-model="tournament.format"
             input-id="format"
@@ -123,14 +125,14 @@ function createTournament() {
             :clearable="true"
           />
           <div class="help-text">
-            Apply a standard set of settings to match a common debate format.
-            These can be changed afterwards and should be checked for your
-            needs.
+            {{ $t('newTournament.format.help') }}
           </div>
         </div>
         <div class="form-group combined equal">
           <div>
-            <label for="prelim-rounds">Number of preliminary rounds</label>
+            <label for="prelim-rounds">{{
+              $t('newTournament.prelimRounds')
+            }}</label>
             <input
               id="prelim-rounds"
               v-model="tournament.prelimRounds"
@@ -141,9 +143,9 @@ function createTournament() {
             />
           </div>
           <div>
-            <label for="open-break"
-              >Number of teams in the first open elimination round</label
-            >
+            <label for="open-break">{{
+              $t('newTournament.elimRoundsTeams.title')
+            }}</label>
             <input
               id="open-break"
               v-model="tournament.openBreak"
@@ -153,7 +155,7 @@ function createTournament() {
               min="0"
             />
             <div class="help-text">
-              Leave blank if there are no elimination rounds
+              {{ $t('newTournament.elimRoundsTeams.help') }}
             </div>
           </div>
         </div>
@@ -167,16 +169,18 @@ function createTournament() {
               class="form-control"
             />
             <div>
-              <label for="public">Enable public pages</label>
+              <label for="public">{{
+                $t('newTournament.publicPages.title')
+              }}</label>
               <div class="help-text">
-                Show non-sensitive information on the public-facing side of this
-                site, like draws (once released) and the motions of previous
-                rounds
+                {{ $t('newTournament.publicPages.help') }}
               </div>
             </div>
           </div>
           <div>
-            <label for="data-entry">Participant data entry</label>
+            <label for="data-entry">{{
+              $t('newTournament.dataEntry.title')
+            }}</label>
             <vSelect
               v-model="tournament.dataEntry"
               input-id="data-entry"
@@ -185,13 +189,12 @@ function createTournament() {
               :clearable="false"
             />
             <div class="help-text">
-              Whether participants can submit ballots and feedback themselves,
-              and how they do so
+              {{ $t('newTournament.dataEntry.help') }}
             </div>
           </div>
         </div>
         <button type="submit" class="form-control btn-success">
-          Create tournament
+          {{ $t('tables.create') }}
         </button>
       </form>
     </div>

@@ -6,11 +6,10 @@ export default defineNuxtConfig({
   modules: [
     '@pinia/nuxt',
     '@nuxtjs/tailwindcss',
-    // '@nuxtjs/i18n',
     'nuxt-route-meta',
     '@nuxtjs/eslint-module',
     'floating-vue/nuxt',
-    'nuxt-primevue',
+    '@primevue/nuxt-module',
   ],
   postcss: {
     plugins: {

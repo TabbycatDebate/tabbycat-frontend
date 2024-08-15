@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import vSelect from 'vue-select';
-import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
 interface Props {
@@ -38,8 +36,6 @@ const maxScore = computed(
     tournamentsStore.currentTournament.preferences.feedback.adj_max_score.value,
 );
 
-const { loading } = storeToRefs(tournamentsStore);
-
 function saveAdjudicator() {
   if (adjudicator.url) {
     tournamentsStore.updateAdjudicator(adjudicator);
@@ -54,12 +50,12 @@ function saveAdjudicator() {
   <form @submit.prevent="saveAdjudicator">
     <div class="form-group combined">
       <div>
-        <label for="institution">Institution</label>
+        <label for="institution">{{ $t('institutions.title') }}</label>
         <FormsFieldsInstitution v-model="adjudicator.institution" />
       </div>
       <div>
-        <label v-tooltip="'Independent Adjudicator'" for="independent">
-          IA
+        <label v-tooltip="$t('adjudicators.independent')" for="independent">
+          {{ $t('adjudicators.independentAbbr') }}
         </label>
         <input
           id="independent"
@@ -72,7 +68,7 @@ function saveAdjudicator() {
     </div>
     <div class="form-group combined">
       <div>
-        <label for="name">Name</label>
+        <label for="name">{{ $t('people.name') }}</label>
         <input
           id="name"
           v-model="adjudicator.name"
@@ -84,7 +80,7 @@ function saveAdjudicator() {
       <FormsFieldsGender v-model="adjudicator.gender" />
     </div>
     <div class="form-group">
-      <label for="email">Email</label>
+      <label for="email">{{ $t('people.email') }}</label>
       <input
         id="email"
         v-model="adjudicator.email"
@@ -94,7 +90,7 @@ function saveAdjudicator() {
       />
     </div>
     <div class="form-group">
-      <label for="score">Base score</label>
+      <label for="score">{{ $t('adjudicators.baseScore') }}</label>
       <input
         id="score"
         v-model="adjudicator.baseScore"
@@ -114,7 +110,7 @@ function saveAdjudicator() {
         name="adjCore"
         class="form-control"
       />
-      <label for="adjCore">Member of the Adjudication Core</label>
+      <label for="adjCore">{{ $t('adjudicators.adjCore') }}</label>
     </div>
     <div class="form-group">
       <input
@@ -124,10 +120,15 @@ function saveAdjudicator() {
         name="trainee"
         class="form-control"
       />
-      <label for="trainee">Always allocate as trainee</label>
+      <label for="trainee">{{ $t('adjudicators.trainee') }}</label>
     </div>
     <button type="submit" class="form-control btn-success">
-      {{ adjudicator.url ? 'Update' : 'Create' }} adjudicator
+      <template v-if="adjudicator.url">
+        {{ $t('adjudicators.update') }}
+      </template>
+      <template v-else>
+        {{ $t('adjudicators.create') }}
+      </template>
     </button>
   </form>
 </template>

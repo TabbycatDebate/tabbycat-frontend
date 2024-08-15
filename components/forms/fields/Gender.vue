@@ -1,19 +1,22 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
+
 defineProps<{
   modelValue: String;
 }>();
 defineEmits(['update:model-value']);
 const options = [
-  { code: '', label: '(none)' },
-  { code: 'M', label: 'Male' },
-  { code: 'F', label: 'Female' },
-  { code: 'O', label: 'Other' },
+  { code: '', label: t('people.gender.none') },
+  { code: 'M', label: t('people.gender.male') },
+  { code: 'F', label: t('people.gender.female') },
+  { code: 'O', label: t('people.gender.other') },
 ];
 </script>
 
 <template>
   <div class="gender-field">
-    <label for="gender">Gender</label>
+    <label for="gender">{{ $t('people.gender.title') }}</label>
     <select
       id="gender"
       :value="modelValue"

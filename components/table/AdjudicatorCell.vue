@@ -17,10 +17,10 @@ const url = computed(() => ({
 
 <template>
   <div v-if="adjudicator.anonymous" class="redacted">
-    <NuxtLink v-if="adjudicator.name" :to="url">{{
-      adjudicator.name
-    }}</NuxtLink>
-    <template v-else>Anonymous</template>
+    <NuxtLink v-if="adjudicator.name" :to="url">
+      {{ adjudicator.name }}
+    </NuxtLink>
+    <template v-else>{{ $t('people.anonymous') }}</template>
   </div>
   <NuxtLink v-else :to="url">{{ adjudicator.name }}</NuxtLink>
 </template>

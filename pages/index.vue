@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
+const { t } = useI18n();
+
 definePageMeta({
   emoji: '👋',
-  title: 'Welcome!',
+  title: t('base.welcome'),
   name: 'index',
 });
 useHead({
-  title: 'Tabbycat | Home',
+  title: `Tabbycat | ${t('base.head')}`,
 });
 
 const tournamentsStore = useTournamentsStore();
@@ -29,7 +32,11 @@ const { tournaments } = storeToRefs(tournamentsStore);
               params: { tournamentSlug: tournament.slug },
             }"
           >
-            Administrator area for <b>{{ tournament.name }}</b>
+            <i18n-t keypath="base.adminLink">
+              <template #tournament>
+                <strong>{{ tournament.name }}</strong>
+              </template>
+            </i18n-t>
           </LinkButton>
           <LinkButton
             icon="Globe"
@@ -38,7 +45,11 @@ const { tournaments } = storeToRefs(tournamentsStore);
               params: { tournamentSlug: tournament.slug },
             }"
           >
-            Public area for <b>{{ tournament.name }}</b>
+            <i18n-t keypath="base.publicLink">
+              <template #tournament>
+                <strong>{{ tournament.name }}</strong>
+              </template>
+            </i18n-t>
           </LinkButton>
         </ButtonGroup>
       </li>

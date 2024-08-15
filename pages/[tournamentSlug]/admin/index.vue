@@ -20,7 +20,7 @@ const currentRounds = tournamentsStore.currentTournament.rounds.filter(
   (round) =>
     tournamentsStore.currentTournament.currentRounds.includes(round.url),
 );
-const roundNames = ['A', 'B']; // computed(() => currentRounds.map((round) => round.name));
+const roundNames = computed(() => currentRounds.map((round) => round.name));
 const shownRound = ref(currentRounds[0].name);
 const shownRoundSeq = computed(() =>
   currentRounds.find((round) => round.name === shownRound),
@@ -67,16 +67,18 @@ const items = ref([
           aria-labelledby="basic"
         />
       </div>
-      <Steps :model="items" class="p-steps">
-        <template #item="{ item, active }">
-          <div class="p-menuitem-link">
-            <div class="p-steps-number">
-              <Icon :type="item.icon" size="19" />
+      <Stepper :model="items" class="p-steps">
+        <StepList>
+          <Step v-for="item in items" :key="item.label" :value="item.label">
+            <div class="p-menuitem-link">
+              <div class="p-steps-number">
+                <Icon :type="item.icon" size="19" />
+              </div>
+              <div class="p-steps-title">{{ item.label }}</div>
             </div>
-            <div class="p-steps-title">{{ item.label }}</div>
-          </div>
-        </template>
-      </Steps>
+          </Step>
+        </StepList>
+      </Stepper>
     </div>
   </LayoutsAdmin>
 </template>

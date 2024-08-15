@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import DragSelect from 'dragselect';
-import { FilterMatchMode } from 'primevue/api';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -25,7 +24,7 @@ const roomCategoryMap = Object.fromEntries(
 );
 
 function getRoomCategories(room: Room) {
-  return room.categories.map((c) => roomCategoryMap[c].name).join(', ');
+  return room.categories.map((c) => roomCategoryMap[c]?.name).join(', ');
 }
 
 function isAvailable(room: Room, round: Round) {
@@ -88,10 +87,6 @@ function editRoom(room) {
   showRoomDialog.value = true;
 }
 
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
-
 onMounted(async () => {
   await tournamentsStore.getRoundsForCurrentTournament().then(() => {
     tournamentsStore.currentTournament.rounds.forEach((round) => {
@@ -132,57 +127,42 @@ const roomData = computed(
 
 <template>
   <LayoutsAdmin>
-    <PageTitle emoji="🎪">Rooms</PageTitle>
+    <PageTitle emoji="🎪">{{ $t('rooms.title') }}</PageTitle>
     <div class="tables">
       <div class="card">
-        <DataTable
-          ref="roomTable"
-          v-model:filters="filters"
-          :value="roomData"
-          sort-mode="multiple"
+        <TableBase
+          :data="roomData"
           :loading="loading.rooms !== false"
           data-key="url"
-          :global-filter-fields="['name', 'categories']"
+          :filter-fields="['name', 'categories']"
+          :title="$t('rooms.title')"
         >
-          <template #header>
-            <div class="title">
-              <h3>Rooms</h3>
-              <input
-                v-model="filters['global'].value"
-                type="text"
-                placeholder="Search"
-                class="searchbar"
-              />
-              <button
-                v-tooltip="'Save as CSV'"
-                class="btn info small"
-                @click="exportCSV(roomTable)"
-              >
-                <Icon type="Clipboard" size="22" />
-              </button>
-              <button
-                v-tooltip="'Create'"
-                class="btn info small"
-                @click="createRoom"
-              >
-                <Icon type="PlusCircle" size="22" />
-              </button>
-            </div>
+          <template #actions>
+            <button
+              v-tooltip="$t('tables.create')"
+              class="btn info small"
+              @click="createRoom"
+            >
+              <Icon type="PlusCircle" size="22" />
+            </button>
           </template>
-          <template #empty>No data available.</template>
           <Column field="name" sortable>
             <template #header>
-              <Icon v-tooltip="'Name'" type="MapPin" size="18" />
+              <Icon v-tooltip="$t('rooms.name')" type="MapPin" size="18" />
             </template>
           </Column>
           <Column field="priority" sortable>
             <template #header>
-              <Icon v-tooltip="'Priority'" type="TrendingUp" size="18" />
+              <Icon
+                v-tooltip="$t('rooms.priority')"
+                type="TrendingUp"
+                size="18"
+              />
             </template>
           </Column>
           <Column field="categories" sortable>
             <template #header>
-              <Icon v-tooltip="'Room Categories'" type="Map" size="18" />
+              <Icon v-tooltip="$t('rooms.categories')" type="Map" size="18" />
             </template>
           </Column>
           <Column :exportable="false" style="min-width: 1rem">
@@ -216,7 +196,7 @@ const roomData = computed(
               </template>
             </Column>
           </template>
-        </DataTable>
+        </TableBase>
       </div>
     </div>
     <Dialog

@@ -1,15 +1,20 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { useTournamentsStore } from '~/stores/tournaments';
+
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.public.participants',
   emoji: '🚌',
-  title: 'Participants',
+  title: t('nav.participants'),
 });
 const tournamentsStore = useTournamentsStore();
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Participants`,
+  title: `${tournamentsStore.currentTournament.shortName} | ${t(
+    'nav.participants',
+  )}`,
 });
 </script>
 

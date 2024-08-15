@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import { FilterMatchMode } from 'primevue/api';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -39,9 +37,6 @@ const speakerTable = computed(
       )
       .flat(),
 );
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 </script>
 
 <template>
@@ -71,36 +66,18 @@ const filters = ref({
       </template>
     </PageTitle>
 
-    <InputText
-      v-model="filters['global'].value"
-      placeholder="Search"
-      class="searchbar"
-    />
-
     <div class="tables">
       <div class="card">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="adjTable"
-          sort-mode="multiple"
+        <TableBase
+          :data="adjTable"
           :loading="loading.adjudicators !== false"
-          :global-filter-fields="['name', 'urlKey']"
+          :filter-fields="['name', 'urlKey']"
+          :title="$t('adjudicators.title')"
         >
-          <template #header>
-            <div class="title">
-              <h3>Adjudicators</h3>
-              <button
-                v-tooltip="'Save as CSV'"
-                class="btn info small"
-                @click="exportCSV($event)"
-              >
-                <Icon type="Clipboard" size="22" />
-              </button>
-              <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
-                <Icon type="Printer" size="22" />
-              </NuxtLink>
-            </div>
+          <template #actions>
+            <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+              <Icon type="Printer" size="22" />
+            </NuxtLink>
           </template>
           <Column field="name" sortable>
             <template #header>
@@ -118,31 +95,19 @@ const filters = ref({
               <div class="url-link">{{ data.obj.urlKey }}</div>
             </template>
           </Column>
-        </DataTable>
+        </TableBase>
       </div>
       <div class="card">
-        <DataTable
-          ref="dt"
-          v-model:filters="filters"
-          :value="speakerTable"
-          sort-mode="multiple"
+        <TableBase
+          :data="speakerTable"
           :loading="loading.teams !== false"
-          :global-filter-fields="['name', 'urlKey', 'team']"
+          :filter-fields="['name', 'urlKey', 'team']"
+          :title="$t('teams.speakers')"
         >
-          <template #header>
-            <div class="title">
-              <h3>Speakers</h3>
-              <button
-                v-tooltip="'Save as CSV'"
-                class="btn info small"
-                @click="exportCSV($event)"
-              >
-                <Icon type="Clipboard" size="22" />
-              </button>
-              <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
-                <Icon type="Printer" size="22" />
-              </NuxtLink>
-            </div>
+          <template #actions>
+            <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+              <Icon type="Printer" size="22" />
+            </NuxtLink>
           </template>
           <Column field="name" sortable>
             <template #header>
@@ -163,7 +128,7 @@ const filters = ref({
               <div class="url-link">{{ data.obj.urlKey }}</div>
             </template>
           </Column>
-        </DataTable>
+        </TableBase>
       </div>
     </div>
   </LayoutsAdmin>

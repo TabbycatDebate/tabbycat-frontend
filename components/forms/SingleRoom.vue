@@ -51,9 +51,9 @@ const suffix = computed(() => suffixes('S'));
 </script>
 
 <template>
-  <form @submit.prevent="createRoom">
+  <form @submit.prevent="saveRoom">
     <div class="form-group">
-      <label for="categories">Categories</label>
+      <label for="categories">{{ $t('rooms.categories') }}</label>
       <vSelect
         v-if="loading.roomCategories === false"
         v-model="room.categories"
@@ -66,7 +66,7 @@ const suffix = computed(() => suffixes('S'));
       />
     </div>
     <div class="form-group">
-      <label for="name">Name</label>
+      <label for="name">{{ $t('rooms.name') }}</label>
       <div class="room-name">
         <div v-if="prefix">
           {{ prefix }}
@@ -85,7 +85,7 @@ const suffix = computed(() => suffixes('S'));
       </div>
     </div>
     <div class="form-group">
-      <label for="priority">Priority</label>
+      <label for="priority">{{ $t('rooms.priority') }}</label>
       <input
         id="priority"
         v-model="room.priority"
@@ -95,7 +95,8 @@ const suffix = computed(() => suffixes('S'));
       />
     </div>
     <button type="submit" class="form-control btn-success">
-      {{ room.url ? 'Update' : 'Create' }} room
+      <template v-if="room.url">{{ $t('rooms.update') }}</template>
+      <template v-else>{{ $t('rooms.create') }}</template>
     </button>
   </form>
 </template>

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.public.index',
@@ -10,7 +13,7 @@ const tournamentsStore = useTournamentsStore();
 const { currentTournament } = storeToRefs(tournamentsStore);
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Home`,
+  title: `${tournamentsStore.currentTournament.shortName} | ${t('base.head')}`,
 });
 </script>
 
@@ -21,7 +24,9 @@ useHead({
     </template>
     <template #title>
       <PageTitle emoji="👋">
-        Welcome to {{ currentTournament.name }}!
+        {{
+          $t('base.tournamentWelcome', { tournament: currentTournament.name })
+        }}!
       </PageTitle>
     </template>
     Yes!

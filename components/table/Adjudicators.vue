@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import { FilterMatchMode } from 'primevue/api';
-
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -16,7 +13,7 @@ const tournamentsStore = useTournamentsStore();
 tournamentsStore.getAdjudicators();
 tournamentsStore.getInstitutions();
 
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const { loading } = storeToRefs(tournamentsStore);
 
 const instMap = computed(() =>
   Object.fromEntries(
@@ -34,10 +31,6 @@ const adjData = computed(
       independent: adj.independent,
     })),
 );
-const adjTable = ref();
-function exportCSV(table) {
-  table.exportCSV();
-}
 
 const showAdjDialog = ref(false);
 const submittedAdj = ref(false);
@@ -47,58 +40,33 @@ function createAdjudicator() {
   submittedAdj.value = false;
   showAdjDialog.value = true;
 }
-function saveAdjudicator() {
-  submittedAdj.value = true;
-}
 function editAdj(adj) {
   newAdj.value = { ...adj };
   showAdjDialog.value = true;
 }
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 </script>
 
 <template>
   <div class="card">
-    <DataTable
-      ref="adjTable"
-      v-model:filters="filters"
-      :value="adjData"
-      sort-mode="multiple"
+    <TableBase
+      :data="adjData"
       :loading="loading.adjudicators !== false"
-      :global-filter-fields="['name', 'institution']"
+      :filter-fields="['name', 'institution']"
+      :title="$t('adjudicators.title')"
     >
-      <template #header>
-        <div class="title">
-          <h3>Adjudicators</h3>
-          <InputText
-            v-model="filters['global'].value"
-            placeholder="Search"
-            class="searchbar"
-          />
-          <button
-            v-tooltip="'Save as CSV'"
-            class="btn info small"
-            @click="exportCSV(adjTable)"
-          >
-            <Icon type="Clipboard" size="22" />
-          </button>
-          <button
-            v-if="editable"
-            v-tooltip="'Create'"
-            class="btn info small"
-            @click="createAdjudicator"
-          >
-            <Icon type="PlusCircle" size="22" />
-          </button>
-        </div>
+      <template #actions>
+        <button
+          v-if="editable"
+          v-tooltip="$t('tables.create')"
+          class="btn info small"
+          @click="createAdjudicator"
+        >
+          <Icon type="PlusCircle" size="22" />
+        </button>
       </template>
-      <template #empty>No data available.</template>
       <Column field="name" sortable>
         <template #header>
-          <Icon v-tooltip="'Name'" type="User" size="18" />
+          <Icon v-tooltip="$t('people.name')" type="User" size="18" />
         </template>
         <template #body="{ data }">
           <TableAdjudicatorCell :adjudicator="data.obj" />
@@ -106,13 +74,13 @@ const filters = ref({
       </Column>
       <Column field="institution" sortable>
         <template #header>
-          <Icon v-tooltip="'Institution'" type="Home" size="18" />
+          <Icon v-tooltip="$t('institutions.title')" type="Home" size="18" />
         </template>
       </Column>
       <Column field="adjCore" sortable>
         <template #header>
           <Icon
-            v-tooltip="'Member of the Adjudication Core'"
+            v-tooltip="$t('adjudicators.adjCore')"
             type="UserCheck"
             size="18"
           />
@@ -124,7 +92,7 @@ const filters = ref({
       <Column field="independent" sortable>
         <template #header>
           <Icon
-            v-tooltip="'Independent Adjudicator'"
+            v-tooltip="$t('adjudicators.independent')"
             type="UserPlus"
             size="18"
           />
@@ -143,7 +111,7 @@ const filters = ref({
           />
         </template>
       </Column>
-    </DataTable>
+    </TableBase>
 
     <Dialog
       v-model:visible="showAdjDialog"

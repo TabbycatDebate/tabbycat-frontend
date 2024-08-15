@@ -1,0 +1,38 @@
+{
+  "adjudicators": {
+    "title": "Juges"
+  },
+  "language": "Langue",
+  "feedback": {
+    "target": "Au juge",
+    "submitter": "Saissiseur",
+    "submit": "Saisir évaluation"
+  },
+  "rooms": {
+    "categories": "Catégories",
+    "name": "Nom",
+    "priority": "Priorité",
+    "update": "Mettre salle à jour",
+    "create": "Créer salle"
+  },
+  "nav": {
+    "overview": "Vue d'ensemble",
+    "newtournament": "Nouveau tournoi",
+    "settings": "Réglages",
+    "participants": "Participants",
+    "team": "Équipe",
+    "adjudicator": "Juge",
+    "institution": "Institution",
+    "rooms": "Salles",
+    "room": "Sale",
+    "roomcategory": "Catégorie",
+    "checkins": "Enregistrements",
+    "feedback": "Évaluations",
+    "breaks": "Qualifications"
+  },
+  "tables": {
+    "search": "Rechercher",
+    "csvSave": "Télécharger comme CSV",
+    "empty": "Aucune donnée disponible"
+  }
+}

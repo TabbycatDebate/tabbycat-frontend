@@ -85,9 +85,9 @@ function createFeedback() {
 </script>
 
 <template>
-  <form @submit.prevent="createTeam">
+  <form @submit.prevent="createFeedback">
     <div class="form-group">
-      <label for="submitter">Submitter</label>
+      <label for="submitter">{{ $t('feedback.submitter') }}</label>
       <vSelect
         v-if="loading.adjudicators === false && loading.teams === false"
         v-model="feedback.source"
@@ -100,7 +100,7 @@ function createFeedback() {
       />
     </div>
     <div class="form-group">
-      <label for="target">To adjudicator</label>
+      <label for="target">{{ $t('feedback.target') }}</label>
       <vSelect
         v-if="loading.adjudicators === false"
         v-model="feedback.adjudicator"
@@ -130,7 +130,7 @@ function createFeedback() {
       </div>
     </template>
     <button type="submit" class="form-control btn-success">
-      Submit feedback
+      {{ $t('feedback.submit') }}
     </button>
   </form>
 </template>

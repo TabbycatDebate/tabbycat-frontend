@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-import { FilterMatchMode } from 'primevue/api';
-
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -77,10 +74,6 @@ const teamData = computed(
     })),
 );
 
-const teamTable = ref();
-function exportCSV(table) {
-  table.exportCSV();
-}
 const teamExpandedRows = ref([]);
 const expandAll = () => {
   teamExpandedRows.value = products.value.reduce(
@@ -107,54 +100,31 @@ function editTeam(team) {
   newTeam.value = { ...team };
   showTeamDialog.value = true;
 }
-
-const filters = ref({
-  global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-});
 </script>
 
 <template>
   <div class="card">
-    <DataTable
-      ref="teamTable"
-      v-model:filters="filters"
-      :value="teamData"
-      sort-mode="multiple"
+    <TableBase
+      :data="teamData"
       :loading="loading.teams !== false"
       :expanded-rows="teamExpandedRows"
-      data-key="url"
-      :global-filter-fields="['name', 'categories', 'institution', 'speakers']"
+      :filter-fields="['name', 'categories', 'institution', 'speakers']"
+      :title="$t('teams.title')"
     >
-      <template #header>
-        <div class="title">
-          <h3>Teams</h3>
-          <InputText
-            v-model="filters['global'].value"
-            placeholder="Search"
-            class="searchbar"
-          />
-          <button
-            v-tooltip="'Save as CSV'"
-            class="btn info small"
-            @click="exportCSV(teamTable)"
-          >
-            <Icon type="Clipboard" size="22" />
-          </button>
-          <button
-            v-if="editable"
-            v-tooltip="'Create'"
-            class="btn info small"
-            @click="createTeam"
-          >
-            <Icon type="PlusCircle" size="22" />
-          </button>
-        </div>
+      <template #actions>
+        <button
+          v-if="editable"
+          v-tooltip="$t('tables.create')"
+          class="btn info small"
+          @click="createTeam"
+        >
+          <Icon type="PlusCircle" size="22" />
+        </button>
       </template>
-      <template #empty>No data available.</template>
       <Column expander style="width: 30px" />
       <Column field="name" sortable>
         <template #header>
-          <Icon v-tooltip="'Name'" type="User" size="18" />
+          <Icon v-tooltip="$t('teams.name')" type="User" size="18" />
         </template>
         <template #body="{ data, field }">
           <VTooltip style="display: inline" theme="full-context">
@@ -186,12 +156,16 @@ const filters = ref({
       </Column>
       <Column field="categories" sortable>
         <template #header>
-          <Icon v-tooltip="'Break Categories'" type="UserCheck" size="18" />
+          <Icon
+            v-tooltip="$t('teams.breakCategories')"
+            type="UserCheck"
+            size="18"
+          />
         </template>
       </Column>
       <Column field="institution" sortable>
         <template #header>
-          <Icon v-tooltip="'Institution'" type="Home" size="18" />
+          <Icon v-tooltip="$t('institutions.title')" type="Home" size="18" />
         </template>
       </Column>
       <Column v-if="editable" :exportable="false" style="min-width: 1rem">
@@ -212,11 +186,11 @@ const filters = ref({
         >
           <Column field="name" sortable>
             <template #header>
-              <Icon v-tooltip="'Name'" type="User" size="18" />
+              <Icon v-tooltip="$t('people.name')" type="User" size="18" />
             </template>
             <template #body="{ data }">
               <div :class="{ redacted: data.obj.anonymous }">
-                {{ data.obj.name || 'Redacted' }}
+                {{ data.obj.name || $t('people.anonymous') }}
               </div>
             </template>
           </Column>
@@ -231,7 +205,7 @@ const filters = ref({
           </Column>
         </DataTable>
       </template>
-    </DataTable>
+    </TableBase>
     <Dialog
       v-model:visible="showTeamDialog"
       :style="{ width: '450px' }"

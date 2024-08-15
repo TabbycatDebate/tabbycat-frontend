@@ -12,7 +12,7 @@ export const groupBy = <T>(
 
 export const objDiff = (o1, o2) =>
   Object.keys(o2).reduce((diff, key) => {
-    if (typeof o2[key] === 'array') return { ...diff, [key]: o2[key] };
+    if (o2[key] instanceof Array) return { ...diff, [key]: o2[key] };
     if (typeof o2[key] === 'object') {
       const recDiff = objDiff(o1[key], o2[key]);
       if (recDiff) return diff;

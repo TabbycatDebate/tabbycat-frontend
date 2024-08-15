@@ -11,8 +11,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits(['closed']);
 
-const toCreate = !props.initial?.url;
-
 const team = reactive({
   url: props.initial?.url ?? null,
   institution: props.initial?.institution ?? null,
@@ -96,51 +94,61 @@ function createTeam() {
     </div>
     <template v-if="team.speakers !== null">
       <div class="section-label">Speakers</div>
-      <TabView>
-        <TabPanel
-          v-for="(speaker, i) in team.speakers"
-          :key="i"
-          :header="'Speaker ' + (i + 1)"
-        >
-          <div class="form-group combined">
-            <div>
-              <label for="name">Name</label>
+      <Tabs>
+        <TabList>
+          <Tab
+            v-for="(speaker, i) in team.speakers"
+            :key="speaker.url"
+            :value="i"
+            >Speaker {{ i }}</Tab
+          >
+        </TabList>
+        <TabPanels>
+          <TabPanel
+            v-for="(speaker, i) in team.speakers"
+            :key="speaker.url"
+            :value="i"
+          >
+            <div class="form-group combined">
+              <div>
+                <label for="name">Name</label>
+                <input
+                  id="name"
+                  v-model="speaker.name"
+                  name="name"
+                  type="text"
+                  class="form-control"
+                />
+              </div>
+              <FormsFieldsGender v-model="speaker.gender" />
+            </div>
+            <div class="form-group">
+              <label for="spk-email">Email</label>
               <input
-                id="name"
-                v-model="speaker.name"
-                name="name"
-                type="text"
+                id="spk-email"
+                v-model="speaker.email"
+                name="spk-categories"
+                type="email"
                 class="form-control"
               />
             </div>
-            <FormsFieldsGender v-model="speaker.gender" />
-          </div>
-          <div class="form-group">
-            <label for="spk-email">Email</label>
-            <input
-              id="spk-email"
-              v-model="speaker.email"
-              name="spk-categories"
-              type="email"
-              class="form-control"
-            />
-          </div>
-          <div class="form-group">
-            <label for="spk-categories">Speaker categories</label>
-            <vSelect
-              v-if="loading.speakerCategories === false"
-              v-model="speaker.categories"
-              input-id="spk-categories"
-              name="spk-categories"
-              :options="currentTournament.speakerCategories"
-              :reduce="(sc) => sc.url"
-              label="name"
-              :clearable="false"
-              multiple
-            />
-          </div>
-        </TabPanel>
-      </TabView>
+            <div class="form-group">
+              <label for="spk-categories">Speaker categories</label>
+              <vSelect
+                v-if="loading.speakerCategories === false"
+                v-model="speaker.categories"
+                input-id="spk-categories"
+                name="spk-categories"
+                :options="currentTournament.speakerCategories"
+                :reduce="(sc) => sc.url"
+                label="name"
+                :clearable="false"
+                multiple
+              />
+            </div>
+          </TabPanel>
+        </TabPanels>
+      </Tabs>
     </template>
     <button type="submit" class="form-control btn-success">
       {{ team.url ? 'Update' : 'Create' }} team
