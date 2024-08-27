@@ -7,7 +7,7 @@ const { t } = useI18n();
 definePageMeta({
   name: 'tournament.public.participants',
   emoji: '🚌',
-  title: t('nav.participants'),
+  title: 'nav.participants',
 });
 const tournamentsStore = useTournamentsStore();
 

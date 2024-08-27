@@ -29,7 +29,7 @@ const { user } = storeToRefs(usersStore);
       <div class="title">
         <slot name="title">
           <PageTitle :emoji="route.meta.emoji">
-            {{ route.meta.title }}
+            {{ $t(route.meta.title) }}
           </PageTitle>
         </slot>
       </div>

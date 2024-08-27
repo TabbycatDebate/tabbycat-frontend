@@ -156,7 +156,7 @@ const breakStatus = computed(() => {
             <Icon type="Printer" size="18" />
           </NuxtLink>
           <NuxtLink class="add">
-            <Icon type="Camera" size="18" />
+            <Icon type="ScanLine" size="18" />
           </NuxtLink>
         </li>
         <li>
@@ -215,6 +215,7 @@ const breakStatus = computed(() => {
     <main>
       <slot />
     </main>
+    <Footer />
   </div>
 </template>
 
@@ -222,7 +223,10 @@ const breakStatus = computed(() => {
 .admin-layout {
   display: grid;
   grid-template-columns: min(250px, 20%) auto;
-  grid-template-areas: 'nav main';
+  grid-template-rows: max-content;
+  grid-template-areas:
+    'nav main'
+    'footer footer';
   height: 100%;
 
   nav {
@@ -317,6 +321,10 @@ const breakStatus = computed(() => {
   main {
     grid-area: main;
     margin: 0.5rem;
+  }
+
+  footer {
+    grid-area: footer;
   }
 }
 

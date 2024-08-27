@@ -26,7 +26,7 @@ const newEmoji = computed({
 <template>
   <div class="form-group combined reversed">
     <div>
-      <label for="emoji">Emoji</label>
+      <label for="emoji">{{ $t('teams.emoji') }}</label>
       <vSelect
         v-model="newEmoji"
         input-id="emoji"
@@ -47,7 +47,7 @@ const newEmoji = computed({
       </vSelect>
     </div>
     <div>
-      <label for="code-name">Code name</label>
+      <label for="code-name">{{ $t('teams.codeName') }}</label>
       <input
         id="code-name"
         :value="code"

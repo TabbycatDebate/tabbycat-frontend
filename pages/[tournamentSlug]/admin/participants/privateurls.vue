@@ -42,7 +42,7 @@ const speakerTable = computed(
 <template>
   <LayoutsAdmin>
     <PageTitle emoji="🎲">
-      Private URLs
+      {{ $t('nav.privateURLs') }}
       <template #nav>
         <NuxtLink
           class="btn outline-primary"
@@ -51,8 +51,11 @@ const speakerTable = computed(
             params: { tournamentSlug: currentTournament.slug },
           }"
         >
-          Participants
+          {{ $t('nav.participants') }}
         </NuxtLink>
+        <NuxtLink class="btn outline-primary">{{
+          $t('nav.speakerCategories')
+        }}</NuxtLink>
         <NuxtLink
           class="btn outline-primary"
           :to="{
@@ -60,9 +63,8 @@ const speakerTable = computed(
             params: { tournamentSlug: currentTournament.slug },
           }"
         >
-          Institutions
+          {{ $t('nav.institutions') }}
         </NuxtLink>
-        <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
       </template>
     </PageTitle>
 
@@ -75,13 +77,17 @@ const speakerTable = computed(
           :title="$t('adjudicators.title')"
         >
           <template #actions>
-            <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+            <NuxtLink
+              v-tooltip="$t('tables.print')"
+              class="btn info small"
+              to=""
+            >
               <Icon type="Printer" size="22" />
             </NuxtLink>
           </template>
           <Column field="name" sortable>
             <template #header>
-              <Icon v-tooltip="'Name'" type="User" size="18" />
+              <Icon v-tooltip="$t('people.name')" type="User" size="18" />
             </template>
             <template #body="{ data }">
               <TableAdjudicatorCell :adjudicator="data.obj" />
@@ -89,7 +95,7 @@ const speakerTable = computed(
           </Column>
           <Column field="urlKey" sortable style="width: 10em">
             <template #header>
-              <Icon v-tooltip="'URL Key'" type="Key" size="18" />
+              <Icon v-tooltip="t('people.key')" type="Key" size="18" />
             </template>
             <template #body="{ data }">
               <div class="url-link">{{ data.obj.urlKey }}</div>
@@ -105,24 +111,28 @@ const speakerTable = computed(
           :title="$t('teams.speakers')"
         >
           <template #actions>
-            <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
+            <NuxtLink
+              v-tooltip="$t('tables.print')"
+              class="btn info small"
+              to=""
+            >
               <Icon type="Printer" size="22" />
             </NuxtLink>
           </template>
           <Column field="name" sortable>
             <template #header>
-              <Icon v-tooltip="'Name'" type="User" size="18" />
+              <Icon v-tooltip="t('people.name')" type="User" size="18" />
             </template>
             <template #body="{ data }">
               <div v-if="data.obj.anonymous" class="redacted">
-                {{ data.obj.name || 'Anonymous' }}
+                {{ data.obj.name || $t('people.anonymous') }}
               </div>
               <template v-else>{{ data.obj.name }}</template>
             </template>
           </Column>
           <Column field="urlKey" sortable style="width: 10em">
             <template #header>
-              <Icon v-tooltip="'URL Key'" type="Key" size="18" />
+              <Icon v-tooltip="t('people.key')" type="Key" size="18" />
             </template>
             <template #body="{ data }">
               <div class="url-link">{{ data.obj.urlKey }}</div>

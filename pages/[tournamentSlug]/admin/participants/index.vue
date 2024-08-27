@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import * as Papa from 'papaparse';
-import PaginatorStyle from 'primevue/paginator/style';
 
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
@@ -62,13 +61,6 @@ const csvsNamed = () => {
     },
   });
 };
-
-const paginatorPt = ref({
-  paginator: {
-    ...PaginatorStyle.classes,
-    root: PaginatorStyle.classes.paginator,
-  },
-});
 </script>
 
 <template>
@@ -81,11 +73,11 @@ const paginatorPt = ref({
     >
       <Transition name="fade-in">
         <div v-if="isDragging" class="upload-overlay">
-          <div>Drop .csv files here!</div>
+          <div>{{ $t('participants.csv.import') }}</div>
         </div>
       </Transition>
       <PageTitle emoji="🚌">
-        Participants
+        {{ $t('nav.participants') }}
         <template #nav>
           <NuxtLink
             class="btn outline-primary"
@@ -94,9 +86,11 @@ const paginatorPt = ref({
               params: { tournamentSlug: currentTournament.slug },
             }"
           >
-            Institutions
+            {{ $t('nav.institutions') }}
           </NuxtLink>
-          <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
+          <NuxtLink class="btn outline-primary">{{
+            $t('nav.speakerCategories')
+          }}</NuxtLink>
           <NuxtLink
             class="btn outline-primary"
             :to="{
@@ -104,7 +98,7 @@ const paginatorPt = ref({
               params: { tournamentSlug: currentTournament.slug },
             }"
           >
-            Private URLs
+            {{ $t('nav.privateURLs') }}
           </NuxtLink>
         </template>
       </PageTitle>
@@ -117,7 +111,7 @@ const paginatorPt = ref({
         @change="dropFile($event.target)"
       />
       <label for="file" class="note">
-        Drag-and-drop CSV files to quickly import participants
+        {{ $t('participants.csv.dragDrop') }}
       </label>
       <div class="tables">
         <TableAdjudicators :editable="true" />
@@ -128,7 +122,7 @@ const paginatorPt = ref({
       v-model:visible="isProcessingFiles"
       :style="{ width: '450px' }"
       :modal="true"
-      header="CSV Upload"
+      :header="$t('participants.csv.header')"
     >
       <template v-if="reconcilingFile === null">
         <DataTable
@@ -137,8 +131,12 @@ const paginatorPt = ref({
           :loading="loading.adjudicators !== false"
           edit-mode="cell"
         >
-          <Column field="name" header="File name" sortable />
-          <Column field="role" header="Data" sortable>
+          <Column
+            field="name"
+            :header="$t('participants.csv.fileName')"
+            sortable
+          />
+          <Column field="role" :header="$t('participants.csv.data')" sortable>
             <template #body="{ data, field }">
               {{ csvNameMapping[data[field]] }}
             </template>
@@ -156,7 +154,7 @@ const paginatorPt = ref({
           </Column>
         </DataTable>
         <button class="form-control btn-success" @click="csvsNamed">
-          Next step
+          {{ $t('participants.csv.nextStep') }}
         </button>
       </template>
       <template v-else>
@@ -166,7 +164,6 @@ const paginatorPt = ref({
           paginator-template="FirstPageLink PrevPageLink CurrentPageReport NextPageLink LastPageLink"
           current-page-report-template="{first} to {last} of {totalRecords}"
           :rows="5"
-          :pt="paginatorPt"
         >
           <Column
             v-for="col in currentCSV.meta.fields"

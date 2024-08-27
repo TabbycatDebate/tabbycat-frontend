@@ -19,16 +19,26 @@
       "other": "Other"
     },
     "email": "Email",
-    "anonymous": "Anonymous"
+    "anonymous": "Anonymous",
+    "key": "URL key"
   },
   "teams": {
     "title": "Teams",
     "name": "Name",
     "speakers": "Speakers",
-    "breakCategories": "Break Categories"
+    "breakCategories": "Break categories",
+    "emoji": "Emoji",
+    "codeName": "Code name"
   },
   "institutions": {
-    "title": "Institutions"
+    "title": "Institutions",
+    "none": "No institution",
+    "create": "Create institution",
+    "code": "Code",
+    "name": "Name",
+    "region": "Region",
+    "numberTeams": "Teams",
+    "numberAdjs": "Adjudicators"
   },
   "language": "Language",
   "feedback": {
@@ -58,21 +68,55 @@
     "checkins": "Checkins",
     "feedback": "Feedback",
     "breaks": "Breaks",
-    "standings": "Standings"
+    "standings": "Standings",
+    "availabilities": "Availabilities",
+    "draw": "Draw",
+    "release": "Release",
+    "results": "Results",
+    "institutions": "Institutions",
+    "speakerCategories": "Speaker Categories",
+    "privateURLs": "Private URLs"
   },
   "tables": {
     "search": "Search",
     "csvSave": "Save as CSV",
     "empty": "No data available",
     "create": "Create",
-    "edit": "Edit"
+    "edit": "Edit",
+    "print": "Print"
   },
   "base": {
     "welcome": "Welcome!",
     "head": "Home",
     "adminLink": "Administrator area for {tournament}",
     "publicLink": "Public area for {tournament}",
-    "tournamentWelcome": "Welcome to {tournament}!"
+    "tournamentWelcome": "Welcome to {tournament}!",
+    "footer": {
+      "runsOn": "{tournament} runs on Tabbycat {version} ({versionName})",
+      "runsOnNoTournament": "This site runs on Tabbycat {version} ({versionName})",
+      "license": "Tabbycat is an open-source project developed by volunteers and is free to use.",
+      "suggestedDonation": {
+        "link": "a donation of {amount}",
+        "text": "For a tournament of this size, we suggest {link}."
+      },
+      "donation": {
+        "link": "Donations to Tabbycat from individuals or organisations",
+        "text": "{link} are much appreciated and help us to continue to develop, support, and maintain Tabbycat."
+      },
+      "organisation": {
+        "title": "Our Organisation",
+        "text": "Tabbycat is supported by the {association}, a non-profit for advancing open debate technology.",
+        "association": "Tabbycat Debate Association"
+      },
+      "language": "Language",
+      "changeLanguage": "Change language",
+      "selectLanguage": "Use this language",
+      "github": "GitHub",
+      "documentation": "Documentation",
+      "support": "Support",
+      "facebook": "Facebook",
+      "setUp": "Set up a copy"
+    }
   },
   "newTournament": {
     "title": "New Tournament",
@@ -108,6 +152,16 @@
     "dataEntry": {
       "title": "Participant data entry",
       "help": "Whether participants can submit ballots and feedback themselves, and how they do so"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "Next step",
+      "import": "Drop .csv files here!",
+      "dragDrop": "Drag-and-drop CSV files to quickly import participants",
+      "header": "CSV upload",
+      "fileName": "File name",
+      "data": "Data"
     }
   },
   "options": {

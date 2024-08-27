@@ -1,7 +1,10 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import vSelect from 'vue-select';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
+const { t } = useI18n();
 
 interface Props {
   modelValue: Team;
@@ -14,7 +17,7 @@ const emit = defineEmits(['update:modelValue']);
 
 const tournamentsStore = useTournamentsStore();
 const institutions = computed(() => [
-  { name: 'No institution', url: null },
+  { name: t('institutions.none'), url: null },
   ...tournamentsStore.institutions,
 ]);
 
@@ -51,7 +54,7 @@ const { loading } = storeToRefs(tournamentsStore);
   >
     <template #list-footer>
       <button @click.prevent="creatingInstitution = true">
-        Create institution
+        {{ $t('institutions.create') }}
       </button>
     </template>
   </vSelect>
@@ -59,7 +62,7 @@ const { loading } = storeToRefs(tournamentsStore);
     v-model:visible="creatingInstitution"
     :style="{ width: '450px' }"
     :modal="true"
-    header="Create institution"
+    :header="$t('institutions.create')"
   >
     <FormsSingleInstitution @institution="institutionCreated" />
   </Dialog>

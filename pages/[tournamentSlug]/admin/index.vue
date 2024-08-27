@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
+
+const { t } = useI18n();
 
 const tournamentsStore = useTournamentsStore();
 await tournamentsStore.getRoundsForCurrentTournament();
@@ -26,10 +29,10 @@ const shownRoundSeq = computed(() =>
   currentRounds.find((round) => round.name === shownRound),
 );
 const items = ref([
-  { label: 'Availabilities', icon: 'ClipboardCheck' },
-  { label: 'Draw', icon: 'Component' },
-  { label: 'Release', icon: 'Rss' },
-  { label: 'Results', icon: 'Trophy' },
+  { label: t('nav.availabilities'), icon: 'ClipboardCheck' },
+  { label: t('nav.draw'), icon: 'Component' },
+  { label: t('nav.release'), icon: 'Rss' },
+  { label: t('nav.results'), icon: 'Trophy' },
 ]);
 </script>
 
@@ -74,7 +77,6 @@ const items = ref([
               <div class="p-steps-number">
                 <Icon :type="item.icon" size="19" />
               </div>
-              <div class="p-steps-title">{{ item.label }}</div>
             </div>
           </Step>
         </StepList>

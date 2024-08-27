@@ -9,7 +9,7 @@ const { t } = useI18n();
 definePageMeta({
   name: 'tournament.new',
   emoji: '🏆',
-  title: t('newTournament.title'),
+  title: 'newTournament.title',
 });
 useHead({
   title: `Tabbycat | ${t('newTournament.title')}`,

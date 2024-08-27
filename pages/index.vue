@@ -7,7 +7,7 @@ const { t } = useI18n();
 
 definePageMeta({
   emoji: '👋',
-  title: t('base.welcome'),
+  title: 'base.welcome',
   name: 'index',
 });
 useHead({

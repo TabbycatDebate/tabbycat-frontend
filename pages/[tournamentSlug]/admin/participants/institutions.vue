@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import InputText from 'primevue/inputtext';
-// import { FilterMatchMode } from 'primevue/api';
 import { storeToRefs } from 'pinia';
 import { useTournamentsStore } from '~/stores/tournaments';
 
@@ -36,21 +34,12 @@ const institutions = computed(
       numAdjs: getInstitutionAdjudicators(inst),
     })),
 );
-
-const dt = ref();
-function exportCSV(table) {
-  table.exportCSV();
-}
-
-const institutionfilters = ref({
-  global: { value: null /* matchMode: FilterMatchMode.CONTAINS */ },
-});
 </script>
 
 <template>
   <LayoutsAdmin>
     <PageTitle emoji="🏫">
-      Institutions
+      {{ $t('nav.institutions') }}
       <template #nav>
         <NuxtLink
           class="btn outline-primary"
@@ -59,9 +48,11 @@ const institutionfilters = ref({
             params: { tournamentSlug: currentTournament.slug },
           }"
         >
-          Participants
+          {{ $t('nav.participants') }}
         </NuxtLink>
-        <NuxtLink class="btn outline-primary">Speaker Categories</NuxtLink>
+        <NuxtLink class="btn outline-primary">{{
+          $t('nav.speakerCategories')
+        }}</NuxtLink>
         <NuxtLink
           class="btn outline-primary"
           :to="{
@@ -69,7 +60,7 @@ const institutionfilters = ref({
             params: { tournamentSlug: currentTournament.slug },
           }"
         >
-          Private URLs
+          {{ $t('nav.privateURLs') }}
         </NuxtLink>
       </template>
     </PageTitle>
@@ -90,11 +81,19 @@ const institutionfilters = ref({
               <Icon type="PlusCircle" size="22" />
             </button>
           </template>
-          <Column field="code" header="Code" sortable />
-          <Column field="name" header="Name" sortable />
-          <Column field="region" header="Region" sortable />
-          <Column field="numTeams" header="Teams" sortable />
-          <Column field="numAdjs" header="Adjudicators" sortable />
+          <Column field="code" :header="$t('institutions.code')" sortable />
+          <Column field="name" :header="$t('institutions.name')" sortable />
+          <Column field="region" :header="$t('institutions.region')" sortable />
+          <Column
+            field="numTeams"
+            :header="$t('institutions.numberTeams')"
+            sortable
+          />
+          <Column
+            field="numAdjs"
+            :header="$t('institutions.numberAdjudicators')"
+            sortable
+          />
         </TableBase>
       </div>
     </div>
