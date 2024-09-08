@@ -13,7 +13,6 @@ interface Props {
   title?: string;
 }
 withDefaults(defineProps<Props>(), {
-  expandedRows: [],
   title: '',
 });
 
@@ -35,7 +34,6 @@ const filters = ref({
     sort-mode="multiple"
     :loading="loading"
     :global-filter-fields="filterFields"
-    :expanded-rows="expandedRows"
     v-bind="$attrs"
   >
     <template #header>
@@ -60,5 +58,8 @@ const filters = ref({
     </template>
     <template #empty>{{ $t('tables.empty') }}</template>
     <slot name="default"></slot>
+    <template #expansion="slotProps"
+      ><slot name="expansion" :data="slotProps.data"
+    /></template>
   </DataTable>
 </template>

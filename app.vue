@@ -29,11 +29,28 @@ h5,
 h6 {
   font-family: 'Helvetica Neue', sans-serif;
   color: var(--header-color);
+  font-weight: bold;
+}
+
+h2 {
+  font-size: 2rem;
 }
 
 h3 {
   font-size: 1.5rem;
-  font-weight: bold;
+}
+
+h4 {
+  font-size: 1.17em;
+}
+
+h5 {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+h6 {
+  font-size: 0.83em;
 }
 
 *,
@@ -42,7 +59,8 @@ h3 {
   box-sizing: border-box;
 }
 
-a {
+a,
+button.link {
   color: var(--link-color);
   text-decoration: none;
   transition: all 0.2s ease;

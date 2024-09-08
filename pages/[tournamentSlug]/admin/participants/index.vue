@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import * as Papa from 'papaparse';
 
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.admin.participants',
 });
 
-const tournamentsStore = useTournamentsStore();
-const { currentTournament } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Participants`,
+  title: `${currentTournament.value.shortName} | ${t('base.title.admin')} - ${t(
+    'nav.participants',
+  )}`,
 });
 
 const isDragging = ref(false);

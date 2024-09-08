@@ -1,33 +1,33 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
-const { t } = useI18n();
+const { t } = useI18n({ useScope: 'global' });
 
-const tournamentsStore = useTournamentsStore();
-await tournamentsStore.getRoundsForCurrentTournament();
-tournamentsStore.getAdjudicators();
-tournamentsStore.getTeams();
-tournamentsStore.getRooms();
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const currentTournamentSlug = useState('currentTournamentSlug');
+const { data: tournamentData } = await useAPI(
+  'tournaments',
+  {},
+  { tournamentSlug: currentTournamentSlug.value },
+);
+const { data: roundData } = await useAPI('rounds');
+const { data: teamData } = await useAPI('teams');
+const { data: adjData } = await useAPI('adjudicators');
+const { data: roomData } = await useAPI('rooms');
 
 definePageMeta({
   name: 'tournament.admin.index',
 });
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Admin - Home`,
+  title: `${tournamentData.value.shortName} | ${t('base.title.admin')} - ${t(
+    'base.head',
+  )}`,
 });
 
-const currentRounds = tournamentsStore.currentTournament.rounds.filter(
-  (round) =>
-    tournamentsStore.currentTournament.currentRounds.includes(round.url),
+const currentRounds = roundData.value.filter((round) =>
+  tournamentData.value.currentRounds.includes(round.url),
 );
 const roundNames = computed(() => currentRounds.map((round) => round.name));
 const shownRound = ref(currentRounds[0].name);
-const shownRoundSeq = computed(() =>
-  currentRounds.find((round) => round.name === shownRound),
-);
 const items = ref([
   { label: t('nav.availabilities'), icon: 'ClipboardCheck' },
   { label: t('nav.draw'), icon: 'Component' },
@@ -38,9 +38,9 @@ const items = ref([
 
 <template>
   <LayoutsAdmin>
-    <ButtonGroup>
+    <GroupButtons>
       <LinkButton
-        v-if="!currentTournament.teams || !currentTournament.adjudicators"
+        v-if="!teamData || !adjData"
         icon="UserPlus"
         :to="{
           name: 'tournament.admin.participants',
@@ -50,7 +50,7 @@ const items = ref([
         Import Participants
       </LinkButton>
       <LinkButton
-        v-if="!currentTournament.rooms"
+        v-if="!roomData"
         icon="UserPlus"
         :to="{
           name: 'tournament.admin.rooms',
@@ -59,7 +59,7 @@ const items = ref([
       >
         Import Rooms
       </LinkButton>
-    </ButtonGroup>
+    </GroupButtons>
     <div class="card">
       <div class="title">
         <h3>{{ shownRound }}</h3>

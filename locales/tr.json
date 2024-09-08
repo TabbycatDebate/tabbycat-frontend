@@ -1,0 +1,187 @@
+{
+  "adjudicators": {
+    "title": "Jüriler",
+    "independent": "Bağımsız jüri",
+    "independentAbbr": "IA",
+    "baseScore": "temel puan",
+    "adjCore": "jüri komitesi üyesi",
+    "alwaysTrainee": "Always allocate as trainee",
+    "update": "Update adjudicator",
+    "create": "Create adjudicator"
+  },
+  "people": {
+    "name": "İsim",
+    "gender": {
+      "title": "Cinsiyet",
+      "none": "(none)",
+      "male": "Erkek",
+      "female": "Kadın",
+      "other": "Diğer"
+    },
+    "email": "Email",
+    "anonymous": "Anonymous",
+    "key": "URL anahtarı"
+  },
+  "teams": {
+    "title": "Takımlar",
+    "name": "İsim",
+    "speakers": "Konuşmacılar",
+    "breakCategories": "Break categories",
+    "emoji": "Emoji",
+    "codeName": "Kod ad"
+  },
+  "institutions": {
+    "title": "Kurumlar",
+    "none": "No institution",
+    "create": "Create institution",
+    "code": "Kod",
+    "name": "İsim",
+    "region": "Bölge",
+    "numberTeams": "Takımlar",
+    "numberAdjs": "Jüriler"
+  },
+  "language": "Dil",
+  "feedback": {
+    "target": "To adjudicator",
+    "submitter": "Submitter",
+    "submit": "Submit feedback"
+  },
+  "rooms": {
+    "title": "Odalar",
+    "categories": "Kategoriler",
+    "name": "İsim",
+    "priority": "Öncelik",
+    "update": "Update room",
+    "create": "Create room"
+  },
+  "nav": {
+    "overview": "Genel bakış",
+    "newtournament": "New tournament",
+    "settings": "Settings",
+    "participants": "Katılımcılar",
+    "team": "Takım",
+    "adjudicator": "Jüri",
+    "institution": "Kurum",
+    "rooms": "Odalar",
+    "room": "Room",
+    "roomcategory": "Kategori",
+    "checkins": "Giriş işlemleri",
+    "feedback": "Geri bildirim",
+    "breaks": "Breakler",
+    "standings": "Sıralamalar",
+    "availabilities": "Availabilities",
+    "draw": "Kura",
+    "release": "Release",
+    "results": "Sonuçlar",
+    "institutions": "Kurumlar",
+    "speakerCategories": "konuşmacı kategorileri",
+    "privateURLs": "Özel URL'ler"
+  },
+  "tables": {
+    "search": "Search",
+    "csvSave": "Save as CSV",
+    "empty": "No data available",
+    "create": "Create",
+    "edit": "Edit",
+    "print": "Print"
+  },
+  "base": {
+    "welcome": "Hoş geldiniz!",
+    "head": "Home",
+    "adminLink": "Administrator area for {tournament}",
+    "publicLink": "Public area for {tournament}",
+    "tournamentWelcome": "Welcome to {tournament}!",
+    "footer": {
+      "runsOn": "{tournament} runs on Tabbycat {version} ({versionName})",
+      "runsOnNoTournament": "This site runs on Tabbycat {version} ({versionName})",
+      "license": "Tabbycat is an open-source project developed by volunteers and is free to use.",
+      "suggestedDonation": {
+        "link": "a donation of {amount}",
+        "text": "For a tournament of this size, we suggest {link}."
+      },
+      "donation": {
+        "link": "Donations to Tabbycat from individuals or organisations",
+        "text": "{link} are much appreciated and help us to continue to develop, support, and maintain Tabbycat."
+      },
+      "organisation": {
+        "title": "Kurumumuz",
+        "text": "Tabbycat is supported by the {association}, a non-profit for advancing open debate technology.",
+        "association": "Tabbycat Debate Association"
+      },
+      "language": "Dil",
+      "changeLanguage": "Change language",
+      "selectLanguage": "Bu dili kullan",
+      "github": "GitHub",
+      "documentation": "Belgeler",
+      "support": "Destek",
+      "facebook": "Facebook",
+      "setUp": "Set up a copy"
+    }
+  },
+  "newTournament": {
+    "title": "Yeni Turnuva",
+    "demo": {
+      "tagline": "Tabbycat'ı sadece deniyor musunuz?",
+      "message": "{tagline} If you're learning or playing around with Tabbycat, it's easiest to create a demo tournament that is prepopulated with a fake (but typical) set of teams, adjudicators, rooms, and the like. You can then delete this demo tournament later on, or deploy a new instance for your real tournament."
+    },
+    "name": {
+      "title": "İsim",
+      "help": "Tam adı, örneğin \"Australasian Intervarsity Debating Championships 2016\""
+    },
+    "shortName": {
+      "title": "Short name",
+      "help": "Menüde kullanılan ad, örneğin \"Australs 2016\""
+    },
+    "slug": {
+      "title": "Slug",
+      "help": "Turnuvanın alt URL'sinde boşluk bulunamaz, örneğin \"australs2016\""
+    },
+    "format": {
+      "title": "Format",
+      "help": "Apply a standard set of settings to match a common debate format. These can be changed afterwards and should be checked for your needs."
+    },
+    "prelimRounds": "Ön eleme turlarının sayısı",
+    "elimRoundsTeams": {
+      "title": "Number of teams in the first open elimination round",
+      "help": "Leave blank if there are no elimination rounds"
+    },
+    "publicPages": {
+      "title": "Enable public pages",
+      "help": "Sitenin herkese açık tarafında, kuralar (bir kez yayınlandıktan sonra) ve önceki turların hareketleri gibi hassas olmayan bilgileri gösterir"
+    },
+    "dataEntry": {
+      "title": "Participant data entry",
+      "help": "Whether participants can submit ballots and feedback themselves, and how they do so"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "Next step",
+      "import": "Drop .csv files here!",
+      "dragDrop": "Drag-and-drop CSV files to quickly import participants",
+      "header": "CSV upload",
+      "fileName": "File name",
+      "data": "Data"
+    }
+  },
+  "options": {
+    "presets": {
+      "dataEntry": {
+        "disabled": "Kapalı (yalnızca tab personeli kullanabilir)",
+        "privateURLs": "Özel URL'ler kullan",
+        "public": "Use publicly-accessible forms"
+      },
+      "formats": {
+        "2v2": "Doğaçlama 2'e 2",
+        "3v3": "Hazırlıklı 3'e 3",
+        "apda": "American Parliamentary Debate Association",
+        "easters": "Australian Easters",
+        "australs": "Australs",
+        "bp": "Ingiliz parlamenter stili",
+        "cp": "Canadian Parliamentary",
+        "uadc": "United Asian Debating Championships",
+        "wsdc": "World Schools Debating Championships"
+      }
+    }
+  }
+}

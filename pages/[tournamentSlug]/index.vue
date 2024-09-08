@@ -1,19 +1,19 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
-
 const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.public.index',
 });
 
-const tournamentsStore = useTournamentsStore();
-const { currentTournament } = storeToRefs(tournamentsStore);
+const { data: tournamentData } = await useAPI(
+  'tournaments',
+  {},
+  { tournamentSlug: useState('currentTournamentSlug').value },
+);
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | ${t('base.head')}`,
+  title: `${tournamentData.value.shortName} | ${t('base.head')}`,
 });
 </script>
 
@@ -24,9 +24,7 @@ useHead({
     </template>
     <template #title>
       <PageTitle emoji="👋">
-        {{
-          $t('base.tournamentWelcome', { tournament: currentTournament.name })
-        }}!
+        {{ $t('base.tournamentWelcome', { tournament: tournamentData.name }) }}
       </PageTitle>
     </template>
     Yes!

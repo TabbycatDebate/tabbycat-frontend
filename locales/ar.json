@@ -1,0 +1,187 @@
+{
+  "adjudicators": {
+    "title": "المحكمين",
+    "independent": "محكم المناظرة",
+    "independentAbbr": "IA",
+    "baseScore": "Base score",
+    "adjCore": "عضو في لجنة التحكيم",
+    "alwaysTrainee": "Always allocate as trainee",
+    "update": "Update adjudicator",
+    "create": "Create adjudicator"
+  },
+  "people": {
+    "name": "الاسم",
+    "gender": {
+      "title": "Gender",
+      "none": "(none)",
+      "male": "Male",
+      "female": "Female",
+      "other": "Other"
+    },
+    "email": "Email",
+    "anonymous": "Anonymous",
+    "key": "مفتاح الرابط "
+  },
+  "teams": {
+    "title": "الفرق",
+    "name": "الاسم",
+    "speakers": "متحدثين",
+    "breakCategories": "Break categories",
+    "emoji": "Emoji",
+    "codeName": "Code name"
+  },
+  "institutions": {
+    "title": "Institutions",
+    "none": "No institution",
+    "create": "Create institution",
+    "code": "Code",
+    "name": "الاسم",
+    "region": "Region",
+    "numberTeams": "الفرق",
+    "numberAdjs": "المحكمين"
+  },
+  "language": "لُغَة",
+  "feedback": {
+    "target": "To adjudicator",
+    "submitter": "Submitter",
+    "submit": "Submit feedback"
+  },
+  "rooms": {
+    "title": "قاعات المناظرة",
+    "categories": "الفئات",
+    "name": "الاسم",
+    "priority": "الأولوية",
+    "update": "Update room",
+    "create": "Create room"
+  },
+  "nav": {
+    "overview": "Overview",
+    "newtournament": "New tournament",
+    "settings": "Settings",
+    "participants": "Participants",
+    "team": "فريق",
+    "adjudicator": "محكم ",
+    "institution": "مؤسسة",
+    "rooms": "قاعات المناظرة",
+    "room": "Room",
+    "roomcategory": "الفئة",
+    "checkins": "Checkins",
+    "feedback": "تغذية راجعة ",
+    "breaks": "التأهل",
+    "standings": "التقسيمات ",
+    "availabilities": "Availabilities",
+    "draw": "قرعة ",
+    "release": "Release",
+    "results": "النتائج",
+    "institutions": "Institutions",
+    "speakerCategories": "نقاط المتحدث",
+    "privateURLs": "رابط خاص "
+  },
+  "tables": {
+    "search": "Search",
+    "csvSave": "Save as CSV",
+    "empty": "No data available",
+    "create": "Create",
+    "edit": "Edit",
+    "print": "Print"
+  },
+  "base": {
+    "welcome": "مرحبا ",
+    "head": "Home",
+    "adminLink": "Administrator area for {tournament}",
+    "publicLink": "Public area for {tournament}",
+    "tournamentWelcome": "Welcome to {tournament}!",
+    "footer": {
+      "runsOn": "{tournament} runs on Tabbycat {version} ({versionName})",
+      "runsOnNoTournament": "This site runs on Tabbycat {version} ({versionName})",
+      "license": "Tabbycat is an open-source project developed by volunteers and is free to use.",
+      "suggestedDonation": {
+        "link": "a donation of {amount}",
+        "text": "For a tournament of this size, we suggest {link}."
+      },
+      "donation": {
+        "link": "Donations to Tabbycat from individuals or organisations",
+        "text": "{link} are much appreciated and help us to continue to develop, support, and maintain Tabbycat."
+      },
+      "organisation": {
+        "title": "Our Organisation",
+        "text": "Tabbycat is supported by the {association}, a non-profit for advancing open debate technology.",
+        "association": "Tabbycat Debate Association"
+      },
+      "language": "لُغَة",
+      "changeLanguage": "Change language",
+      "selectLanguage": "استخدم هذه اللغة ",
+      "github": "GitHub",
+      "documentation": "البيانات ",
+      "support": "Support",
+      "facebook": "فيس بوك",
+      "setUp": "Set up a copy"
+    }
+  },
+  "newTournament": {
+    "title": "بطولة جديدة ",
+    "demo": {
+      "tagline": "هل تريد الخروج من Tabbycat؟",
+      "message": "{tagline} If you're learning or playing around with Tabbycat, it's easiest to create a demo tournament that is prepopulated with a fake (but typical) set of teams, adjudicators, rooms, and the like. You can then delete this demo tournament later on, or deploy a new instance for your real tournament."
+    },
+    "name": {
+      "title": "الاسم",
+      "help": "الاسم الكامل ، مثال على ذلك \" البطولة الاسترالية للمناظرات 2016  \" "
+    },
+    "shortName": {
+      "title": "Short name",
+      "help": "الاسم المستخدم في القائمة \" استراليا 2016 \" "
+    },
+    "slug": {
+      "title": "Slug",
+      "help": "رابط البطولة لا يحتوي على مسافة مثال ذلك \"استراليا2016\""
+    },
+    "format": {
+      "title": "Format",
+      "help": "Apply a standard set of settings to match a common debate format. These can be changed afterwards and should be checked for your needs."
+    },
+    "prelimRounds": "عدد الجولات التمهيدية ",
+    "elimRoundsTeams": {
+      "title": "Number of teams in the first open elimination round",
+      "help": "Leave blank if there are no elimination rounds"
+    },
+    "publicPages": {
+      "title": "Enable public pages",
+      "help": "تظهر المعلومات غير الحساسة على الجانب المواجه للجمهور من هذا الموقع، مثل توجه (صدر مرة واحدة) والحركات من الجولات السابقة"
+    },
+    "dataEntry": {
+      "title": "Participant data entry",
+      "help": "Whether participants can submit ballots and feedback themselves, and how they do so"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "Next step",
+      "import": "Drop .csv files here!",
+      "dragDrop": "Drag-and-drop CSV files to quickly import participants",
+      "header": "CSV upload",
+      "fileName": "File name",
+      "data": "Data"
+    }
+  },
+  "options": {
+    "presets": {
+      "dataEntry": {
+        "disabled": "تعطيل ( تاب العمال فقط )",
+        "privateURLs": "استخدم الرابط الخاص ",
+        "public": "Use publicly-accessible forms"
+      },
+      "formats": {
+        "2v2": "2 vs 2 Impromptu",
+        "3v3": "3 vs 3 Prepared",
+        "apda": "American Parliamentary Debate Association",
+        "easters": "Australian Easters",
+        "australs": "Australs",
+        "bp": "British Parliamentary",
+        "cp": "Canadian Parliamentary",
+        "uadc": "United Asian Debating Championships",
+        "wsdc": "World Schools Debating Championships"
+      }
+    }
+  }
+}

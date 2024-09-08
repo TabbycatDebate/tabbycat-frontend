@@ -389,7 +389,7 @@ export const useTournamentsStore = defineStore({
       }
     },
     async getTeams() {
-      if (this._loading.teams === false) {
+      if (typeof this._loading.teams === 'boolean') {
         return;
       }
       this._loading.teams = true;

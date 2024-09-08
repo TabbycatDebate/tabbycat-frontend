@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import vSelect from 'vue-select';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 interface Props {
   initial: Team;
@@ -11,66 +9,73 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits(['closed']);
 
+const { data: breakCategoryData } = await useAPI('breakCategories');
+const preferences = await usePreferences();
+const nSpeakers = computed(
+  () => preferences.debateRules.substantiveSpeakers.value,
+);
+
 const team = reactive({
   url: props.initial?.url ?? null,
   institution: props.initial?.institution ?? null,
   codeName: props.initial?.codeName ?? null,
   emoji: props.initial?.emoji ?? null,
-  speakers: [...(props.initial?.speakers ?? [])],
-  reference: props.initial?.reference ?? '',
-  useInstitutionPrefix: props.initial?.useInstitutionPrefix ?? true,
-  breakCategories: [...(props.initial?.breakCategories ?? [])],
-  institutionConflicts: [...(props.initial?.institutionConflicts ?? [])],
-});
-
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getPreferences().then(() => {
-  const nSpeakers =
-    tournamentsStore.currentTournament.preferences.debate_rules
-      .substantive_speakers.value;
-  if (!team.speakers.length) {
-    team.speakers = Array(nSpeakers)
+  speakers: [...(props.initial?.speakers ?? [])].push(
+    ...Array(nSpeakers.value - (props.initial?.speakers?.length ?? 0))
       .fill()
       .map(() => ({
         name: '',
         gender: null,
         email: '',
         categories: [],
-      }));
-  }
+      })),
+  ),
+  reference: props.initial?.reference ?? '',
+  useInstitutionPrefix: props.initial?.useInstitutionPrefix ?? true,
+  breakCategories: [
+    ...(props.initial?.breakCategories ??
+      breakCategoryData.value.filter((bc) => bc.isGeneral).map((bc) => bc.url)),
+  ],
+  institutionConflicts: [...(props.initial?.institutionConflicts ?? [])],
 });
-tournamentsStore.getInstitutions();
-tournamentsStore.getBreakCategories().then(() => {
-  team.breakCategories = tournamentsStore.currentTournament.breakCategories
-    .filter((bc) => bc.isGeneral)
-    .map((bc) => bc.url);
-});
-tournamentsStore.getSpeakerCategories();
 
-const teamInstitution = computed(() =>
-  tournamentsStore.institutions.find((inst) => inst.url === team.institution),
+const { data: institutionData } = await useAPI('institutions');
+const { data: speakerCategoryData, status: speakerCategoryStatus } =
+  useAPI('speakerCategories');
+const { execute: createTeam } = useAPI('teams', {
+  immediate: false,
+  watch: false,
+  method: 'post',
+  body: team,
+});
+const { execute: updateTeam } = useAPI(
+  'teams',
+  { immediate: false, watch: false, method: 'post', body: team },
+  { id: props.initial?.id },
 );
 
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const teamInstitution = computed(() =>
+  institutionData.value.find((inst) => inst.url === team.institution),
+);
 
-function createTeam() {
+async function postForm() {
   if (team.url) {
-    tournamentsStore.updateTeam(team);
+    await updateTeam();
   } else {
-    tournamentsStore.addTeam(team);
+    await createTeam();
   }
   emit('closed', true);
 }
 </script>
 
 <template>
-  <form @submit.prevent="createTeam">
+  <form @submit.prevent="postForm">
     <div class="form-group">
-      <label for="institution">Institution</label>
+      <label for="institution">{{ $t('teams.institution') }}</label>
       <FormsFieldsInstitution v-model="team.institution" name="institution" />
     </div>
     <div class="form-group">
-      <label for="reference">Team name</label>
+      <label for="reference">{{ $t('teams.name') }}</label>
       <FormsFieldsTeamName
         v-model:prefixed="team.useInstitutionPrefix"
         v-model:name="team.reference"
@@ -79,13 +84,12 @@ function createTeam() {
     </div>
     <FormsFieldsEmoji v-model:emoji="team.emoji" v-model:code="team.codeName" />
     <div class="form-group">
-      <label for="break-categories">Break categories</label>
+      <label for="break-categories">{{ $t('teams.breakCategories') }}</label>
       <vSelect
-        v-if="loading.breakCategories === false"
         v-model="team.breakCategories"
         input-id="break-categories"
         name="break-categories"
-        :options="currentTournament.breakCategories"
+        :options="breakCategoryData"
         :reduce="(bc) => bc.url"
         label="name"
         :clearable="false"
@@ -93,15 +97,16 @@ function createTeam() {
       />
     </div>
     <template v-if="team.speakers !== null">
-      <div class="section-label">Speakers</div>
+      <div class="section-label">{{ $t('teams.speakers') }}</div>
       <Tabs>
         <TabList>
           <Tab
             v-for="(speaker, i) in team.speakers"
             :key="speaker.url"
             :value="i"
-            >Speaker {{ i }}</Tab
           >
+            {{ $t('teams.speakerN', { seq: i + 1 }) }}
+          </Tab>
         </TabList>
         <TabPanels>
           <TabPanel
@@ -111,7 +116,7 @@ function createTeam() {
           >
             <div class="form-group combined">
               <div>
-                <label for="name">Name</label>
+                <label for="name">{{ $t('people.name') }}</label>
                 <input
                   id="name"
                   v-model="speaker.name"
@@ -123,7 +128,7 @@ function createTeam() {
               <FormsFieldsGender v-model="speaker.gender" />
             </div>
             <div class="form-group">
-              <label for="spk-email">Email</label>
+              <label for="spk-email">{{ $t('people.email') }}</label>
               <input
                 id="spk-email"
                 v-model="speaker.email"
@@ -133,13 +138,15 @@ function createTeam() {
               />
             </div>
             <div class="form-group">
-              <label for="spk-categories">Speaker categories</label>
+              <label for="spk-categories">{{
+                $t('people.speakers.speakerCategories')
+              }}</label>
               <vSelect
-                v-if="loading.speakerCategories === false"
+                v-if="speakerCategoryStatus === 'success'"
                 v-model="speaker.categories"
                 input-id="spk-categories"
                 name="spk-categories"
-                :options="currentTournament.speakerCategories"
+                :options="speakerCategoryData"
                 :reduce="(sc) => sc.url"
                 label="name"
                 :clearable="false"
@@ -151,7 +158,12 @@ function createTeam() {
       </Tabs>
     </template>
     <button type="submit" class="form-control btn-success">
-      {{ team.url ? 'Update' : 'Create' }} team
+      <template v-if="team.url">
+        {{ $t('teams.update') }}
+      </template>
+      <template v-else>
+        {{ $t('teams.create') }}
+      </template>
     </button>
   </form>
 </template>

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 const { t } = useI18n();
 
@@ -14,17 +12,14 @@ useHead({
   title: `Tabbycat | ${t('base.head')}`,
 });
 
-const tournamentsStore = useTournamentsStore();
-const { getTournaments } = tournamentsStore;
-getTournaments();
-const { tournaments } = storeToRefs(tournamentsStore);
+const { data: tournaments } = await useAPI('tournaments');
 </script>
 
 <template>
   <LayoutsPublic>
     <ul class="tournaments">
       <li v-for="tournament in tournaments" :key="tournament.url">
-        <ButtonGroup :class="{ inactive: !tournament.active }">
+        <GroupButtons :class="{ inactive: !tournament.active }">
           <LinkButton
             icon="Settings"
             :to="{
@@ -51,7 +46,7 @@ const { tournaments } = storeToRefs(tournamentsStore);
               </template>
             </i18n-t>
           </LinkButton>
-        </ButtonGroup>
+        </GroupButtons>
       </li>
     </ul>
   </LayoutsPublic>

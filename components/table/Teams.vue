@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
-
 interface Props {
   editable: boolean;
 }
@@ -9,44 +6,33 @@ const { editable } = withDefaults(defineProps<Props>(), {
   editable: false,
 });
 
-const tournamentsStore = useTournamentsStore();
-const bcMap = ref({});
-const scMap = ref({});
-tournamentsStore.getTeams();
-tournamentsStore.getInstitutions();
-tournamentsStore.getPreferences();
-tournamentsStore.getBreakCategories().then(() => {
-  bcMap.value = Object.fromEntries(
-    tournamentsStore.currentTournament.breakCategories?.map((bc) => [
-      bc.url,
-      bc,
-    ]) ?? [],
-  );
-});
-tournamentsStore.getSpeakerCategories().then(() => {
-  scMap.value = Object.fromEntries(
-    tournamentsStore.currentTournament.speakerCategories?.map((sc) => [
-      sc.url,
-      sc,
-    ]) ?? [],
-  );
-});
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const { data: teamsData, status: teamsStatus } = await useAPI('teams');
+const { data: instData } = await useAPI('institutions');
+const preferences = await usePreferences();
+const { data: breakCatData } = await useAPI('breakCategories');
+const { data: spkCatData } = await useAPI('speakerCategories');
+
+const bcMap = computed(() =>
+  Object.fromEntries(breakCatData.value.map((bc) => [bc.url, bc]) ?? []),
+);
+
+const scMap = computed(() =>
+  Object.fromEntries(spkCatData.value.map((sc) => [sc.url, sc]) ?? []),
+);
 
 const instMap = computed(() =>
-  Object.fromEntries(
-    tournamentsStore.institutions.map((inst) => [inst.url, inst]),
-  ),
+  Object.fromEntries(instData.value.map((inst) => [inst.url, inst])),
 );
 
 const useEmoji = computed(
-  () => tournamentsStore.currentTournament.preferences?.ui_options?.show_emoji,
+  () =>
+    preferenceData.value.find(
+      ({ section, name }) => section === 'ui_options' && name === 'show_emoji',
+    ).value,
 );
 
 function getTeamName(team, admin) {
-  const useCodes =
-    tournamentsStore.currentTournament.preferences?.ui_options?.team_code_names
-      ?.value;
+  const useCodes = preferences.uiOptions.teamCodeNames.value;
   return admin && ['admin-tooltips-real', 'everywhere'].includes(useCodes)
     ? team.codeName
     : team.shortName ?? team.codeName;
@@ -54,7 +40,7 @@ function getTeamName(team, admin) {
 
 const teamData = computed(
   () =>
-    tournamentsStore.currentTournament.teams?.map((team) => ({
+    teamsData.value.map((team) => ({
       obj: team,
       url: team.url,
       name: getTeamName(team, true),
@@ -71,19 +57,10 @@ const teamData = computed(
           .map((sc) => scMap.value[sc]?.name)
           .join(', '),
       })),
-    })),
+    })) ?? [],
 );
 
-const teamExpandedRows = ref([]);
-const expandAll = () => {
-  teamExpandedRows.value = products.value.reduce(
-    (acc, p) => (acc[p.id] = true) && acc,
-    {},
-  );
-};
-const collapseAll = () => {
-  teamExpandedRows.value = null;
-};
+const expandedRows = ref([]);
 
 const showTeamDialog = ref(false);
 const submittedTeam = ref(false);
@@ -92,9 +69,6 @@ function createTeam() {
   newTeam.value = {};
   submittedTeam.value = false;
   showTeamDialog.value = true;
-}
-function saveTeam() {
-  submittedTeam.value = true;
 }
 function editTeam(team) {
   newTeam.value = { ...team };
@@ -105,9 +79,9 @@ function editTeam(team) {
 <template>
   <div class="card">
     <TableBase
+      v-model:expanded-rows="expandedRows"
       :data="teamData"
-      :loading="loading.teams !== false"
-      :expanded-rows="teamExpandedRows"
+      :loading="teamsStatus === 'pending'"
       :filter-fields="['name', 'categories', 'institution', 'speakers']"
       :title="$t('teams.title')"
     >
@@ -126,13 +100,13 @@ function editTeam(team) {
         <template #header>
           <Icon v-tooltip="$t('teams.name')" type="User" size="18" />
         </template>
-        <template #body="{ data, field }">
+        <template #body="{ data }">
           <VTooltip style="display: inline" theme="full-context">
             <NuxtLink
               :to="{
                 name: 'tournament.admin.participants.team',
                 params: {
-                  tournamentSlug: currentTournament.slug,
+                  tournamentSlug: $route.params.tournamentSlug,
                   id: data.obj.id,
                 },
               }"

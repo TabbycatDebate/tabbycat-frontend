@@ -1,41 +1,40 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.admin.participants.privateurls',
 });
 
-const tournamentsStore = useTournamentsStore();
+const currentTournament = await useCurrentTournament();
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Private URLs`,
+  title: `${currentTournament.value.shortName} | ${t('base.title.admin')} - ${t(
+    'nav.privateURLs',
+  )}`,
 });
 
-tournamentsStore.getTeams();
-tournamentsStore.getAdjudicators();
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const { data: teamData, status: teamStatus } = useAPI('teams');
+const { data: adjData, status: adjStatus } = useAPI('adjudicators');
 
-const adjTable = computed(
-  () =>
-    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
-      obj: adj,
-      name: adj.name,
-      urlKey: adj.urlKey,
-    })),
+const adjTable = computed(() =>
+  adjData.value.map((adj) => ({
+    obj: adj,
+    name: adj.name,
+    urlKey: adj.urlKey,
+  })),
 );
-const speakerTable = computed(
-  () =>
-    tournamentsStore.currentTournament.teams
-      ?.map((team) =>
-        team.speakers.map((spk) => ({
-          obj: spk,
-          name: spk.name,
-          urlKey: spk.urlKey,
-          team: team.shortName,
-        })),
-      )
-      .flat(),
+const speakerTable = computed(() =>
+  teamData.value
+    .map((team) =>
+      team.speakers.map((spk) => ({
+        obj: spk,
+        name: spk.name,
+        urlKey: spk.urlKey,
+        team: team.shortName,
+      })),
+    )
+    .flat(),
 );
 </script>
 
@@ -72,7 +71,7 @@ const speakerTable = computed(
       <div class="card">
         <TableBase
           :data="adjTable"
-          :loading="loading.adjudicators !== false"
+          :loading="adjStatus === 'pending'"
           :filter-fields="['name', 'urlKey']"
           :title="$t('adjudicators.title')"
         >
@@ -106,7 +105,7 @@ const speakerTable = computed(
       <div class="card">
         <TableBase
           :data="speakerTable"
-          :loading="loading.teams !== false"
+          :loading="teamStatus === 'pending'"
           :filter-fields="['name', 'urlKey', 'team']"
           :title="$t('teams.speakers')"
         >

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import vSelect from 'vue-select';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 interface Props {
   initial: Room;
@@ -18,23 +16,32 @@ const room = reactive({
   priority: initial?.priority ?? 100,
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getRoomCategories();
+const { data: roomCategoryData, status: roomCategoryStatus } =
+  useAPI('roomCategories');
+const { execute: createRoom } = useAPI('rooms', {
+  immediate: false,
+  watch: false,
+  method: 'post',
+  body: room,
+});
+const { execute: updateRoom } = useAPI(
+  'rooms',
+  { immediate: false, watch: false, method: 'patch', body: room },
+  { id: initial.id },
+);
 
-const { loading, currentTournament } = storeToRefs(tournamentsStore);
-
-function saveRoom() {
+async function saveRoom() {
   if (room.url) {
-    tournamentsStore.updateRoom(room);
+    await updateRoom(room);
   } else {
-    tournamentsStore.addRoom(room);
+    await createRoom(room);
   }
   emit('closed', true);
 }
 
 function suffixes(position: string) {
   return (
-    tournamentsStore.currentTournament.roomCategories
+    roomCategoryData.value
       ?.filter(
         (rc) =>
           room.categories.includes(rc.url) &&
@@ -55,11 +62,11 @@ const suffix = computed(() => suffixes('S'));
     <div class="form-group">
       <label for="categories">{{ $t('rooms.categories') }}</label>
       <vSelect
-        v-if="loading.roomCategories === false"
+        v-if="roomCategoryStatus === 'success'"
         v-model="room.categories"
         input-id="categories"
         name="categories"
-        :options="currentTournament.roomCategories"
+        :options="roomCategoryData"
         :reduce="(rc) => rc.url"
         label="name"
         multiple

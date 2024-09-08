@@ -1,7 +1,4 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
-
 interface Props {
   editable: boolean;
 }
@@ -9,27 +6,23 @@ const { editable } = withDefaults(defineProps<Props>(), {
   editable: false,
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getAdjudicators();
-tournamentsStore.getInstitutions();
-
-const { loading } = storeToRefs(tournamentsStore);
+const { data: institutionData } = await useAPI('institutions');
+const { data: adjudicatorData, status: adjStatus } =
+  await useAPI('adjudicators');
 
 const instMap = computed(() =>
-  Object.fromEntries(
-    tournamentsStore.institutions.map((inst) => [inst.url, inst]),
-  ),
+  Object.fromEntries(institutionData.value.map((inst) => [inst.url, inst])),
 );
 
 const adjData = computed(
   () =>
-    tournamentsStore.currentTournament.adjudicators?.map((adj) => ({
+    adjudicatorData.value.map((adj) => ({
       obj: adj,
       name: adj.name,
-      institution: instMap.value[adj.institution]?.code,
+      institution: instMap.value[adj.institution]?.code ?? null,
       adjCore: adj.adjCore,
       independent: adj.independent,
-    })),
+    })) ?? [],
 );
 
 const showAdjDialog = ref(false);
@@ -50,7 +43,7 @@ function editAdj(adj) {
   <div class="card">
     <TableBase
       :data="adjData"
-      :loading="loading.adjudicators !== false"
+      :loading="adjStatus === 'pending'"
       :filter-fields="['name', 'institution']"
       :title="$t('adjudicators.title')"
     >

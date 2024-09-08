@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useTournamentsStore } from '~/stores/tournaments';
+const preferences = await usePreferences();
 
 interface Props {
   initial: Adjudicator;
@@ -24,23 +24,31 @@ const adjudicator = reactive({
   adjudicatorConflicts: [...(initial?.adjudicatorConflicts ?? [])],
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getPreferences();
-
-const minScore = computed(
-  () =>
-    tournamentsStore.currentTournament.preferences.feedback.adj_min_score.value,
+const { execute: createAdjudicator } = useAPI('adjudicators', {
+  immediate: false,
+  watch: false,
+  method: 'post',
+  body: adjudicator,
+});
+const { execute: updateAdjudicator } = useAPI(
+  'adjudicators',
+  {
+    immediate: false,
+    watch: false,
+    method: 'patch',
+    body: adjudicator,
+  },
+  { id: initial?.id },
 );
-const maxScore = computed(
-  () =>
-    tournamentsStore.currentTournament.preferences.feedback.adj_max_score.value,
-);
 
-function saveAdjudicator() {
+const minScore = computed(() => preferences.feedback.adjMinScore.value);
+const maxScore = computed(() => preferences.feedback.adjMaxScore.value);
+
+async function saveAdjudicator() {
   if (adjudicator.url) {
-    tournamentsStore.updateAdjudicator(adjudicator);
+    await updateAdjudicator();
   } else {
-    tournamentsStore.addAdjudicator(adjudicator);
+    await createAdjudicator();
   }
   emit('closed', true);
 }
@@ -120,7 +128,7 @@ function saveAdjudicator() {
         name="trainee"
         class="form-control"
       />
-      <label for="trainee">{{ $t('adjudicators.trainee') }}</label>
+      <label for="trainee">{{ $t('adjudicators.alwaysTrainee') }}</label>
     </div>
     <button type="submit" class="form-control btn-success">
       <template v-if="adjudicator.url">

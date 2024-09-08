@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useTournamentsStore } from '~/stores/tournaments';
+const currentTournament = await useCurrentTournament();
+
 interface Props {
   adjudicator: Adjudicator;
 }
 const props = defineProps<Props>();
-const tournamentsStore = useTournamentsStore();
 
 const url = computed(() => ({
   name: 'tournament.admin.participants.adjudicator',
   params: {
-    tournamentSlug: tournamentsStore.currentTournament.slug,
+    tournamentSlug: currentTournament.value.slug,
     id: props.adjudicator.id,
   },
 }));

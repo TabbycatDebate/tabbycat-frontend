@@ -1,14 +1,53 @@
 {
   "adjudicators": {
-    "title": "Juges"
+    "title": "Juges",
+    "independent": "Juge indépendant",
+    "independentAbbr": "JI",
+    "baseScore": "Note de base",
+    "adjCore": "Membre du sein des juges",
+    "alwaysTrainee": "Toujours affecter comme stagiaire",
+    "update": "Mettre juge à jour",
+    "create": "Créer juge"
+  },
+  "people": {
+    "name": "Nom",
+    "gender": {
+      "title": "Genre",
+      "none": "(aucun(e))",
+      "male": "Homme",
+      "female": "Femme",
+      "other": "Autre"
+    },
+    "email": "Courriel",
+    "anonymous": "Anonyme",
+    "key": "clé d'URL"
+  },
+  "teams": {
+    "title": "Équipes",
+    "name": "Nom",
+    "speakers": "Orateurs",
+    "breakCategories": "Catégories de qualification",
+    "emoji": "Émoji",
+    "codeName": "Nom de code"
+  },
+  "institutions": {
+    "title": "Institutions",
+    "none": "Pas d'institution",
+    "create": "Créer institution",
+    "code": "Code",
+    "name": "Nom",
+    "region": "Région",
+    "numberTeams": "Équipes",
+    "numberAdjs": "Juges"
   },
   "language": "Langue",
   "feedback": {
     "target": "Au juge",
-    "submitter": "Saissiseur",
+    "submitter": "Auteur",
     "submit": "Saisir évaluation"
   },
   "rooms": {
+    "title": "Salles",
     "categories": "Catégories",
     "name": "Nom",
     "priority": "Priorité",
@@ -16,7 +55,7 @@
     "create": "Créer salle"
   },
   "nav": {
-    "overview": "Vue d'ensemble",
+    "overview": "Vue d’ensemble",
     "newtournament": "Nouveau tournoi",
     "settings": "Réglages",
     "participants": "Participants",
@@ -24,15 +63,125 @@
     "adjudicator": "Juge",
     "institution": "Institution",
     "rooms": "Salles",
-    "room": "Sale",
+    "room": "Salle",
     "roomcategory": "Catégorie",
     "checkins": "Enregistrements",
-    "feedback": "Évaluations",
-    "breaks": "Qualifications"
+    "feedback": "Évaluation",
+    "breaks": "Qualifications",
+    "standings": "Classement",
+    "availabilities": "Disponibilités",
+    "draw": "Tirage",
+    "release": "Publication",
+    "results": "Résultats",
+    "institutions": "Institutions",
+    "speakerCategories": "Enregistrer les catégories d'orateurs",
+    "privateURLs": "URLs privées"
   },
   "tables": {
     "search": "Rechercher",
-    "csvSave": "Télécharger comme CSV",
-    "empty": "Aucune donnée disponible"
+    "csvSave": "Enregistrer sous format CSV",
+    "empty": "Aucune donnée disponible",
+    "create": "Créer",
+    "edit": "Modifier",
+    "print": "Imprimer"
+  },
+  "base": {
+    "welcome": "Bienvenue !",
+    "head": "Accueil",
+    "adminLink": "Zone d'administrateur de {tournament}",
+    "publicLink": "Zone publique de {tournament}",
+    "tournamentWelcome": "Bienvenue à {tournament} !",
+    "footer": {
+      "runsOn": "{tournament} fonctionne sur Tabbycat {version} ({versionName})",
+      "runsOnNoTournament": "Ce site fonctionne sur Tabbycat {version} ({versionName})",
+      "license": "Tabbycat est un projet libre-source développé par des bénévoles et est gratuit pour à utiliser.",
+      "suggestedDonation": {
+        "link": "un don de {amount}",
+        "text": "Pour un tournoi de cette taille, nous vous suggérons un don de {link}$."
+      },
+      "donation": {
+        "link": "Des dons depuis des individus ou organisations",
+        "text": "{link} seront grandement appréciés et nous aident au développement, le support et l'entretien de Tabbycat."
+      },
+      "organisation": {
+        "title": "Notre organisation",
+        "text": "Tabbycat est soutenu par l'{association}, un organisme sans but lucratif pour la technologie de débat libre.",
+        "association": "Association de débat Tabbycat"
+      },
+      "language": "Langue",
+      "changeLanguage": "Changer la langue",
+      "selectLanguage": "Utiliser cette langue",
+      "github": "GitHub",
+      "documentation": "Documentation",
+      "support": "Aide",
+      "facebook": "Facebook",
+      "setUp": "Installer une copie"
+    }
+  },
+  "newTournament": {
+    "title": "Créer un nouveau tournoi",
+    "demo": {
+      "tagline": "Vous essayez simplement Tabbycat ?",
+      "message": "{tagline} Si vous apprenez ou jouez avec Tabbycat, il est plus facile de créer un tournoi démonstratif qui est prérempli d'un ensemble faux (mais typique) d'équipes, de juges, de salles et autres. Vous pouvez ensuite supprimer ce tournoi démonstratif, ou vous pouvez déployer une instance nouvelle pour votre tournoi réel."
+    },
+    "name": {
+      "title": "Nom",
+      "help": "Le nom complet, p. ex. \"Championnat Australasien de débat 2016\""
+    },
+    "shortName": {
+      "title": "Nom court",
+      "help": "Le nom qui est utilisé sur le menu, p. ex. \"Australs 2016\""
+    },
+    "slug": {
+      "title": "Slug",
+      "help": "Le sous-URL du tournoi, p. ex. \"australs2016\". Un slug ne peut pas contenir des espaces."
+    },
+    "format": {
+      "title": "Format",
+      "help": "Appliquer un ensemble standard de réglages pour un format de débat commun. Ils peuvent être modifiés par la suite et devraient être vérifiés pour vos besoins."
+    },
+    "prelimRounds": "Nombre de joutes préliminaires",
+    "elimRoundsTeams": {
+      "title": "Nombre d'équipes dans la première joute éliminatoire ouverte",
+      "help": "Laissez vide s'il n'y a pas de joutes éliminatoires"
+    },
+    "publicPages": {
+      "title": "Activer des pages publiques",
+      "help": "Afficher des informations non sensibles sur les pages accessibles au public, par ex., les tirages publiés et les motions des joutes antérieurs"
+    },
+    "dataEntry": {
+      "title": "Saisie de données par les participants",
+      "help": "Si les participants peuvent soumettre les feuilles et évaluations eux-même et comment ils le feront"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "Prochaine étape",
+      "import": "Déposez des fichiers .csv ici !",
+      "dragDrop": "Glissez-déposez des fichiers CSV pour importer rapidement les participants",
+      "header": "Téléversement de CSV",
+      "fileName": "Nom du fichier",
+      "data": "Données"
+    }
+  },
+  "options": {
+    "presets": {
+      "dataEntry": {
+        "disabled": "Désactivé (officiels uniquement)",
+        "privateURLs": "Utiliser des URL privées",
+        "public": "Utiliser des formulaires publics"
+      },
+      "formats": {
+        "2v2": "2 contre 2 Impromptu",
+        "3v3": "3 contre 3 Préparé",
+        "apda": "Association de Débat Parlementaire Américain",
+        "easters": "Easters Australien",
+        "australs": "Australs",
+        "bp": "Parlementaire Britannique",
+        "cp": "Parlementaire Canadien",
+        "uadc": "Championnats de Débat Asiatiques Unis",
+        "wsdc": "Championnats de Débat Scolaire Mondial"
+      }
+    }
   }
 }

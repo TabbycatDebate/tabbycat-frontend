@@ -35,7 +35,7 @@ const { user } = storeToRefs(usersStore);
       </div>
       <slot />
     </main>
-    <footer />
+    <Footer />
   </div>
 </template>
 
@@ -83,5 +83,10 @@ header {
 
 main {
   margin: 0.5rem;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
 }
 </style>

@@ -1,79 +1,48 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
+import { useI18n } from 'vue-i18n';
+
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.admin.round.availabilities',
 });
 
-const tournamentsStore = useTournamentsStore();
-const { pageRound, loading } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
+const currentRound = await useCurrentRound();
+const { data: teamData, status: teamStatus } = useAPI('teams');
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | ${tournamentsStore.pageRound.name} - Availabilities`,
+  title: `${currentTournament.value.shortName} | ${
+    currentRound.value.name
+  } - ${t('nav.availabilties')}`,
 });
 </script>
 
 <template>
   <LayoutsAdmin>
     <PageTitle emoji="📍">
-      Availabilities
-      <template #subtitle>for {{ pageRound.name }}</template>
+      {{ $t('nav.availabilties') }}
+      <template #subtitle>{{
+        $t('availabilities.subtitle', { round: currentRound.name })
+      }}</template>
       <template #nav></template>
     </PageTitle>
 
     <Tabs>
       <TabList>
-        <Tab value="Teams">Teams</Tab>
-        <Tab value="Adjudicators">Adjudicators</Tab>
-        <tab value="Rooms">Rooms</tab>
+        <Tab value="Teams">{{ $t('teams.title') }}</Tab>
+        <Tab value="Adjudicators">{{ $t('adjudicators.title') }}</Tab>
+        <tab value="Rooms">{{ $t('rooms.title') }}</tab>
       </TabList>
       <TabPanels>
         <TabPanel value="Teams">
           <div class="card">
-            <DataTable
-              ref="dt"
-              v-model:filters="filters"
+            <TableBase
               :value="speakerTable"
-              sort-mode="multiple"
-              :loading="loading.teams !== false"
+              :loading="teamStatus === 'pending'"
               :global-filter-fields="['name', 'urlKey', 'team']"
             >
-              <template #header>
-                <div class="title">
-                  <h3>Speakers</h3>
-                  <button
-                    v-tooltip="'Save as CSV'"
-                    class="btn info small"
-                    @click="exportCSV($event)"
-                  >
-                    <Icon type="Clipboard" size="22" />
-                  </button>
-                  <NuxtLink v-tooltip="'Print'" class="btn info small" to="">
-                    <Icon type="Printer" size="22" />
-                  </NuxtLink>
-                </div>
-              </template>
-              <Column field="name" sortable>
-                <template #header>
-                  <Icon v-tooltip="'Name'" type="User" size="18" />
-                </template>
-                <template #body="{ data }">
-                  <div v-if="data.obj.anonymous" class="redacted">
-                    {{ data.obj.name || 'Anonymous' }}
-                  </div>
-                  <template v-else>{{ data.obj.name }}</template>
-                </template>
-              </Column>
-              <Column field="urlKey" sortable style="width: 10em">
-                <template #header>
-                  <Icon v-tooltip="'URL Key'" type="Key" size="18" />
-                </template>
-                <template #body="{ data }">
-                  <div class="url-link">{{ data.obj.urlKey }}</div>
-                </template>
-              </Column>
-            </DataTable>
+            </TableBase>
           </div>
         </TabPanel>
         <TabPanel value="Adjudicators"></TabPanel>

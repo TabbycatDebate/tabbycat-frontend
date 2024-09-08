@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 const { t } = useI18n();
 
@@ -9,12 +8,11 @@ definePageMeta({
   emoji: '🚌',
   title: 'nav.participants',
 });
-const tournamentsStore = useTournamentsStore();
+
+const currentTournament = await useCurrentTournament();
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | ${t(
-    'nav.participants',
-  )}`,
+  title: `${currentTournament.value.shortName} | ${t('nav.participants')}`,
 });
 </script>
 

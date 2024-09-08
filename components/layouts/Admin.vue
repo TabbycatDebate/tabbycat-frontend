@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { computed } from 'vue';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
-const tournamentsStore = useTournamentsStore();
-await tournamentsStore.getRoundsForCurrentTournament();
+const currentTournament = await useCurrentTournament();
+const { data: roundData } = await useAPI('rounds');
 const rounds = groupBy(
-  tournamentsStore.currentTournament.rounds,
+  roundData.value,
   ({ breakCategory }) => breakCategory ?? '',
 );
 const prelimRounds = [...(rounds?.[''] ?? [])];
 delete rounds[''];
 
-const { currentTournament } = storeToRefs(tournamentsStore);
-
 function isCurrent(round) {
-  return tournamentsStore.currentTournament.currentRounds.includes(round.url);
+  return currentTournament.value.currentRounds?.includes(round.url) ?? false;
 }
 function roundStatus(round) {
   if (round.completed) {
@@ -30,7 +26,7 @@ function roundStatus(round) {
 const breakStatus = computed(() => {
   if (prelimRounds.every((round) => round.completed)) {
     if (
-      tournamentsStore.currentTournament.currentRounds.length === 0 &&
+      currentTournament.value.currentRounds.length === 0 &&
       !Object.values(rounds).some((bc) => bc.some((round) => round.completed))
     ) {
       // Generating the break; in current
@@ -92,7 +88,7 @@ const breakStatus = computed(() => {
             <Icon type="PlusCircle" size="18" />
             <template #popper>
               <div class="add-form">
-                <Tabs>
+                <Tabs value="Team">
                   <TabList>
                     <Tab value="Team">{{ $t('nav.team') }}</Tab>
                     <Tab value="Adjudicator">{{ $t('nav.adjudicator') }}</Tab>

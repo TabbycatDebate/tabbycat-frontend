@@ -2,7 +2,6 @@
 import { useI18n } from 'vue-i18n';
 import vSelect from 'vue-select';
 import slugify from 'slugify';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 const { t } = useI18n();
 
@@ -32,7 +31,12 @@ const tournament = reactive({
   dataEntry: dataEntry[0],
 });
 
-const tournamentsStore = useTournamentsStore();
+const { status, execute } = useAPI('tournaments', {
+  method: 'post',
+  body: tournament,
+  immediate: false,
+  watch: false,
+});
 
 watch(
   () => tournament.shortName,
@@ -55,8 +59,8 @@ const presets = [
   t('options.presets.formats.wsdc'),
 ];
 
-function createTournament() {
-  tournamentsStore.createTournament(tournament);
+async function createTournament() {
+  await execute();
 }
 </script>
 
@@ -193,7 +197,11 @@ function createTournament() {
             </div>
           </div>
         </div>
-        <button type="submit" class="form-control btn-success">
+        <button
+          type="submit"
+          class="form-control btn-success"
+          :disabled="status === 'pending'"
+        >
           {{ $t('tables.create') }}
         </button>
       </form>

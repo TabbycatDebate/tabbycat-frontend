@@ -18,6 +18,9 @@ export default defineNuxtConfig({
     options: {
       unstyled: true,
     },
+    components: {
+      exclude: ['Button', 'ButtonGroup'],
+    },
     directives: {
       exclude: ['Ripple', 'Tooltip'],
     },

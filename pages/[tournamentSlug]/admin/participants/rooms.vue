@@ -1,26 +1,44 @@
 <script setup lang="ts">
 import DragSelect from 'dragselect';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getRooms();
-tournamentsStore.getRoomCategories();
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
+const { data: roomData, status: roomStatus } = await useAPI('rooms');
+const { data: roomCatData } = await useAPI('roomCategories');
+const { data: roundData } = await useAPI('rounds');
+
+const fetchRoundSeq = ref();
+const { data: availabilityData, execute: getRoundAvailabilities } = useAPI(
+  'availabilities',
+  { immediate: false, watch: false },
+  { roundSeq: fetchRoundSeq.value },
+);
+
+const toggleRoom = ref({ round: null, room: null });
+const { execute: toggleRoomAvailability } = useAPI(
+  'availabilities',
+  {
+    immediate: false,
+    watch: false,
+    method: 'patch',
+    body: [toggleRoom.value.room],
+  },
+  { roundSeq: toggleRoom.value.round.seq },
+);
 
 definePageMeta({
   name: 'tournament.admin.rooms',
 });
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | Admin - Rooms`,
+  title: `${currentTournament.value.shortName} | ${t(
+    'base.header.admin',
+  )} - ${t('nav.rooms')}`,
 });
 let ds = null;
 
 const roomCategoryMap = Object.fromEntries(
-  tournamentsStore.currentTournament.roomCategories?.map((rc) => [
-    rc.url,
-    rc,
-  ]) ?? [],
+  roomCatData.value.map((rc) => [rc.url, rc]) ?? [],
 );
 
 function getRoomCategories(room: Room) {
@@ -32,7 +50,8 @@ function isAvailable(room: Room, round: Round) {
 }
 
 function toggleAvailability(room: Room, round: Round) {
-  tournamentsStore.toggleAvailable(room, round);
+  toggleRoom.value = { round, room };
+  toggleRoomAvailability();
 }
 
 function handleSpaceKeyUp(e) {
@@ -56,7 +75,7 @@ function handleSpaceKeyUp(e) {
 }
 
 const rounds = groupBy(
-  tournamentsStore.currentTournament.rounds ?? [],
+  currentTournament.value.rounds ?? [],
   ({ breakCategory }) => breakCategory ?? '',
 );
 
@@ -79,21 +98,16 @@ function createRoom() {
   submittedRoom.value = false;
   showRoomDialog.value = true;
 }
-function saveRoom() {
-  submittedRoom.value = true;
-}
 function editRoom(room) {
   newRoom.value = { ...room };
   showRoomDialog.value = true;
 }
 
-onMounted(async () => {
-  await tournamentsStore.getRoundsForCurrentTournament().then(() => {
-    tournamentsStore.currentTournament.rounds.forEach((round) => {
-      tournamentsStore.getRoundAvailabilities(round);
-    });
+onMounted(() => {
+  roundData.value.forEach(async (round) => {
+    fetchRoundSeq.value = round.seq;
+    await getRoundAvailabilities();
   });
-  await tournamentsStore.getRooms();
   ds = new DragSelect({
     selectables: document.querySelectorAll('input[type=checkbox]'),
     area: document.querySelector('tbody'),
@@ -108,20 +122,19 @@ onMounted(async () => {
   window.addEventListener('keydown', handleSpaceKeyDown);
 });
 
-const roomData = computed(
-  () =>
-    tournamentsStore.currentTournament.rooms?.map((room) => ({
-      obj: room,
-      url: room.url,
-      name: room.name,
-      priority: room.priority,
-      categories: getRoomCategories(room),
-      ...Object.fromEntries(
-        Object.values(rounds)
-          .map((rg) => rg.map((r, i) => ['R' + r.seq, isAvailable(room, r)]))
-          .flat(),
-      ),
-    })),
+const roomTableData = computed(() =>
+  roomData.value.map((room) => ({
+    obj: room,
+    url: room.url,
+    name: room.name,
+    priority: room.priority,
+    categories: getRoomCategories(room),
+    ...Object.fromEntries(
+      Object.values(rounds)
+        .map((rg) => rg.map((r) => ['R' + r.seq, isAvailable(room, r)]))
+        .flat(),
+    ),
+  })),
 );
 </script>
 
@@ -131,8 +144,8 @@ const roomData = computed(
     <div class="tables">
       <div class="card">
         <TableBase
-          :data="roomData"
-          :loading="loading.rooms !== false"
+          :data="roomTableData"
+          :loading="roomStatus === 'pending'"
           data-key="url"
           :filter-fields="['name', 'categories']"
           :title="$t('rooms.title')"

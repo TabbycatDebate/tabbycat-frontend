@@ -1,0 +1,187 @@
+{
+  "adjudicators": {
+    "title": "crwdns52876:0crwdne52876:0",
+    "independent": "crwdns52878:0crwdne52878:0",
+    "independentAbbr": "crwdns52880:0crwdne52880:0",
+    "baseScore": "crwdns52882:0crwdne52882:0",
+    "adjCore": "crwdns52884:0crwdne52884:0",
+    "alwaysTrainee": "crwdns52886:0crwdne52886:0",
+    "update": "crwdns52888:0crwdne52888:0",
+    "create": "crwdns52890:0crwdne52890:0"
+  },
+  "people": {
+    "name": "crwdns52892:0crwdne52892:0",
+    "gender": {
+      "title": "crwdns52894:0crwdne52894:0",
+      "none": "crwdns52896:0crwdne52896:0",
+      "male": "crwdns52898:0crwdne52898:0",
+      "female": "crwdns52900:0crwdne52900:0",
+      "other": "crwdns52902:0crwdne52902:0"
+    },
+    "email": "crwdns52904:0crwdne52904:0",
+    "anonymous": "crwdns52906:0crwdne52906:0",
+    "key": "crwdns52908:0crwdne52908:0"
+  },
+  "teams": {
+    "title": "crwdns52910:0crwdne52910:0",
+    "name": "crwdns52912:0crwdne52912:0",
+    "speakers": "crwdns52914:0crwdne52914:0",
+    "breakCategories": "crwdns52916:0crwdne52916:0",
+    "emoji": "crwdns52918:0crwdne52918:0",
+    "codeName": "crwdns52920:0crwdne52920:0"
+  },
+  "institutions": {
+    "title": "crwdns52922:0crwdne52922:0",
+    "none": "crwdns52924:0crwdne52924:0",
+    "create": "crwdns52926:0crwdne52926:0",
+    "code": "crwdns52928:0crwdne52928:0",
+    "name": "crwdns52930:0crwdne52930:0",
+    "region": "crwdns52932:0crwdne52932:0",
+    "numberTeams": "crwdns52934:0crwdne52934:0",
+    "numberAdjs": "crwdns52936:0crwdne52936:0"
+  },
+  "language": "crwdns52938:0crwdne52938:0",
+  "feedback": {
+    "target": "crwdns52940:0crwdne52940:0",
+    "submitter": "crwdns52942:0crwdne52942:0",
+    "submit": "crwdns52944:0crwdne52944:0"
+  },
+  "rooms": {
+    "title": "crwdns52946:0crwdne52946:0",
+    "categories": "crwdns52948:0crwdne52948:0",
+    "name": "crwdns52950:0crwdne52950:0",
+    "priority": "crwdns52952:0crwdne52952:0",
+    "update": "crwdns52954:0crwdne52954:0",
+    "create": "crwdns52956:0crwdne52956:0"
+  },
+  "nav": {
+    "overview": "crwdns52958:0crwdne52958:0",
+    "newtournament": "crwdns52960:0crwdne52960:0",
+    "settings": "crwdns52962:0crwdne52962:0",
+    "participants": "crwdns52964:0crwdne52964:0",
+    "team": "crwdns52966:0crwdne52966:0",
+    "adjudicator": "crwdns52968:0crwdne52968:0",
+    "institution": "crwdns52970:0crwdne52970:0",
+    "rooms": "crwdns52972:0crwdne52972:0",
+    "room": "crwdns52974:0crwdne52974:0",
+    "roomcategory": "crwdns52976:0crwdne52976:0",
+    "checkins": "crwdns52978:0crwdne52978:0",
+    "feedback": "crwdns52980:0crwdne52980:0",
+    "breaks": "crwdns52982:0crwdne52982:0",
+    "standings": "crwdns52984:0crwdne52984:0",
+    "availabilities": "crwdns52986:0crwdne52986:0",
+    "draw": "crwdns52988:0crwdne52988:0",
+    "release": "crwdns52990:0crwdne52990:0",
+    "results": "crwdns52992:0crwdne52992:0",
+    "institutions": "crwdns52994:0crwdne52994:0",
+    "speakerCategories": "crwdns52996:0crwdne52996:0",
+    "privateURLs": "crwdns52998:0crwdne52998:0"
+  },
+  "tables": {
+    "search": "crwdns53000:0crwdne53000:0",
+    "csvSave": "crwdns53002:0crwdne53002:0",
+    "empty": "crwdns53004:0crwdne53004:0",
+    "create": "crwdns53006:0crwdne53006:0",
+    "edit": "crwdns53008:0crwdne53008:0",
+    "print": "crwdns53010:0crwdne53010:0"
+  },
+  "base": {
+    "welcome": "crwdns53012:0crwdne53012:0",
+    "head": "crwdns53014:0crwdne53014:0",
+    "adminLink": "crwdns53016:0{tournament}crwdne53016:0",
+    "publicLink": "crwdns53018:0{tournament}crwdne53018:0",
+    "tournamentWelcome": "crwdns53020:0{tournament}crwdne53020:0",
+    "footer": {
+      "runsOn": "crwdns53022:0{tournament}crwdnd53022:0{version}crwdnd53022:0{versionName}crwdne53022:0",
+      "runsOnNoTournament": "crwdns53024:0{version}crwdnd53024:0{versionName}crwdne53024:0",
+      "license": "crwdns53026:0crwdne53026:0",
+      "suggestedDonation": {
+        "link": "crwdns53028:0{amount}crwdne53028:0",
+        "text": "crwdns53030:0{link}crwdne53030:0"
+      },
+      "donation": {
+        "link": "crwdns53032:0crwdne53032:0",
+        "text": "crwdns53034:0{link}crwdne53034:0"
+      },
+      "organisation": {
+        "title": "crwdns53036:0crwdne53036:0",
+        "text": "crwdns53038:0{association}crwdne53038:0",
+        "association": "crwdns53040:0crwdne53040:0"
+      },
+      "language": "crwdns53042:0crwdne53042:0",
+      "changeLanguage": "crwdns53044:0crwdne53044:0",
+      "selectLanguage": "crwdns53046:0crwdne53046:0",
+      "github": "crwdns53048:0crwdne53048:0",
+      "documentation": "crwdns53050:0crwdne53050:0",
+      "support": "crwdns53052:0crwdne53052:0",
+      "facebook": "crwdns53054:0crwdne53054:0",
+      "setUp": "crwdns53056:0crwdne53056:0"
+    }
+  },
+  "newTournament": {
+    "title": "crwdns53058:0crwdne53058:0",
+    "demo": {
+      "tagline": "crwdns53060:0crwdne53060:0",
+      "message": "crwdns53062:0{tagline}crwdne53062:0"
+    },
+    "name": {
+      "title": "crwdns53064:0crwdne53064:0",
+      "help": "crwdns53066:0crwdne53066:0"
+    },
+    "shortName": {
+      "title": "crwdns53068:0crwdne53068:0",
+      "help": "crwdns53070:0crwdne53070:0"
+    },
+    "slug": {
+      "title": "crwdns53072:0crwdne53072:0",
+      "help": "crwdns53074:0crwdne53074:0"
+    },
+    "format": {
+      "title": "crwdns53076:0crwdne53076:0",
+      "help": "crwdns53078:0crwdne53078:0"
+    },
+    "prelimRounds": "crwdns53080:0crwdne53080:0",
+    "elimRoundsTeams": {
+      "title": "crwdns53082:0crwdne53082:0",
+      "help": "crwdns53084:0crwdne53084:0"
+    },
+    "publicPages": {
+      "title": "crwdns53086:0crwdne53086:0",
+      "help": "crwdns53088:0crwdne53088:0"
+    },
+    "dataEntry": {
+      "title": "crwdns53090:0crwdne53090:0",
+      "help": "crwdns53092:0crwdne53092:0"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "crwdns53094:0crwdne53094:0",
+      "import": "crwdns53096:0crwdne53096:0",
+      "dragDrop": "crwdns53098:0crwdne53098:0",
+      "header": "crwdns53100:0crwdne53100:0",
+      "fileName": "crwdns53102:0crwdne53102:0",
+      "data": "crwdns53104:0crwdne53104:0"
+    }
+  },
+  "options": {
+    "presets": {
+      "dataEntry": {
+        "disabled": "crwdns53106:0crwdne53106:0",
+        "privateURLs": "crwdns53108:0crwdne53108:0",
+        "public": "crwdns53110:0crwdne53110:0"
+      },
+      "formats": {
+        "2v2": "crwdns53112:0crwdne53112:0",
+        "3v3": "crwdns53114:0crwdne53114:0",
+        "apda": "crwdns53116:0crwdne53116:0",
+        "easters": "crwdns53118:0crwdne53118:0",
+        "australs": "crwdns53120:0crwdne53120:0",
+        "bp": "crwdns53122:0crwdne53122:0",
+        "cp": "crwdns53124:0crwdne53124:0",
+        "uadc": "crwdns53126:0crwdne53126:0",
+        "wsdc": "crwdns53128:0crwdne53128:0"
+      }
+    }
+  }
+}

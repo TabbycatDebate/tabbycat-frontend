@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n';
 import vSelect from 'vue-select';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 const { t } = useI18n();
 
@@ -15,17 +13,15 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits(['update:modelValue']);
 
-const tournamentsStore = useTournamentsStore();
+const { data: institutionData, status } = await useAPI('institutions');
 const institutions = computed(() => [
   { name: t('institutions.none'), url: null },
-  ...tournamentsStore.institutions,
+  ...institutionData.value,
 ]);
 
 const institution = computed({
   get() {
-    return tournamentsStore.institutions.find(
-      (inst) => inst.url === props.modelValue,
-    );
+    return institutionData.value.find((inst) => inst.url === props.modelValue);
   },
   set(value) {
     emit('update:modelValue', value);
@@ -37,13 +33,11 @@ function institutionCreated(inst) {
   emit('update:modelValue', inst.url);
   creatingInstitution.value = false;
 }
-
-const { loading } = storeToRefs(tournamentsStore);
 </script>
 
 <template>
   <vSelect
-    v-if="loading.institutions === false"
+    v-if="status === 'success'"
     v-model="institution"
     :input-id="name"
     :name="name"

@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import vSelect from 'vue-select';
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
 
 const feedback = reactive({
   source: null,
@@ -12,21 +10,20 @@ const feedback = reactive({
   score: 0,
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getFeedbackQuestions().then(() => {
-  feedback.answers = Object.fromEntries(
-    tournamentsStore.currentTournament.feedbackQuestions.map((q) => [
-      q.url,
-      null,
-    ]),
-  );
+const { data: questionData } = await useAPI('feedbackQuestions');
+const { execute: createFeedback } = await useAPI('feedback', {
+  method: 'post',
+  immediate: false,
+  watch: false,
+  body: feedback,
 });
-tournamentsStore.getTeams();
-tournamentsStore.getAdjudicators();
+
+const { data: teamData } = await useAPI('teams');
+const { data: adjData } = await useAPI('adjudicators');
 
 const participants = computed(() => [
-  ...tournamentsStore.currentTournament.adjudicators,
-  ...tournamentsStore.currentTournament.teams.map((t) => ({
+  ...adjData.value,
+  ...teamData.value.map((t) => ({
     ...t,
     name: t.shortName,
   })),
@@ -36,16 +33,10 @@ const answerableQuestions = computed(() => {
   const source = feedback.source.split('/');
   source.pop();
   if (source.pop() === 'adjudicators') {
-    return tournamentsStore.currentTournament.feedbackQuestions.filter(
-      (q) => q.fromAdj,
-    );
+    return questionData.value.filter((q) => q.fromAdj);
   }
-  return tournamentsStore.currentTournament.feedbackQuestions.filter(
-    (q) => q.fromTeam,
-  );
+  return questionData.value.filter((q) => q.fromTeam);
 });
-
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
 
 function attrsForQuestion(question) {
   switch (question.answerType) {
@@ -79,13 +70,13 @@ function attrsForQuestion(question) {
   }
 }
 
-function createFeedback() {
-  tournamentsStore.addFeedback(feedback);
+async function postForm() {
+  await createFeedback();
 }
 </script>
 
 <template>
-  <form @submit.prevent="createFeedback">
+  <form @submit.prevent="postForm">
     <div class="form-group">
       <label for="submitter">{{ $t('feedback.submitter') }}</label>
       <vSelect
@@ -106,7 +97,7 @@ function createFeedback() {
         v-model="feedback.adjudicator"
         input-id="target"
         name="target"
-        :options="currentTournament.adjudicators"
+        :options="adjData"
         :reduce="(p) => p.url"
         label="name"
         :clearable="false"

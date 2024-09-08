@@ -1,0 +1,187 @@
+{
+  "adjudicators": {
+    "title": "Jueces",
+    "independent": "Juez independiente",
+    "independentAbbr": "IA",
+    "baseScore": "Base score",
+    "adjCore": "Miembro de Adjudicación",
+    "alwaysTrainee": "Always allocate as trainee",
+    "update": "Update adjudicator",
+    "create": "Create adjudicator"
+  },
+  "people": {
+    "name": "Nombre",
+    "gender": {
+      "title": "Gender",
+      "none": "(none)",
+      "male": "Hombre",
+      "female": "Mujer",
+      "other": "Other"
+    },
+    "email": "Email",
+    "anonymous": "Anonymous",
+    "key": "clave URL"
+  },
+  "teams": {
+    "title": "Equipos",
+    "name": "Nombre",
+    "speakers": "Oradores",
+    "breakCategories": "Break categories",
+    "emoji": "Emoji",
+    "codeName": "Code name"
+  },
+  "institutions": {
+    "title": "Instituciones",
+    "none": "No institution",
+    "create": "Create institution",
+    "code": "Code",
+    "name": "Nombre",
+    "region": "Region",
+    "numberTeams": "Equipos",
+    "numberAdjs": "Jueces"
+  },
+  "language": "Idioma",
+  "feedback": {
+    "target": "To adjudicator",
+    "submitter": "Submitter",
+    "submit": "Submit feedback"
+  },
+  "rooms": {
+    "title": "Salas",
+    "categories": "Categorías",
+    "name": "Nombre",
+    "priority": "Prioridad",
+    "update": "Update room",
+    "create": "Create room"
+  },
+  "nav": {
+    "overview": "Overview",
+    "newtournament": "New tournament",
+    "settings": "Settings",
+    "participants": "Participantes",
+    "team": "Team",
+    "adjudicator": "Adjudicator",
+    "institution": "Institution",
+    "rooms": "Salas",
+    "room": "Room",
+    "roomcategory": "Categoría",
+    "checkins": "Checkins",
+    "feedback": "Retroalimentación",
+    "breaks": "Breaks",
+    "standings": "Clasificación",
+    "availabilities": "Availabilities",
+    "draw": "Asignación de salas",
+    "release": "Release",
+    "results": "Resultados",
+    "institutions": "Instituciones",
+    "speakerCategories": "Categorías de Orador",
+    "privateURLs": "URLs privadas"
+  },
+  "tables": {
+    "search": "Search",
+    "csvSave": "Save as CSV",
+    "empty": "No data available",
+    "create": "Create",
+    "edit": "Edit",
+    "print": "Print"
+  },
+  "base": {
+    "welcome": "¡Bienvenido!",
+    "head": "Home",
+    "adminLink": "Administrator area for {tournament}",
+    "publicLink": "Public area for {tournament}",
+    "tournamentWelcome": "Welcome to {tournament}!",
+    "footer": {
+      "runsOn": "{tournament} runs on Tabbycat {version} ({versionName})",
+      "runsOnNoTournament": "This site runs on Tabbycat {version} ({versionName})",
+      "license": "Tabbycat is an open-source project developed by volunteers and is free to use.",
+      "suggestedDonation": {
+        "link": "a donation of {amount}",
+        "text": "For a tournament of this size, we suggest {link}."
+      },
+      "donation": {
+        "link": "Donations to Tabbycat from individuals or organisations",
+        "text": "{link} are much appreciated and help us to continue to develop, support, and maintain Tabbycat."
+      },
+      "organisation": {
+        "title": "Our Organisation",
+        "text": "Tabbycat is supported by the {association}, a non-profit for advancing open debate technology.",
+        "association": "Tabbycat Debate Association"
+      },
+      "language": "Idioma",
+      "changeLanguage": "Change language",
+      "selectLanguage": "Utilizar este idioma",
+      "github": "GitHub",
+      "documentation": "Documentación",
+      "support": "Apoyo",
+      "facebook": "Facebook",
+      "setUp": "Set up a copy"
+    }
+  },
+  "newTournament": {
+    "title": "Nuevo torneo",
+    "demo": {
+      "tagline": "Just trying out Tabbycat?",
+      "message": "{tagline} If you're learning or playing around with Tabbycat, it's easiest to create a demo tournament that is prepopulated with a fake (but typical) set of teams, adjudicators, rooms, and the like. You can then delete this demo tournament later on, or deploy a new instance for your real tournament."
+    },
+    "name": {
+      "title": "Nombre",
+      "help": "The full name, e.g. \"Australasian Intervarsity Debating Championships 2016\""
+    },
+    "shortName": {
+      "title": "Short name",
+      "help": "The name used in the menu, e.g. \"Australs 2016\""
+    },
+    "slug": {
+      "title": "Slug",
+      "help": "The sub-URL of the tournament, cannot have spaces, e.g. \"australs2016\""
+    },
+    "format": {
+      "title": "Format",
+      "help": "Apply a standard set of settings to match a common debate format. These can be changed afterwards and should be checked for your needs."
+    },
+    "prelimRounds": "Número de rondas preliminares",
+    "elimRoundsTeams": {
+      "title": "Number of teams in the first open elimination round",
+      "help": "Leave blank if there are no elimination rounds"
+    },
+    "publicPages": {
+      "title": "Enable public pages",
+      "help": "Show non-sensitive information on the public-facing side of this site, like draws (once released) and the motions of previous rounds"
+    },
+    "dataEntry": {
+      "title": "Participant data entry",
+      "help": "Whether participants can submit ballots and feedback themselves, and how they do so"
+    }
+  },
+  "participants": {
+    "csv": {
+      "nextStep": "Next step",
+      "import": "Drop .csv files here!",
+      "dragDrop": "Drag-and-drop CSV files to quickly import participants",
+      "header": "CSV upload",
+      "fileName": "File name",
+      "data": "Data"
+    }
+  },
+  "options": {
+    "presets": {
+      "dataEntry": {
+        "disabled": "Disabled (tab staff only)",
+        "privateURLs": "Use private URLs",
+        "public": "Use publicly-accessible forms"
+      },
+      "formats": {
+        "2v2": "2 vs 2 Impromptu",
+        "3v3": "3 vs 3 Prepared",
+        "apda": "American Parliamentary Debate Association",
+        "easters": "Australian Easters",
+        "australs": "Australs",
+        "bp": "British Parliamentary",
+        "cp": "Canadian Parliamentary",
+        "uadc": "United Asian Debating Championships",
+        "wsdc": "World Schools Debating Championships"
+      }
+    }
+  }
+}

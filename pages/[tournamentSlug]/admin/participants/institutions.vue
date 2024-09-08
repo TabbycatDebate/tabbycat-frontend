@@ -1,38 +1,40 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
+import { useI18n } from 'vue-i18n';
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.admin.participants.institutions',
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getInstitutions();
-tournamentsStore.getTeams();
-tournamentsStore.getAdjudicators();
-const { currentTournament, loading } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
+useHead({
+  title: `${currentTournament.value.shortName} | ${t('base.title.admin')} - ${t(
+    'nav.institutions',
+  )}`,
+});
+
+const { data: institutionData } = await useAPI('institutions');
+const { data: teamData, status: teamStatus } = await useAPI('teams');
+const { data: adjData, status: adjStatus } = await useAPI('adjudicators');
 
 function getInstitutionTeams(institution) {
-  return tournamentsStore.currentTournament.teams?.filter(
-    (team) => team.institution === institution.url,
-  ).length;
+  return teamData.value.filter((team) => team.institution === institution.url)
+    .length;
 }
 
 function getInstitutionAdjudicators(institution) {
-  return tournamentsStore.currentTournament.adjudicators?.filter(
-    (adj) => adj.institution === institution.url,
-  ).length;
+  return adjData.value.filter((adj) => adj.institution === institution.url)
+    .length;
 }
 
-const institutions = computed(
-  () =>
-    tournamentsStore.institutions?.map((inst) => ({
-      code: inst.code,
-      name: inst.name,
-      region: inst.region,
-      numTeams: getInstitutionTeams(inst),
-      numAdjs: getInstitutionAdjudicators(inst),
-    })),
+const institutions = computed(() =>
+  institutionData.value.map((inst) => ({
+    code: inst.code,
+    name: inst.name,
+    region: inst.region,
+    numTeams: getInstitutionTeams(inst),
+    numAdjs: getInstitutionAdjudicators(inst),
+  })),
 );
 </script>
 
@@ -68,7 +70,7 @@ const institutions = computed(
       <div class="card">
         <TableBase
           :data="institutions"
-          :loading="loading.teams !== false || loading.adjudicators !== false"
+          :loading="teamStatus === 'pending' || adjStatus === 'pending'"
           :filter-fields="['name', 'code', 'region']"
           :title="$t('institutions.title')"
         >

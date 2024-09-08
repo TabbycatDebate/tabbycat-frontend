@@ -1,16 +1,15 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
-import { useTournamentsStore } from '~/stores/tournaments';
-
 definePageMeta({
   name: 'tournament.admin.round.draw.edit',
 });
 
-const tournamentsStore = useTournamentsStore();
-const { pageRound } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
+const currentRound = await useCurrentRound();
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | ${tournamentsStore.pageRound.name} - Draw`,
+  title: `${currentTournament.value.shortName} | ${
+    currentRound.value.name
+  } - ${t('draw.title')}`,
 });
 </script>
 

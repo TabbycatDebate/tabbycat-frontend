@@ -11,7 +11,7 @@ defineEmits(['update:name', 'update:prefixed']);
   <div class="team-name-input">
     <div
       v-if="institution"
-      v-tooltip="'Toggle include institution prefix'"
+      v-tooltip="$t('team.useInstitutionPrefix')"
       class="institution"
       :class="{ deactivated: !prefixed }"
       @click="$emit('update:prefixed', !prefixed)"

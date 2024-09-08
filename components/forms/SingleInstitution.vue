@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useTournamentsStore } from '~/stores/tournaments';
-
 const emit = defineEmits(['institution']);
 const institution = reactive({
   name: null,
@@ -8,20 +6,25 @@ const institution = reactive({
   region: null,
 });
 
-const tournamentsStore = useTournamentsStore();
+const { data, execute: createInstitution } = useAPI('institutions', {
+  method: 'post',
+  immediate: false,
+  watch: false,
+  body: institution,
+});
 
 const saving = ref(false);
-async function createInstitution() {
+async function submitInstitution() {
   saving.value = true;
-  const created = await tournamentsStore.addInstitution(institution);
-  emit('institution', created);
+  await createInstitution(institution);
+  emit('institution', data.value);
 }
 </script>
 
 <template>
-  <form @submit.prevent="createInstitution">
+  <form @submit.prevent="submitInstitution">
     <div class="form-group">
-      <label for="name">Full name</label>
+      <label for="name">{{ $t('institutions.fullName') }}</label>
       <input
         id="name"
         v-model="institution.name"
@@ -31,7 +34,7 @@ async function createInstitution() {
       />
     </div>
     <div class="form-group">
-      <label for="code">Abbreviation</label>
+      <label for="code">{{ $t('institutions.code') }}</label>
       <input
         id="code"
         v-model="institution.code"
@@ -41,7 +44,7 @@ async function createInstitution() {
       />
     </div>
     <div class="form-group">
-      <label for="region">Region</label>
+      <label for="region">{{ $t('institutions.region') }}</label>
       <input
         id="region"
         v-model="institution.region"
@@ -51,7 +54,7 @@ async function createInstitution() {
       />
     </div>
     <button type="submit" class="form-control btn-success" :disabled="saving">
-      Create institution
+      {{ $t('institutions.create') }}
     </button>
   </form>
 </template>

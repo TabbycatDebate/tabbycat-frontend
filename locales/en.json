@@ -9,6 +9,15 @@
     "update": "Update adjudicator",
     "create": "Create adjudicator"
   },
+  "availabilities": {
+    "subtitle": "for {round}"
+  },
+  "editDraw": {
+    "title": "Edit Draw"
+  },
+  "draw": {
+    "title": "Draw"
+  },
   "people": {
     "name": "Name",
     "gender": {
@@ -20,7 +29,10 @@
     },
     "email": "Email",
     "anonymous": "Anonymous",
-    "key": "URL key"
+    "key": "URL key",
+    "speakers": {
+      "speakerCategories": "Speaker categories"
+    }
   },
   "teams": {
     "title": "Teams",
@@ -28,17 +40,24 @@
     "speakers": "Speakers",
     "breakCategories": "Break categories",
     "emoji": "Emoji",
-    "codeName": "Code name"
+    "codeName": "Code name",
+    "useInstitutionPrefix": "Toggle include institution prefix",
+    "institution": "Institution",
+    "speakerN": "Speaker {seq}",
+    "create": "Create team",
+    "update": "Update team"
   },
   "institutions": {
     "title": "Institutions",
     "none": "No institution",
     "create": "Create institution",
-    "code": "Code",
+    "code": "Abbreviation",
     "name": "Name",
     "region": "Region",
     "numberTeams": "Teams",
-    "numberAdjs": "Adjudicators"
+    "numberAdjs": "Adjudicators",
+    "fullName": "Full name",
+    "create": "Create institution"
   },
   "language": "Language",
   "feedback": {
@@ -53,6 +72,16 @@
     "priority": "Priority",
     "update": "Update room",
     "create": "Create room"
+  },
+  "roomCategories": {
+    "name": "Name",
+    "description": "Description",
+    "displayInName": "Display in room name",
+    "doNotDisplay": "Don't display",
+    "displayAsPrefix": "Display as prefix",
+    "displayAsSuffix": "Display as suffix",
+    "publicTooltip": "Display in public tooltip",
+    "create": "Create room category"
   },
   "nav": {
     "overview": "Overview",
@@ -116,7 +145,36 @@
       "support": "Support",
       "facebook": "Facebook",
       "setUp": "Set up a copy"
+    },
+    "title": {
+      "admin": "Admin"
     }
+  },
+  "languages": {
+    "ar": "Arabic",
+    "ast": "Asturian",
+    "bg": "Bulgarian",
+    "bn": "Bengali",
+    "ca": "Catalan",
+    "cs": "Czech",
+    "de": "German",
+    "en": "English",
+    "es": "Spanish",
+    "fr": "French",
+    "he": "Hebrew",
+    "hi": "Hindi",
+    "id": "Indonesian",
+    "it": "Italian",
+    "ja": "Japanese",
+    "kk": "Kazakh",
+    "ms": "Malay",
+    "pt": "Portuguese",
+    "ro": "Romanian",
+    "ru": "Russian",
+    "tr": "Turkish",
+    "tzl": "Translation",
+    "vi": "Vietnamese",
+    "zh": "Chinese (Simplified)"
   },
   "newTournament": {
     "title": "New Tournament",

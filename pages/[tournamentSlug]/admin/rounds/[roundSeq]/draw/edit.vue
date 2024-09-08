@@ -1,19 +1,22 @@
 <script setup lang="ts">
-import { storeToRefs } from 'pinia';
+import { useI18n } from 'vue-i18n';
 import draggable from '@/vuedraggable';
 
-import { useTournamentsStore } from '~/stores/tournaments';
+const { t } = useI18n();
 
 definePageMeta({
   name: 'tournament.admin.round.draw.edit',
 });
 
-const tournamentsStore = useTournamentsStore();
-tournamentsStore.getDraw(tournamentsStore.pageRound);
-const { pageRound } = storeToRefs(tournamentsStore);
+const currentTournament = await useCurrentTournament();
+const currentRound = await useCurrentRound();
+
+const { data: drawData } = await useAPI('draw');
 
 useHead({
-  title: `${tournamentsStore.currentTournament.shortName} | ${tournamentsStore.pageRound.name} - Edit Draw`,
+  title: `${currentTournament.value.shortName} | ${
+    currentRound.value.name
+  } - ${t('editDraw.title')}`,
 });
 
 const drag = ref(false);
@@ -21,7 +24,7 @@ const drag = ref(false);
 
 <template>
   <LayoutsAdmin>
-    <template v-for="debate in pageRound.draw" :key="debate.id">
+    <template v-for="debate in drawData" :key="debate.id">
       <draggable
         v-model="debate.teams"
         class="list-group"

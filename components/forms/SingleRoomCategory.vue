@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { useTournamentsStore } from '~/stores/tournaments';
-
 const roomCategory = reactive({
   name: null,
   description: null,
@@ -8,17 +6,22 @@ const roomCategory = reactive({
   displayInPublicTooltip: false,
 });
 
-const tournamentsStore = useTournamentsStore();
+const { execute: createRoomCategory } = useAPI('roomCategories', {
+  immediate: false,
+  watch: false,
+  method: 'post',
+  body: roomCategory,
+});
 
-function createRoomCategory() {
-  tournamentsStore.addRoomCategory(roomCategory);
+async function postForm() {
+  await createRoomCategory();
 }
 </script>
 
 <template>
-  <form @submit.prevent="createRoomCategory">
+  <form @submit.prevent="postForm">
     <div class="form-group">
-      <label for="name">Name</label>
+      <label for="name">{{ $t('roomCategories.name') }}</label>
       <input
         id="name"
         v-model="roomCategory.priority"
@@ -28,7 +31,7 @@ function createRoomCategory() {
       />
     </div>
     <div class="form-group">
-      <label for="description">Description</label>
+      <label for="description">{{ $t('roomCategories.description') }}</label>
       <input
         id="description"
         v-model="roomCategory.description"
@@ -38,15 +41,17 @@ function createRoomCategory() {
       />
     </div>
     <div class="form-group">
-      <label for="display-in-name">Display in room name</label>
+      <label for="display-in-name">{{
+        $t('roomCategories.displayInName')
+      }}</label>
       <select
         id="display-in-name"
         v-model="roomCategory.displayInVenueName"
         class="form-control"
       >
-        <option value="-">Don't display</option>
-        <option value="P">Display as prefix</option>
-        <option value="S">Display as suffix</option>
+        <option value="-">{{ $t('roomCategories.doNotDisplay') }}</option>
+        <option value="P">{{ $t('roomCategories.displayAsPrefix') }}</option>
+        <option value="S">{{ $t('roomCategories.displayAsSuffix') }}</option>
       </select>
     </div>
     <div class="form-group">
@@ -57,10 +62,12 @@ function createRoomCategory() {
         class="form-control"
         name="display-tooltip"
       />
-      <label for="display-tooltip">Display in public tooltip</label>
+      <label for="display-tooltip">{{
+        $t('roomCategories.publicTooltip')
+      }}</label>
     </div>
     <button type="submit" class="form-control btn-success">
-      Create room category
+      {{ $t('roomCategories.create') }}
     </button>
   </form>
 </template>
