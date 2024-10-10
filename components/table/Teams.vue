@@ -26,9 +26,7 @@ const instMap = computed(() =>
 
 const useEmoji = computed(
   () =>
-    preferenceData.value.find(
-      ({ section, name }) => section === 'ui_options' && name === 'show_emoji',
-    ).value,
+    preferences.uiOptions.showEmoji.value,
 );
 
 function getTeamName(team, admin) {

@@ -48,13 +48,14 @@
     "pinia": "^2.1.6",
     "prettier": "^3.0.3",
     "primevue": "^4.0.4",
+    "qrcode": "^1.5.4",
     "slugify": "^1.6.6",
     "tailwindcss": "^3.3.3",
     "vitest": "^0.33.0",
     "vue-i18n": "^9.13.1",
     "vue-select": "^4.0.0-beta.6",
     "vue3-tabs-component": "^1.3.6",
-    "vuedraggable": "^4.1.0"
+    "vuedraggable": "git+git@github.com:tienne-B/vue.draggable.next.git#multidragAndAnimation"
   },
   "prettier": {
     "singleQuote": true,

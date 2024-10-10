@@ -1,6 +1,8 @@
 <script setup lang="ts">
+const { t } = useI18n();
+
 definePageMeta({
-  name: 'tournament.admin.round.draw.edit',
+  name: 'tournament.admin.round.draw',
 });
 
 const currentTournament = await useCurrentTournament();

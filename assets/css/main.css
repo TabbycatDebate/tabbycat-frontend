@@ -102,6 +102,17 @@
   }
 }
 
+@media print {
+  :root {
+    --background-outset-color: white;
+    --background-inset-color: white;
+    --background-inset-active-color: white;
+    --active-background: white;
+    --text-color: black;
+    --header-color: black;
+  }
+}
+
 .v-popper--theme-dropdown .v-popper__wrapper,
 .v-popper--theme-full-context .v-popper__wrapper {
   .v-popper__inner {
@@ -817,4 +828,22 @@ button.link {
   [data-pc-section='headeractions'] {
     flex: 1;
   }
+}
+
+@media print {
+  .no-print {
+      display: none !important;
+  }
+}
+
+p + p:not(:last-child) {
+  margin-block-start: 1em;
+  margin-block-end: 1em;
+}
+
+.grid-settings {
+  display: grid;
+  align-items: baseline;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 1rem;
 }

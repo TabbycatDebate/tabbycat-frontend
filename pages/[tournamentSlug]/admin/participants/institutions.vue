@@ -93,7 +93,7 @@ const institutions = computed(() =>
           />
           <Column
             field="numAdjs"
-            :header="$t('institutions.numberAdjudicators')"
+            :header="$t('institutions.numberAdjs')"
             sortable
           />
         </TableBase>

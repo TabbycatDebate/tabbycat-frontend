@@ -9,11 +9,9 @@ const props = defineProps<{
 const emit = defineEmits(['update:emoji', 'update:code']);
 
 const newEmoji = computed({
-  // getter
   get() {
     return props.emoji;
   },
-  // setter
   set(newValue) {
     if (props.emoji === emojis.find((e) => e.name === props.code)?.emoji) {
       emit('update:code', emojis.find((e) => e.emoji === newValue)?.name);
